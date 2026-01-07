@@ -10,6 +10,8 @@ const nicknameInput = document.getElementById('nickname');
 const setNicknameBtn = document.getElementById('setNickname');
 const userCountSpan = document.getElementById('userCount');
 const usersListDiv = document.getElementById('usersList');
+const queueDisplay = document.getElementById('queueDisplay');
+const emptyQueueClient = document.getElementById('emptyQueueClient');
 
 let isSeeking = false;
 let nickname = localStorage.getItem('nickname') || `User${Math.floor(Math.random() * 1000)}`;
@@ -172,6 +174,39 @@ socket.on('user-list', (users) => {
     userDiv.textContent = user.nickname + (user.role === 'admin' ? ' 👑' : '');
     usersListDiv.appendChild(userDiv);
   });
+});
+
+// Queue display
+function updateQueueDisplay(queue) {
+  if (queue.length === 0) {
+    queueDisplay.style.display = 'none';
+    emptyQueueClient.style.display = 'block';
+  } else {
+    queueDisplay.style.display = 'block';
+    emptyQueueClient.style.display = 'none';
+    queueDisplay.innerHTML = '';
+
+    queue.forEach((item, index) => {
+      const queueItem = document.createElement('div');
+      queueItem.className = 'queue-item-client';
+
+      const position = document.createElement('span');
+      position.className = 'queue-position';
+      position.textContent = `#${index + 1}`;
+
+      const name = document.createElement('span');
+      name.className = 'queue-name';
+      name.textContent = item.originalname || item.filename;
+
+      queueItem.appendChild(position);
+      queueItem.appendChild(name);
+      queueDisplay.appendChild(queueItem);
+    });
+  }
+}
+
+socket.on('queue-updated', (queue) => {
+  updateQueueDisplay(queue);
 });
 
 // Request initial sync
