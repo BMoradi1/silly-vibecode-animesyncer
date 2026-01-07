@@ -106,6 +106,10 @@ let videoState = {
 };
 let users = new Map();
 
+// Watch queue (playlist)
+let watchQueue = [];
+let queueIdCounter = 0;
+
 // Routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -185,6 +189,51 @@ app.get('/videos', (req, res) => {
   });
 });
 
+// Queue endpoints
+app.get('/queue', (req, res) => {
+  res.json({ queue: watchQueue });
+});
+
+app.post('/queue/add', (req, res) => {
+  const { video } = req.body;
+  if (!video || !video.filename) {
+    return res.status(400).json({ error: 'Video required' });
+  }
+
+  const queueItem = {
+    id: ++queueIdCounter,
+    ...video,
+    addedAt: Date.now()
+  };
+
+  watchQueue.push(queueItem);
+  io.emit('queue-updated', watchQueue);
+  res.json({ success: true, queue: watchQueue });
+});
+
+app.post('/queue/remove', (req, res) => {
+  const { id } = req.body;
+  watchQueue = watchQueue.filter(item => item.id !== id);
+  io.emit('queue-updated', watchQueue);
+  res.json({ success: true, queue: watchQueue });
+});
+
+app.post('/queue/reorder', (req, res) => {
+  const { queue } = req.body;
+  if (!Array.isArray(queue)) {
+    return res.status(400).json({ error: 'Queue must be an array' });
+  }
+  watchQueue = queue;
+  io.emit('queue-updated', watchQueue);
+  res.json({ success: true, queue: watchQueue });
+});
+
+app.post('/queue/clear', (req, res) => {
+  watchQueue = [];
+  io.emit('queue-updated', watchQueue);
+  res.json({ success: true, queue: watchQueue });
+});
+
 // Socket.IO
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
@@ -207,6 +256,7 @@ io.on('connection', (socket) => {
       socket.emit('video-changed', currentVideo);
       socket.emit('sync-state', videoState);
     }
+    socket.emit('queue-updated', watchQueue);
   });
 
   // Admin controls
@@ -248,6 +298,77 @@ io.on('connection', (socket) => {
 
   socket.on('sync-request', () => {
     socket.emit('sync-state', videoState);
+  });
+
+  // Queue management
+  socket.on('queue-add', (data) => {
+    if (socket.id === adminSocketId) {
+      const queueItem = {
+        id: ++queueIdCounter,
+        ...data.video,
+        addedAt: Date.now()
+      };
+      watchQueue.push(queueItem);
+      io.emit('queue-updated', watchQueue);
+    }
+  });
+
+  socket.on('queue-remove', (data) => {
+    if (socket.id === adminSocketId) {
+      watchQueue = watchQueue.filter(item => item.id !== data.id);
+      io.emit('queue-updated', watchQueue);
+    }
+  });
+
+  socket.on('queue-clear', () => {
+    if (socket.id === adminSocketId) {
+      watchQueue = [];
+      io.emit('queue-updated', watchQueue);
+    }
+  });
+
+  socket.on('play-next', () => {
+    if (socket.id === adminSocketId && watchQueue.length > 0) {
+      const nextVideo = watchQueue.shift();
+      currentVideo = {
+        filename: nextVideo.filename,
+        originalname: nextVideo.originalname || nextVideo.filename,
+        path: nextVideo.path
+      };
+      videoState = {
+        playing: true,
+        currentTime: 0,
+        timestamp: Date.now()
+      };
+      io.emit('video-changed', currentVideo);
+      io.emit('play', videoState);
+      io.emit('queue-updated', watchQueue);
+    }
+  });
+
+  socket.on('video-ended', () => {
+    if (socket.id === adminSocketId) {
+      // Auto-advance to next video in queue
+      if (watchQueue.length > 0) {
+        const nextVideo = watchQueue.shift();
+        currentVideo = {
+          filename: nextVideo.filename,
+          originalname: nextVideo.originalname || nextVideo.filename,
+          path: nextVideo.path
+        };
+        videoState = {
+          playing: true,
+          currentTime: 0,
+          timestamp: Date.now()
+        };
+        io.emit('video-changed', currentVideo);
+        io.emit('play', videoState);
+        io.emit('queue-updated', watchQueue);
+      } else {
+        videoState.playing = false;
+        io.emit('pause', videoState);
+      }
+    }
   });
 
   // Chat

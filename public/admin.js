@@ -15,6 +15,10 @@ const messageInput = document.getElementById('messageInput');
 const sendMessageBtn = document.getElementById('sendMessage');
 const userCountSpan = document.getElementById('userCount');
 const usersListDiv = document.getElementById('usersList');
+const queueList = document.getElementById('queueList');
+const emptyQueue = document.getElementById('emptyQueue');
+const playNextBtn = document.getElementById('playNextBtn');
+const clearQueueBtn = document.getElementById('clearQueueBtn');
 
 let isAdmin = false;
 let currentVideoState = {
@@ -112,8 +116,24 @@ function loadVideoList() {
       data.videos.forEach(video => {
         const videoItem = document.createElement('div');
         videoItem.className = 'video-item';
-        videoItem.textContent = video.filename;
-        videoItem.addEventListener('click', () => selectVideo(video));
+
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = video.filename;
+        nameSpan.style.flex = '1';
+        nameSpan.style.cursor = 'pointer';
+        nameSpan.addEventListener('click', () => selectVideo(video));
+
+        const queueBtn = document.createElement('button');
+        queueBtn.textContent = '+';
+        queueBtn.className = 'queue-add-btn';
+        queueBtn.title = 'Add to queue';
+        queueBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          addToQueue(video);
+        });
+
+        videoItem.appendChild(nameSpan);
+        videoItem.appendChild(queueBtn);
         videoList.appendChild(videoItem);
       });
     });
@@ -282,4 +302,68 @@ socket.on('user-list', (users) => {
     userDiv.textContent = user.nickname + (user.role === 'admin' ? ' 👑' : '');
     usersListDiv.appendChild(userDiv);
   });
+});
+
+// Queue management
+function addToQueue(video) {
+  socket.emit('queue-add', { video });
+  addSystemMessage(`➕ Added to queue: ${video.filename}`);
+}
+
+function updateQueueDisplay(queue) {
+  if (queue.length === 0) {
+    queueList.style.display = 'none';
+    emptyQueue.style.display = 'block';
+  } else {
+    queueList.style.display = 'block';
+    emptyQueue.style.display = 'none';
+    queueList.innerHTML = '';
+
+    queue.forEach((item, index) => {
+      const queueItem = document.createElement('div');
+      queueItem.className = 'queue-item';
+
+      const position = document.createElement('span');
+      position.className = 'queue-position';
+      position.textContent = `#${index + 1}`;
+
+      const name = document.createElement('span');
+      name.className = 'queue-name';
+      name.textContent = item.originalname || item.filename;
+
+      const removeBtn = document.createElement('button');
+      removeBtn.textContent = '×';
+      removeBtn.className = 'queue-remove-btn';
+      removeBtn.title = 'Remove from queue';
+      removeBtn.addEventListener('click', () => {
+        socket.emit('queue-remove', { id: item.id });
+      });
+
+      queueItem.appendChild(position);
+      queueItem.appendChild(name);
+      queueItem.appendChild(removeBtn);
+      queueList.appendChild(queueItem);
+    });
+  }
+}
+
+socket.on('queue-updated', (queue) => {
+  updateQueueDisplay(queue);
+});
+
+playNextBtn.addEventListener('click', () => {
+  socket.emit('play-next');
+});
+
+clearQueueBtn.addEventListener('click', () => {
+  if (confirm('Clear the entire queue?')) {
+    socket.emit('queue-clear');
+  }
+});
+
+// Handle video ended event for auto-advance
+videoPlayer.addEventListener('ended', () => {
+  if (isAdmin) {
+    socket.emit('video-ended');
+  }
 });
