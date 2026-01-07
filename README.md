@@ -1,4 +1,6 @@
-# 🎬 Anime Syncer
+#  THIS IS AI SLOP
+#  I REPEAT. THIS IS A PURPOSE GENERATED AI SLOP PROJECT FOR A USE CASE
+#  FULLY AI GENERATED. LIKELY INSECURE. USE AT OWN RISK
 
 A synchronized video streaming web application that allows multiple users to watch anime episodes together in real-time. Perfect for watch parties, study groups, or hanging out with friends online!
 
