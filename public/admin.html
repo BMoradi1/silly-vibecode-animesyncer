@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anime Syncer - Admin Panel</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎬 Anime Syncer - Admin Panel</h1>
+      <span id="userCount">0 users online</span>
+    </header>
+
+    <div class="admin-controls">
+      <div class="upload-section">
+        <h3>📤 Upload Video</h3>
+        <input type="file" id="videoFile" accept="video/*">
+        <button id="uploadBtn">Upload</button>
+        <div id="uploadProgress"></div>
+      </div>
+
+      <div class="video-list-section">
+        <h3>📁 Available Videos</h3>
+        <div id="videoList"></div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="video-section">
+        <div id="videoContainer">
+          <video id="videoPlayer" controls></video>
+          <div id="noVideo" class="no-video">
+            <p>⏳ Upload or select a video to begin...</p>
+          </div>
+        </div>
+        <div class="video-info">
+          <span id="videoTitle">No video loaded</span>
+        </div>
+        <div class="playback-controls">
+          <button id="playBtn">▶️ Play</button>
+          <button id="pauseBtn">⏸️ Pause</button>
+          <button id="syncBtn">🔄 Force Sync</button>
+        </div>
+      </div>
+
+      <div class="chat-section">
+        <h3>💬 Chat</h3>
+        <div id="chatMessages" class="chat-messages"></div>
+        <div class="chat-input">
+          <input type="text" id="messageInput" placeholder="Type a message...">
+          <button id="sendMessage">Send</button>
+        </div>
+        <div class="users-list">
+          <h4>👥 Online Users</h4>
+          <div id="usersList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

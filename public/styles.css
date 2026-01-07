@@ -1,0 +1,288 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  color: #333;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+header {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+  color: #667eea;
+  font-size: 28px;
+}
+
+.user-info {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+#userCount {
+  background: #667eea;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+input[type="text"] {
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+button {
+  padding: 10px 20px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #5568d3;
+}
+
+.admin-controls {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.upload-section, .video-list-section {
+  margin-bottom: 20px;
+}
+
+.upload-section h3, .video-list-section h3 {
+  margin-bottom: 10px;
+  color: #667eea;
+}
+
+#videoFile {
+  margin-right: 10px;
+}
+
+#uploadProgress {
+  margin-top: 10px;
+  color: #667eea;
+  font-weight: bold;
+}
+
+#videoList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.video-item {
+  padding: 10px;
+  background: #f5f5f5;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.video-item:hover {
+  background: #e0e0e0;
+}
+
+.video-item.active {
+  background: #667eea;
+  color: white;
+}
+
+.main-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.video-section {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#videoContainer {
+  position: relative;
+  background: #000;
+  border-radius: 10px;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+}
+
+#videoPlayer {
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+#videoPlayer.active {
+  display: block;
+}
+
+.no-video {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: white;
+  font-size: 20px;
+}
+
+.video-info {
+  margin-top: 15px;
+  padding: 10px;
+  background: #f5f5f5;
+  border-radius: 5px;
+}
+
+#videoTitle {
+  font-weight: bold;
+  color: #667eea;
+}
+
+.playback-controls {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.playback-controls button {
+  flex: 1;
+}
+
+.chat-section {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  max-height: 800px;
+}
+
+.chat-section h3 {
+  color: #667eea;
+  margin-bottom: 15px;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  border: 2px solid #f0f0f0;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 15px;
+  min-height: 300px;
+  max-height: 400px;
+}
+
+.chat-message {
+  margin-bottom: 12px;
+  padding: 8px;
+  background: #f5f5f5;
+  border-radius: 5px;
+}
+
+.chat-message .nickname {
+  font-weight: bold;
+  color: #667eea;
+  margin-right: 5px;
+}
+
+.chat-message .timestamp {
+  font-size: 11px;
+  color: #999;
+  margin-left: 5px;
+}
+
+.chat-input {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.chat-input input {
+  flex: 1;
+}
+
+.users-list {
+  border-top: 2px solid #f0f0f0;
+  padding-top: 15px;
+}
+
+.users-list h4 {
+  color: #667eea;
+  margin-bottom: 10px;
+}
+
+#usersList {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.user-item {
+  padding: 5px 10px;
+  background: #f5f5f5;
+  border-radius: 3px;
+  font-size: 14px;
+}
+
+.user-item.admin {
+  background: #667eea;
+  color: white;
+}
+
+@media (max-width: 968px) {
+  .main-content {
+    grid-template-columns: 1fr;
+  }
+
+  header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .user-info {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .user-info input,
+  .user-info button {
+    width: 100%;
+  }
+}

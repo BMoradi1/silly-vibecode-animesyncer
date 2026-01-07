@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anime Syncer - Watch Together</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎬 Anime Syncer</h1>
+      <div class="user-info">
+        <input type="text" id="nickname" placeholder="Enter nickname">
+        <button id="setNickname">Set Nickname</button>
+        <span id="userCount">0 users online</span>
+      </div>
+    </header>
+
+    <div class="main-content">
+      <div class="video-section">
+        <div id="videoContainer">
+          <video id="videoPlayer" controls></video>
+          <div id="noVideo" class="no-video">
+            <p>⏳ Waiting for admin to select a video...</p>
+          </div>
+        </div>
+        <div class="video-info">
+          <span id="videoTitle">No video loaded</span>
+        </div>
+      </div>
+
+      <div class="chat-section">
+        <h3>💬 Chat</h3>
+        <div id="chatMessages" class="chat-messages"></div>
+        <div class="chat-input">
+          <input type="text" id="messageInput" placeholder="Type a message...">
+          <button id="sendMessage">Send</button>
+        </div>
+        <div class="users-list">
+          <h4>👥 Online Users</h4>
+          <div id="usersList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js"></script>
+</body>
+</html>
