@@ -16,6 +16,7 @@ const syncIndicator = document.getElementById('syncIndicator');
 
 let isSeeking = false;
 let nickname = localStorage.getItem('nickname') || `User${Math.floor(Math.random() * 1000)}`;
+let lastSyncTime = Date.now();
 
 // Set initial nickname
 nicknameInput.value = nickname;
@@ -46,22 +47,27 @@ socket.on('video-changed', (video) => {
 socket.on('sync-state', (state) => {
   if (!videoPlayer.src) return;
 
+  lastSyncTime = Date.now();
   const timeDiff = (Date.now() - state.timestamp) / 1000;
   const expectedTime = state.playing ? state.currentTime + timeDiff : state.currentTime;
 
-  // Strict sync: sync if difference is more than 0.5 seconds
-  if (Math.abs(videoPlayer.currentTime - expectedTime) > 0.5) {
+  // Very strict sync: sync if difference is more than 0.3 seconds
+  const drift = Math.abs(videoPlayer.currentTime - expectedTime);
+  if (drift > 0.3) {
     isSeeking = true;
     videoPlayer.currentTime = expectedTime;
 
     // Show sync indicator
     syncIndicator.classList.add('active');
+    syncIndicator.textContent = `🔄 Synced (${drift.toFixed(2)}s)`;
     setTimeout(() => {
       isSeeking = false;
       syncIndicator.classList.remove('active');
+      syncIndicator.textContent = '🔄 Synced';
     }, 1000);
   }
 
+  // Force playback state sync
   if (state.playing && videoPlayer.paused) {
     videoPlayer.play().catch(e => console.log('Play failed:', e));
   } else if (!state.playing && !videoPlayer.paused) {
@@ -78,7 +84,7 @@ socket.on('play', (state) => {
   isSeeking = true;
   videoPlayer.currentTime = expectedTime;
   videoPlayer.play().catch(e => console.log('Play failed:', e));
-  setTimeout(() => isSeeking = false, 500);
+  setTimeout(() => isSeeking = false, 300);
 });
 
 // Pause command
@@ -87,7 +93,7 @@ socket.on('pause', (state) => {
   isSeeking = true;
   videoPlayer.currentTime = state.currentTime;
   videoPlayer.pause();
-  setTimeout(() => isSeeking = false, 500);
+  setTimeout(() => isSeeking = false, 300);
 });
 
 // Seek command
@@ -95,7 +101,7 @@ socket.on('seek', (data) => {
   if (!videoPlayer.src) return;
   isSeeking = true;
   videoPlayer.currentTime = data.time;
-  setTimeout(() => isSeeking = false, 500);
+  setTimeout(() => isSeeking = false, 300);
 });
 
 // Disable all controls for clients - only admin can control
@@ -223,19 +229,29 @@ socket.on('queue-updated', (queue) => {
 // Request initial sync
 setTimeout(() => {
   socket.emit('sync-request');
-}, 1000);
+}, 500);
 
-// Frequent sync checks - every 2 seconds for tight synchronization
+// Very frequent sync checks - every 1 second for tight synchronization
 setInterval(() => {
   if (videoPlayer.src) {
     socket.emit('sync-request');
   }
-}, 2000);
+}, 1000);
 
-// Additional continuous monitoring for drift
+// Continuous aggressive monitoring for drift while playing
 setInterval(() => {
   if (videoPlayer.src && !videoPlayer.paused) {
     // Monitor for any drift and request sync if detected
     socket.emit('sync-request');
   }
-}, 500);
+}, 300);
+
+// Sync watchdog - detect if sync stops
+setInterval(() => {
+  const timeSinceLastSync = Date.now() - lastSyncTime;
+  if (videoPlayer.src && timeSinceLastSync > 5000) {
+    console.warn('Sync timeout - forcing re-sync');
+    socket.emit('sync-request');
+    addSystemMessage('⚠️ Connection issue detected, re-syncing...');
+  }
+}, 3000);
