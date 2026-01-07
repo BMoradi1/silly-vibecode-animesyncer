@@ -42,8 +42,9 @@ uploadBtn.addEventListener('click', () => {
 
   const formData = new FormData();
   formData.append('video', file);
+  formData.append('socketId', socket.id);
 
-  uploadProgress.textContent = 'Uploading...';
+  uploadProgress.innerHTML = '<div style="color: #667eea;">📤 Uploading...</div>';
 
   fetch('/upload', {
     method: 'POST',
@@ -52,17 +53,50 @@ uploadBtn.addEventListener('click', () => {
   .then(response => response.json())
   .then(data => {
     if (data.success) {
-      uploadProgress.textContent = '✅ Upload successful!';
-      videoFile.value = '';
-      loadVideoList();
-      setTimeout(() => uploadProgress.textContent = '', 3000);
+      if (data.transcoding) {
+        uploadProgress.innerHTML = '<div style="color: #f093fb;">🔄 Transcoding to MP4...</div>';
+        addSystemMessage('🔄 Video is being transcoded to MP4 format...');
+      } else {
+        uploadProgress.innerHTML = '<div style="color: #4facfe;">✅ Upload successful!</div>';
+        videoFile.value = '';
+        loadVideoList();
+        setTimeout(() => uploadProgress.innerHTML = '', 3000);
+      }
     } else {
-      uploadProgress.textContent = '❌ Upload failed';
+      uploadProgress.innerHTML = '<div style="color: #ff6b6b;">❌ Upload failed</div>';
     }
   })
   .catch(error => {
-    uploadProgress.textContent = '❌ Upload error: ' + error.message;
+    uploadProgress.innerHTML = '<div style="color: #ff6b6b;">❌ ' + error.message + '</div>';
   });
+});
+
+// Transcoding events
+socket.on('transcode-started', (data) => {
+  uploadProgress.innerHTML = `<div style="color: #f093fb;">🔄 Transcoding ${data.filename}...</div>`;
+  addSystemMessage(`🔄 Started transcoding: ${data.filename}`);
+});
+
+socket.on('transcode-progress', (data) => {
+  uploadProgress.innerHTML = `
+    <div style="color: #f093fb;">🔄 Transcoding: ${data.percent}%</div>
+    <div style="background: #f0f0f0; height: 8px; border-radius: 4px; margin-top: 5px; overflow: hidden;">
+      <div style="background: linear-gradient(90deg, #667eea, #764ba2); height: 100%; width: ${data.percent}%; transition: width 0.3s;"></div>
+    </div>
+  `;
+});
+
+socket.on('transcode-complete', (data) => {
+  uploadProgress.innerHTML = '<div style="color: #4facfe;">✅ Transcoding complete!</div>';
+  addSystemMessage(`✅ Transcoding complete: ${data.filename}`);
+  videoFile.value = '';
+  loadVideoList();
+  setTimeout(() => uploadProgress.innerHTML = '', 3000);
+});
+
+socket.on('transcode-error', (data) => {
+  uploadProgress.innerHTML = `<div style="color: #ff6b6b;">❌ Transcoding failed: ${data.error}</div>`;
+  addSystemMessage(`❌ Transcoding error: ${data.error}`);
 });
 
 // Load video list

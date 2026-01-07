@@ -4,6 +4,7 @@ const socketIO = require('socket.io');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const ffmpeg = require('fluent-ffmpeg');
 
 const app = express();
 const server = http.createServer(app);
@@ -29,17 +30,66 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 * 1024 }, // 5GB limit
   fileFilter: (req, file, cb) => {
-    const allowedTypes = /mp4|mkv|avi|webm/;
+    const allowedTypes = /mp4|mkv|avi|webm|mov/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
-    if (mimetype && extname) {
+    if (extname) {
       return cb(null, true);
     } else {
-      cb('Error: Videos only (mp4, mkv, avi, webm)');
+      cb(new Error('Videos only (mp4, mkv, avi, webm, mov)'));
     }
   }
 });
+
+// Transcode video to MP4
+function transcodeVideo(inputPath, outputPath, socketId, originalName) {
+  return new Promise((resolve, reject) => {
+    const command = ffmpeg(inputPath)
+      .outputOptions([
+        '-c:v libx264',
+        '-preset fast',
+        '-crf 23',
+        '-c:a aac',
+        '-b:a 128k',
+        '-movflags +faststart'
+      ])
+      .output(outputPath)
+      .on('start', (cmd) => {
+        console.log('FFmpeg started:', cmd);
+        io.to(socketId).emit('transcode-started', { filename: originalName });
+      })
+      .on('progress', (progress) => {
+        const percent = progress.percent || 0;
+        console.log(`Transcoding ${originalName}: ${percent.toFixed(1)}%`);
+        io.to(socketId).emit('transcode-progress', {
+          filename: originalName,
+          percent: percent.toFixed(1)
+        });
+      })
+      .on('end', () => {
+        console.log('Transcoding finished:', outputPath);
+        // Delete original file if it was transcoded
+        if (inputPath !== outputPath) {
+          fs.unlink(inputPath, (err) => {
+            if (err) console.error('Error deleting original:', err);
+          });
+        }
+        io.to(socketId).emit('transcode-complete', { filename: originalName });
+        resolve(outputPath);
+      })
+      .on('error', (err) => {
+        console.error('FFmpeg error:', err);
+        io.to(socketId).emit('transcode-error', {
+          filename: originalName,
+          error: err.message
+        });
+        reject(err);
+      });
+
+    command.run();
+  });
+}
 
 // Serve static files
 app.use(express.static('public'));
@@ -65,18 +115,57 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
-app.post('/upload', upload.single('video'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'No file uploaded' });
+app.post('/upload', upload.single('video'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    const ext = path.extname(req.file.filename).toLowerCase();
+    const needsTranscoding = ['.mkv', '.avi', '.mov'].includes(ext);
+    const socketId = req.body.socketId || adminSocketId;
+
+    let finalPath = req.file.path;
+    let finalFilename = req.file.filename;
+
+    if (needsTranscoding) {
+      // Transcode to MP4
+      const outputFilename = req.file.filename.replace(ext, '.mp4');
+      const outputPath = path.join(uploadsDir, outputFilename);
+
+      res.json({
+        success: true,
+        transcoding: true,
+        message: 'Video is being transcoded to MP4...'
+      });
+
+      // Transcode in background
+      transcodeVideo(req.file.path, outputPath, socketId, req.file.originalname)
+        .then(() => {
+          currentVideo = {
+            filename: outputFilename,
+            originalname: req.file.originalname.replace(ext, '.mp4'),
+            path: `/uploads/${outputFilename}`
+          };
+          io.emit('video-changed', currentVideo);
+        })
+        .catch(err => {
+          console.error('Transcoding failed:', err);
+        });
+    } else {
+      // No transcoding needed
+      currentVideo = {
+        filename: req.file.filename,
+        originalname: req.file.originalname,
+        path: `/uploads/${req.file.filename}`
+      };
+      io.emit('video-changed', currentVideo);
+      res.json({ success: true, video: currentVideo, transcoding: false });
+    }
+  } catch (error) {
+    console.error('Upload error:', error);
+    res.status(500).json({ error: error.message || 'Upload failed' });
   }
-  currentVideo = {
-    filename: req.file.filename,
-    originalname: req.file.originalname,
-    path: `/uploads/${req.file.filename}`
-  };
-  // Notify all clients about new video
-  io.emit('video-changed', currentVideo);
-  res.json({ success: true, video: currentVideo });
 });
 
 app.get('/current-video', (req, res) => {
