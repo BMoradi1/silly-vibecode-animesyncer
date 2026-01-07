@@ -236,10 +236,16 @@ videoPlayer.addEventListener('seeked', () => {
   }
 });
 
-// Update current time periodically
+// Update and broadcast current state frequently for tight sync
 setInterval(() => {
-  if (isAdmin && videoPlayer.src && !videoPlayer.paused) {
+  if (isAdmin && videoPlayer.src) {
     currentVideoState.currentTime = videoPlayer.currentTime;
+    currentVideoState.playing = !videoPlayer.paused;
+    // Send state update to server
+    socket.emit('state-update', {
+      currentTime: videoPlayer.currentTime,
+      playing: !videoPlayer.paused
+    });
   }
 }, 1000);
 
