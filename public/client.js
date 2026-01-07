@@ -12,6 +12,7 @@ const userCountSpan = document.getElementById('userCount');
 const usersListDiv = document.getElementById('usersList');
 const queueDisplay = document.getElementById('queueDisplay');
 const emptyQueueClient = document.getElementById('emptyQueueClient');
+const syncIndicator = document.getElementById('syncIndicator');
 
 let isSeeking = false;
 let nickname = localStorage.getItem('nickname') || `User${Math.floor(Math.random() * 1000)}`;
@@ -48,11 +49,17 @@ socket.on('sync-state', (state) => {
   const timeDiff = (Date.now() - state.timestamp) / 1000;
   const expectedTime = state.playing ? state.currentTime + timeDiff : state.currentTime;
 
-  // Sync if difference is more than 1 second
-  if (Math.abs(videoPlayer.currentTime - expectedTime) > 1) {
+  // Strict sync: sync if difference is more than 0.5 seconds
+  if (Math.abs(videoPlayer.currentTime - expectedTime) > 0.5) {
     isSeeking = true;
     videoPlayer.currentTime = expectedTime;
-    setTimeout(() => isSeeking = false, 500);
+
+    // Show sync indicator
+    syncIndicator.classList.add('active');
+    setTimeout(() => {
+      isSeeking = false;
+      syncIndicator.classList.remove('active');
+    }, 1000);
   }
 
   if (state.playing && videoPlayer.paused) {
@@ -90,6 +97,10 @@ socket.on('seek', (data) => {
   videoPlayer.currentTime = data.time;
   setTimeout(() => isSeeking = false, 500);
 });
+
+// Disable all controls for clients - only admin can control
+videoPlayer.removeAttribute('controls');
+videoPlayer.style.pointerEvents = 'none';
 
 // Prevent user from controlling video
 videoPlayer.addEventListener('play', (e) => {
@@ -214,9 +225,17 @@ setTimeout(() => {
   socket.emit('sync-request');
 }, 1000);
 
-// Periodic sync check
+// Frequent sync checks - every 2 seconds for tight synchronization
 setInterval(() => {
-  if (videoPlayer.src && !videoPlayer.paused) {
+  if (videoPlayer.src) {
     socket.emit('sync-request');
   }
-}, 5000);
+}, 2000);
+
+// Additional continuous monitoring for drift
+setInterval(() => {
+  if (videoPlayer.src && !videoPlayer.paused) {
+    // Monitor for any drift and request sync if detected
+    socket.emit('sync-request');
+  }
+}, 500);

@@ -300,6 +300,14 @@ io.on('connection', (socket) => {
     socket.emit('sync-state', videoState);
   });
 
+  socket.on('state-update', (data) => {
+    if (socket.id === adminSocketId) {
+      videoState.currentTime = data.currentTime;
+      videoState.playing = data.playing;
+      videoState.timestamp = Date.now();
+    }
+  });
+
   // Queue management
   socket.on('queue-add', (data) => {
     if (socket.id === adminSocketId) {
@@ -392,6 +400,13 @@ io.on('connection', (socket) => {
     io.emit('user-list', Array.from(users.values()));
   });
 });
+
+// Periodic sync broadcast to all clients - enforces tight synchronization
+setInterval(() => {
+  if (currentVideo && adminSocketId) {
+    io.emit('sync-state', videoState);
+  }
+}, 2000);
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
