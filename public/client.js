@@ -51,9 +51,9 @@ socket.on('sync-state', (state) => {
   const timeDiff = (Date.now() - state.timestamp) / 1000;
   const expectedTime = state.playing ? state.currentTime + timeDiff : state.currentTime;
 
-  // Very strict sync: sync if difference is more than 0.3 seconds
+  // Balanced sync: sync if difference is more than 1 second
   const drift = Math.abs(videoPlayer.currentTime - expectedTime);
-  if (drift > 0.3) {
+  if (drift > 1.0) {
     isSeeking = true;
     videoPlayer.currentTime = expectedTime;
 
@@ -61,10 +61,14 @@ socket.on('sync-state', (state) => {
     syncIndicator.classList.add('active');
     syncIndicator.textContent = `🔄 Synced (${drift.toFixed(2)}s)`;
     setTimeout(() => {
-      isSeeking = false;
       syncIndicator.classList.remove('active');
       syncIndicator.textContent = '🔄 Synced';
     }, 1000);
+
+    // Keep isSeeking true to prevent false warnings
+    setTimeout(() => {
+      isSeeking = false;
+    }, 2000);
   }
 
   // Force playback state sync
@@ -84,7 +88,7 @@ socket.on('play', (state) => {
   isSeeking = true;
   videoPlayer.currentTime = expectedTime;
   videoPlayer.play().catch(e => console.log('Play failed:', e));
-  setTimeout(() => isSeeking = false, 300);
+  setTimeout(() => isSeeking = false, 1000);
 });
 
 // Pause command
@@ -93,7 +97,7 @@ socket.on('pause', (state) => {
   isSeeking = true;
   videoPlayer.currentTime = state.currentTime;
   videoPlayer.pause();
-  setTimeout(() => isSeeking = false, 300);
+  setTimeout(() => isSeeking = false, 1000);
 });
 
 // Seek command
@@ -101,7 +105,7 @@ socket.on('seek', (data) => {
   if (!videoPlayer.src) return;
   isSeeking = true;
   videoPlayer.currentTime = data.time;
-  setTimeout(() => isSeeking = false, 300);
+  setTimeout(() => isSeeking = false, 1000);
 });
 
 // Disable all controls for clients - only admin can control
@@ -127,8 +131,14 @@ videoPlayer.addEventListener('pause', (e) => {
 
 videoPlayer.addEventListener('seeking', (e) => {
   if (!isSeeking) {
+    // User tried to seek manually - prevent it
+    e.preventDefault();
     socket.emit('sync-request');
-    addSystemMessage('⚠️ Only the admin can seek');
+    // Only show message occasionally to avoid spam
+    if (!window.lastSeekWarning || Date.now() - window.lastSeekWarning > 3000) {
+      addSystemMessage('⚠️ Only the admin can seek');
+      window.lastSeekWarning = Date.now();
+    }
   }
 });
 
@@ -229,29 +239,21 @@ socket.on('queue-updated', (queue) => {
 // Request initial sync
 setTimeout(() => {
   socket.emit('sync-request');
-}, 500);
+}, 1000);
 
-// Very frequent sync checks - every 1 second for tight synchronization
+// Moderate sync checks - every 2 seconds for balanced synchronization
 setInterval(() => {
   if (videoPlayer.src) {
     socket.emit('sync-request');
   }
-}, 1000);
-
-// Continuous aggressive monitoring for drift while playing
-setInterval(() => {
-  if (videoPlayer.src && !videoPlayer.paused) {
-    // Monitor for any drift and request sync if detected
-    socket.emit('sync-request');
-  }
-}, 300);
+}, 2000);
 
 // Sync watchdog - detect if sync stops
 setInterval(() => {
   const timeSinceLastSync = Date.now() - lastSyncTime;
-  if (videoPlayer.src && timeSinceLastSync > 5000) {
+  if (videoPlayer.src && timeSinceLastSync > 10000) {
     console.warn('Sync timeout - forcing re-sync');
     socket.emit('sync-request');
     addSystemMessage('⚠️ Connection issue detected, re-syncing...');
   }
-}, 3000);
+}, 5000);

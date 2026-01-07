@@ -236,7 +236,7 @@ videoPlayer.addEventListener('seeked', () => {
   }
 });
 
-// Update and broadcast current state very frequently for tight sync
+// Update and broadcast current state regularly for balanced sync
 setInterval(() => {
   if (isAdmin && videoPlayer.src) {
     currentVideoState.currentTime = videoPlayer.currentTime;
@@ -247,7 +247,7 @@ setInterval(() => {
       playing: !videoPlayer.paused
     });
   }
-}, 500);
+}, 1000);
 
 // Chat
 sendMessageBtn.addEventListener('click', sendMessage);

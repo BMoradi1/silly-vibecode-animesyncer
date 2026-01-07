@@ -401,12 +401,12 @@ io.on('connection', (socket) => {
   });
 });
 
-// Very frequent sync broadcast to all clients - enforces tight synchronization
+// Moderate sync broadcast to all clients - balanced synchronization
 setInterval(() => {
   if (currentVideo && adminSocketId) {
     io.emit('sync-state', videoState);
   }
-}, 1000);
+}, 2000);
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
