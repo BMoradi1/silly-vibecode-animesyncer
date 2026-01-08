@@ -21,6 +21,7 @@ let isSeeking = false;
 let nickname = localStorage.getItem('nickname') || `User${Math.floor(Math.random() * 1000)}`;
 let lastSyncTime = Date.now();
 let syncEnabled = true; // Track if sync mode is enabled
+let adminOnline = false; // Track if admin is online
 
 // Set initial nickname
 nicknameInput.value = nickname;
@@ -53,7 +54,7 @@ socket.on('video-changed', (video) => {
 
 // Sync state
 socket.on('sync-state', (state) => {
-  if (!videoPlayer.src || !syncEnabled) return; // Only sync when enabled
+  if (!videoPlayer.src || !syncEnabled || !adminOnline) return; // Only sync when enabled and admin online
 
   lastSyncTime = Date.now();
   const timeDiff = (Date.now() - state.timestamp) / 1000;
@@ -89,7 +90,7 @@ socket.on('sync-state', (state) => {
 
 // Play command
 socket.on('play', (state) => {
-  if (!videoPlayer.src || !syncEnabled) return;
+  if (!videoPlayer.src || !syncEnabled || !adminOnline) return;
   const timeDiff = (Date.now() - state.timestamp) / 1000;
   const expectedTime = state.currentTime + timeDiff;
 
@@ -101,7 +102,7 @@ socket.on('play', (state) => {
 
 // Pause command
 socket.on('pause', (state) => {
-  if (!videoPlayer.src || !syncEnabled) return;
+  if (!videoPlayer.src || !syncEnabled || !adminOnline) return;
   isSeeking = true;
   videoPlayer.currentTime = state.currentTime;
   videoPlayer.pause();
@@ -110,7 +111,7 @@ socket.on('pause', (state) => {
 
 // Seek command
 socket.on('seek', (data) => {
-  if (!videoPlayer.src || !syncEnabled) return;
+  if (!videoPlayer.src || !syncEnabled || !adminOnline) return;
   isSeeking = true;
   videoPlayer.currentTime = data.time;
   setTimeout(() => isSeeking = false, 1000);
@@ -181,11 +182,27 @@ function disableSyncMode() {
   addSystemMessage('🔓 Independent mode - you can select and watch videos');
 }
 
-// Initial state: sync mode enabled
-enableSyncMode();
+// Independent mode when no admin is online
+function enableIndependentMode() {
+  videoPlayer.setAttribute('controls', 'controls');
+  videoPlayer.style.pointerEvents = 'auto';
+  syncIndicator.style.display = 'none';
+  videoListSection.style.display = 'block';
+  syncStatus.textContent = '📺 No admin - Independent playback';
+  loadVideoList();
+}
 
-// Listen for sync mode changes
+// Initial state: start in independent mode, will sync when admin comes online
+enableIndependentMode();
+addSystemMessage('📺 Loading... checking for admin');
+
+// Listen for sync mode changes (only apply if admin is online)
 socket.on('sync-mode-changed', (data) => {
+  syncEnabled = data.syncEnabled;
+  if (!adminOnline) {
+    // No admin - stay in independent mode regardless of sync setting
+    return;
+  }
   if (data.syncEnabled) {
     enableSyncMode();
   } else {
@@ -193,9 +210,9 @@ socket.on('sync-mode-changed', (data) => {
   }
 });
 
-// Prevent user from controlling video (only when sync is enabled)
+// Prevent user from controlling video (only when sync is enabled AND admin is online)
 videoPlayer.addEventListener('play', (e) => {
-  if (syncEnabled && !isSeeking) {
+  if (syncEnabled && adminOnline && !isSeeking) {
     e.preventDefault();
     videoPlayer.pause();
     addSystemMessage('⚠️ Only the admin can control playback');
@@ -203,7 +220,7 @@ videoPlayer.addEventListener('play', (e) => {
 });
 
 videoPlayer.addEventListener('pause', (e) => {
-  if (syncEnabled && !isSeeking && !videoPlayer.ended) {
+  if (syncEnabled && adminOnline && !isSeeking && !videoPlayer.ended) {
     e.preventDefault();
     videoPlayer.play().catch(() => {});
     addSystemMessage('⚠️ Only the admin can control playback');
@@ -211,7 +228,7 @@ videoPlayer.addEventListener('pause', (e) => {
 });
 
 videoPlayer.addEventListener('seeking', (e) => {
-  if (syncEnabled && !isSeeking) {
+  if (syncEnabled && adminOnline && !isSeeking) {
     // User tried to seek manually - prevent it
     e.preventDefault();
     socket.emit('sync-request');
@@ -276,12 +293,25 @@ socket.on('user-list', (users) => {
   userCountSpan.textContent = `${users.length} user${users.length !== 1 ? 's' : ''} online`;
 
   usersListDiv.innerHTML = '';
+  const wasAdminOnline = adminOnline;
+  adminOnline = users.some(user => user.role === 'admin');
+
   users.forEach(user => {
     const userDiv = document.createElement('div');
     userDiv.className = `user-item ${user.role === 'admin' ? 'admin' : ''}`;
     userDiv.textContent = user.nickname + (user.role === 'admin' ? ' 👑' : '');
     usersListDiv.appendChild(userDiv);
   });
+
+  // Auto-switch to independent mode when no admin is online
+  if (!adminOnline && wasAdminOnline !== adminOnline) {
+    enableIndependentMode();
+    addSystemMessage('📺 No admin online - you can watch independently!');
+  } else if (adminOnline && !wasAdminOnline && syncEnabled) {
+    // Admin came online and sync is enabled, switch back to sync mode
+    enableSyncMode();
+    addSystemMessage('👑 Admin is online - synced playback enabled');
+  }
 });
 
 // Queue display
@@ -319,21 +349,21 @@ socket.on('queue-updated', (queue) => {
 
 // Request initial sync
 setTimeout(() => {
-  if (syncEnabled) {
+  if (syncEnabled && adminOnline) {
     socket.emit('sync-request');
   }
 }, 1000);
 
 // Moderate sync checks - every 2 seconds for balanced synchronization
 setInterval(() => {
-  if (videoPlayer.src && syncEnabled) {
+  if (videoPlayer.src && syncEnabled && adminOnline) {
     socket.emit('sync-request');
   }
 }, 2000);
 
 // Sync watchdog - detect if sync stops
 setInterval(() => {
-  if (!syncEnabled) return; // Skip watchdog when sync disabled
+  if (!syncEnabled || !adminOnline) return; // Skip watchdog when sync disabled or no admin
 
   const timeSinceLastSync = Date.now() - lastSyncTime;
   if (videoPlayer.src && timeSinceLastSync > 10000) {
