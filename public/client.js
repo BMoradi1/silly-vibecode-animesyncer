@@ -13,6 +13,9 @@ const usersListDiv = document.getElementById('usersList');
 const queueDisplay = document.getElementById('queueDisplay');
 const emptyQueueClient = document.getElementById('emptyQueueClient');
 const syncIndicator = document.getElementById('syncIndicator');
+const videoListSection = document.getElementById('videoListSection');
+const videoListClient = document.getElementById('videoListClient');
+const syncStatus = document.getElementById('syncStatus');
 
 let isSeeking = false;
 let nickname = localStorage.getItem('nickname') || `User${Math.floor(Math.random() * 1000)}`;
@@ -113,12 +116,57 @@ socket.on('seek', (data) => {
   setTimeout(() => isSeeking = false, 1000);
 });
 
+// Load video list for independent watching
+function loadVideoList() {
+  fetch('/videos')
+    .then(response => response.json())
+    .then(data => {
+      videoListClient.innerHTML = '';
+      if (data.videos.length === 0) {
+        videoListClient.innerHTML = '<p style="color: #999; padding: 10px;">No videos available</p>';
+        return;
+      }
+      data.videos.forEach(video => {
+        const videoItem = document.createElement('div');
+        videoItem.className = 'video-item-client';
+        videoItem.textContent = video.filename;
+        videoItem.addEventListener('click', () => {
+          selectVideoIndependently(video);
+        });
+        videoListClient.appendChild(videoItem);
+      });
+    })
+    .catch(error => {
+      console.error('Error loading videos:', error);
+    });
+}
+
+// Select video independently (when sync is disabled)
+function selectVideoIndependently(video) {
+  videoPlayer.src = video.path;
+  videoPlayer.classList.add('active');
+  noVideoDiv.style.display = 'none';
+  videoTitle.textContent = video.filename;
+  currentVideoFilename = video.filename;
+  addSystemMessage(`Now watching: ${video.filename}`);
+
+  // Highlight selected video
+  document.querySelectorAll('.video-item-client').forEach(item => {
+    item.classList.remove('active');
+    if (item.textContent === video.filename) {
+      item.classList.add('active');
+    }
+  });
+}
+
 // Functions to toggle sync mode
 function enableSyncMode() {
   syncEnabled = true;
   videoPlayer.removeAttribute('controls');
   videoPlayer.style.pointerEvents = 'none';
   syncIndicator.style.display = 'block';
+  videoListSection.style.display = 'none';
+  syncStatus.textContent = '🔒 Admin-controlled playback';
   addSystemMessage('🔒 Sync mode enabled - following admin playback');
 }
 
@@ -127,7 +175,10 @@ function disableSyncMode() {
   videoPlayer.setAttribute('controls', 'controls');
   videoPlayer.style.pointerEvents = 'auto';
   syncIndicator.style.display = 'none';
-  addSystemMessage('🔓 Independent mode - you can control playback');
+  videoListSection.style.display = 'block';
+  syncStatus.textContent = '🔓 Independent playback';
+  loadVideoList(); // Load video list for selection
+  addSystemMessage('🔓 Independent mode - you can select and watch videos');
 }
 
 // Initial state: sync mode enabled
