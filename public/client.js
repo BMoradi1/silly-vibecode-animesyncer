@@ -163,8 +163,8 @@ function selectVideoIndependently(video) {
 // Functions to toggle sync mode
 function enableSyncMode() {
   syncEnabled = true;
-  videoPlayer.removeAttribute('controls');
-  videoPlayer.style.pointerEvents = 'none';
+  videoPlayer.setAttribute('controls', 'controls'); // Keep controls for fullscreen
+  videoPlayer.style.pointerEvents = 'auto'; // Allow interaction (event listeners block play/pause/seek)
   syncIndicator.style.display = 'block';
   videoListSection.style.display = 'none';
   syncStatus.textContent = '🔒 Admin-controlled playback';

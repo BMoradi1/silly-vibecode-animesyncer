@@ -2,15 +2,20 @@
 #  I REPEAT. THIS IS A PURPOSE GENERATED AI SLOP PROJECT FOR A USE CASE
 #  FULLY AI GENERATED. LIKELY INSECURE. USE AT OWN RISK
 
-A synchronized video streaming web application that allows multiple users to watch anime episodes together in real-time. Perfect for watch parties, study groups, or hanging out with friends online!
+A synchronized video streaming web application that allows multiple users to watch anime episodes together in real-time. Perfect for anime clubs, watch parties, or async viewing during the week!
 
 ## Features
 
-- **Synchronized Playback**: All users watch the video in perfect sync
-- **Admin Controls**: Admin can select videos, play, pause, and seek
+- **Synchronized Playback**: All users watch the video in perfect sync when admin is online
+- **Independent Watching**: Users can watch on their own when no admin is present
+- **Admin Controls**: Admin can select videos, play, pause, seek, and toggle sync mode
+- **Video Queue**: Build a playlist of videos to watch in order
+- **User Registration & Login**: Track individual watch progress
+- **Watch Progress Tracking**: Automatically saves how much of each video users have watched
+- **Admin Reports**: View statistics by video or by user (sync vs async watches, completion %)
 - **Real-time Chat**: Built-in chat to discuss the episode
 - **User Management**: See who's watching with you
-- **Video Upload**: Upload your own video files
+- **Video Upload**: Upload your own video files (auto-transcodes MKV/AVI to MP4)
 - **Responsive Design**: Works on desktop and mobile browsers
 
 ## Requirements
@@ -121,13 +126,18 @@ Then open:
 2. Upload a video file or select from existing videos
 3. Use the playback controls to play, pause, or seek
 4. The video will automatically sync to all connected clients
+5. Use the sync toggle to allow/disallow independent watching
+6. Add videos to the queue for continuous playback
+7. View reports at `http://your-server/reports` (admin-only)
 
 ### For Users:
 
 1. Go to `http://your-server/`
-2. Enter a nickname (optional)
-3. Wait for the admin to start the video
-4. Enjoy watching together and chat!
+2. Register/login at `http://your-server/login` to track your watch progress
+3. Enter a nickname for chat
+4. **When admin is online**: Watch synced with everyone else
+5. **When no admin is online**: Select any video and watch independently
+6. Your watch progress is automatically saved (if logged in)
 
 ## Configuration
 
@@ -202,8 +212,9 @@ Change the port in `/etc/systemd/system/anime-syncer.service` and restart.
 
 ## Security Considerations
 
-- This app has no authentication by default - anyone can access it
-- Consider adding authentication if exposing to the internet
+- User registration is available but not required to watch
+- Admin panel has no password - anyone who accesses `/admin` becomes admin
+- Reports are restricted to admin-only access
 - Use HTTPS in production (certbot/Let's Encrypt)
 - Restrict upload access if needed
 - Keep Node.js and dependencies updated
@@ -226,4 +237,7 @@ MIT License - feel free to use and modify!
 Built with:
 - Node.js & Express
 - Socket.IO for WebSocket communication
+- SQLite (better-sqlite3) for database
+- bcrypt for password hashing
+- FFmpeg for video transcoding
 - Vanilla JavaScript (no frameworks!)
