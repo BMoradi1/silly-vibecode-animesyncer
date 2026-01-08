@@ -5,12 +5,41 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
+const bcrypt = require('bcrypt');
+const session = require('express-session');
+const Database = require('better-sqlite3');
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
 const PORT = process.env.PORT || 3000;
+
+// Initialize database
+const db = new Database('animeclub.db');
+
+// Create tables
+db.exec(`
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+
+  CREATE TABLE IF NOT EXISTS watch_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    video_filename TEXT NOT NULL,
+    watch_percentage REAL DEFAULT 0,
+    is_sync_session INTEGER DEFAULT 0,
+    watched_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_watch_logs_user ON watch_logs(user_id);
+  CREATE INDEX IF NOT EXISTS idx_watch_logs_video ON watch_logs(video_filename);
+`);
 
 // Ensure uploads directory exists
 const uploadsDir = path.join(__dirname, 'uploads');
@@ -91,6 +120,14 @@ function transcodeVideo(inputPath, outputPath, socketId, originalName) {
   });
 }
 
+// Session middleware
+app.use(session({
+  secret: 'anime-club-secret-key-change-in-production',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false, maxAge: 7 * 24 * 60 * 60 * 1000 } // 7 days
+}));
+
 // Serve static files
 app.use(express.static('public'));
 app.use('/uploads', express.static('uploads'));
@@ -105,6 +142,7 @@ let videoState = {
   timestamp: Date.now()
 };
 let users = new Map();
+let syncEnabled = true; // Forced sync toggle
 
 // Watch queue (playlist)
 let watchQueue = [];
@@ -117,6 +155,14 @@ app.get('/', (req, res) => {
 
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+app.get('/reports', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'reports.html'));
 });
 
 app.post('/upload', upload.single('video'), async (req, res) => {
@@ -234,6 +280,206 @@ app.post('/queue/clear', (req, res) => {
   res.json({ success: true, queue: watchQueue });
 });
 
+// Authentication endpoints
+app.post('/register', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password required' });
+    }
+
+    if (password.length < 4) {
+      return res.status(400).json({ error: 'Password must be at least 4 characters' });
+    }
+
+    // Hash password
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    // Insert user
+    const stmt = db.prepare('INSERT INTO users (username, password_hash) VALUES (?, ?)');
+    const result = stmt.run(username, passwordHash);
+
+    req.session.userId = result.lastInsertRowid;
+    req.session.username = username;
+
+    res.json({ success: true, username });
+  } catch (error) {
+    if (error.code === 'SQLITE_CONSTRAINT') {
+      res.status(400).json({ error: 'Username already exists' });
+    } else {
+      console.error('Registration error:', error);
+      res.status(500).json({ error: 'Registration failed' });
+    }
+  }
+});
+
+app.post('/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password required' });
+    }
+
+    // Find user
+    const stmt = db.prepare('SELECT * FROM users WHERE username = ?');
+    const user = stmt.get(username);
+
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid username or password' });
+    }
+
+    // Verify password
+    const match = await bcrypt.compare(password, user.password_hash);
+
+    if (!match) {
+      return res.status(401).json({ error: 'Invalid username or password' });
+    }
+
+    req.session.userId = user.id;
+    req.session.username = user.username;
+
+    res.json({ success: true, username: user.username });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Login failed' });
+  }
+});
+
+app.post('/logout', (req, res) => {
+  req.session.destroy();
+  res.json({ success: true });
+});
+
+app.get('/current-user', (req, res) => {
+  if (req.session.userId) {
+    res.json({
+      loggedIn: true,
+      username: req.session.username,
+      userId: req.session.userId
+    });
+  } else {
+    res.json({ loggedIn: false });
+  }
+});
+
+// Sync toggle endpoint
+app.post('/sync-toggle', (req, res) => {
+  const { enabled } = req.body;
+  syncEnabled = enabled;
+  io.emit('sync-mode-changed', { syncEnabled });
+  res.json({ success: true, syncEnabled });
+});
+
+app.get('/sync-status', (req, res) => {
+  res.json({ syncEnabled });
+});
+
+// Watch progress endpoints
+app.post('/watch-progress', (req, res) => {
+  if (!req.session.userId) {
+    return res.status(401).json({ error: 'Not logged in' });
+  }
+
+  const { videoFilename, watchPercentage, isSyncSession } = req.body;
+
+  if (!videoFilename || watchPercentage === undefined) {
+    return res.status(400).json({ error: 'Video filename and watch percentage required' });
+  }
+
+  try {
+    // Check if there's an existing log for this user and video
+    const existing = db.prepare(
+      'SELECT id FROM watch_logs WHERE user_id = ? AND video_filename = ? ORDER BY watched_at DESC LIMIT 1'
+    ).get(req.session.userId, videoFilename);
+
+    if (existing) {
+      // Update existing log
+      db.prepare(
+        'UPDATE watch_logs SET watch_percentage = ?, is_sync_session = ?, watched_at = CURRENT_TIMESTAMP WHERE id = ?'
+      ).run(watchPercentage, isSyncSession ? 1 : 0, existing.id);
+    } else {
+      // Insert new log
+      db.prepare(
+        'INSERT INTO watch_logs (user_id, video_filename, watch_percentage, is_sync_session) VALUES (?, ?, ?, ?)'
+      ).run(req.session.userId, videoFilename, watchPercentage, isSyncSession ? 1 : 0);
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Watch progress error:', error);
+    res.status(500).json({ error: 'Failed to save watch progress' });
+  }
+});
+
+// Reports endpoints
+app.get('/reports/by-video', (req, res) => {
+  try {
+    const reports = db.prepare(`
+      SELECT
+        video_filename,
+        COUNT(DISTINCT user_id) as unique_viewers,
+        AVG(watch_percentage) as avg_percentage,
+        MAX(watch_percentage) as max_percentage,
+        SUM(is_sync_session) as sync_watches,
+        COUNT(*) - SUM(is_sync_session) as async_watches
+      FROM watch_logs
+      GROUP BY video_filename
+      ORDER BY unique_viewers DESC
+    `).all();
+
+    res.json({ reports });
+  } catch (error) {
+    console.error('Reports error:', error);
+    res.status(500).json({ error: 'Failed to fetch reports' });
+  }
+});
+
+app.get('/reports/by-user', (req, res) => {
+  try {
+    const reports = db.prepare(`
+      SELECT
+        u.username,
+        COUNT(DISTINCT w.video_filename) as videos_watched,
+        AVG(w.watch_percentage) as avg_percentage,
+        SUM(w.is_sync_session) as sync_watches,
+        COUNT(*) - SUM(w.is_sync_session) as async_watches
+      FROM users u
+      LEFT JOIN watch_logs w ON u.id = w.user_id
+      GROUP BY u.id, u.username
+      ORDER BY videos_watched DESC
+    `).all();
+
+    res.json({ reports });
+  } catch (error) {
+    console.error('Reports error:', error);
+    res.status(500).json({ error: 'Failed to fetch reports' });
+  }
+});
+
+app.get('/reports/video-details/:filename', (req, res) => {
+  try {
+    const { filename } = req.params;
+    const details = db.prepare(`
+      SELECT
+        u.username,
+        w.watch_percentage,
+        w.is_sync_session,
+        w.watched_at
+      FROM watch_logs w
+      JOIN users u ON w.user_id = u.id
+      WHERE w.video_filename = ?
+      ORDER BY w.watched_at DESC
+    `).all(filename);
+
+    res.json({ details });
+  } catch (error) {
+    console.error('Video details error:', error);
+    res.status(500).json({ error: 'Failed to fetch video details' });
+  }
+});
+
 // Socket.IO
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
@@ -257,6 +503,7 @@ io.on('connection', (socket) => {
       socket.emit('sync-state', videoState);
     }
     socket.emit('queue-updated', watchQueue);
+    socket.emit('sync-mode-changed', { syncEnabled });
   });
 
   // Admin controls

@@ -468,6 +468,43 @@ button:hover {
   font-size: 13px;
 }
 
+/* Settings section */
+.settings-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.settings-section h3 {
+  margin-bottom: 15px;
+  color: #667eea;
+}
+
+.setting-item {
+  margin-bottom: 15px;
+}
+
+.setting-item label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.setting-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.setting-description {
+  margin-top: 5px;
+  margin-left: 30px;
+  font-size: 13px;
+  color: #666;
+}
+
 @media (max-width: 968px) {
   .main-content {
     grid-template-columns: 1fr;

@@ -17,6 +17,7 @@ const syncIndicator = document.getElementById('syncIndicator');
 let isSeeking = false;
 let nickname = localStorage.getItem('nickname') || `User${Math.floor(Math.random() * 1000)}`;
 let lastSyncTime = Date.now();
+let syncEnabled = true; // Track if sync mode is enabled
 
 // Set initial nickname
 nicknameInput.value = nickname;
@@ -32,6 +33,9 @@ setNicknameBtn.addEventListener('click', () => {
   addSystemMessage(`You are now known as ${nickname}`);
 });
 
+// Watch progress tracking
+let currentVideoFilename = null;
+
 // Video changed
 socket.on('video-changed', (video) => {
   if (video) {
@@ -39,13 +43,14 @@ socket.on('video-changed', (video) => {
     videoPlayer.classList.add('active');
     noVideoDiv.style.display = 'none';
     videoTitle.textContent = video.originalname || video.filename;
+    currentVideoFilename = video.filename; // Track for watch progress
     addSystemMessage(`New video loaded: ${video.originalname || video.filename}`);
   }
 });
 
 // Sync state
 socket.on('sync-state', (state) => {
-  if (!videoPlayer.src) return;
+  if (!videoPlayer.src || !syncEnabled) return; // Only sync when enabled
 
   lastSyncTime = Date.now();
   const timeDiff = (Date.now() - state.timestamp) / 1000;
@@ -81,7 +86,7 @@ socket.on('sync-state', (state) => {
 
 // Play command
 socket.on('play', (state) => {
-  if (!videoPlayer.src) return;
+  if (!videoPlayer.src || !syncEnabled) return;
   const timeDiff = (Date.now() - state.timestamp) / 1000;
   const expectedTime = state.currentTime + timeDiff;
 
@@ -93,7 +98,7 @@ socket.on('play', (state) => {
 
 // Pause command
 socket.on('pause', (state) => {
-  if (!videoPlayer.src) return;
+  if (!videoPlayer.src || !syncEnabled) return;
   isSeeking = true;
   videoPlayer.currentTime = state.currentTime;
   videoPlayer.pause();
@@ -102,19 +107,44 @@ socket.on('pause', (state) => {
 
 // Seek command
 socket.on('seek', (data) => {
-  if (!videoPlayer.src) return;
+  if (!videoPlayer.src || !syncEnabled) return;
   isSeeking = true;
   videoPlayer.currentTime = data.time;
   setTimeout(() => isSeeking = false, 1000);
 });
 
-// Disable all controls for clients - only admin can control
-videoPlayer.removeAttribute('controls');
-videoPlayer.style.pointerEvents = 'none';
+// Functions to toggle sync mode
+function enableSyncMode() {
+  syncEnabled = true;
+  videoPlayer.removeAttribute('controls');
+  videoPlayer.style.pointerEvents = 'none';
+  syncIndicator.style.display = 'block';
+  addSystemMessage('🔒 Sync mode enabled - following admin playback');
+}
 
-// Prevent user from controlling video
+function disableSyncMode() {
+  syncEnabled = false;
+  videoPlayer.setAttribute('controls', 'controls');
+  videoPlayer.style.pointerEvents = 'auto';
+  syncIndicator.style.display = 'none';
+  addSystemMessage('🔓 Independent mode - you can control playback');
+}
+
+// Initial state: sync mode enabled
+enableSyncMode();
+
+// Listen for sync mode changes
+socket.on('sync-mode-changed', (data) => {
+  if (data.syncEnabled) {
+    enableSyncMode();
+  } else {
+    disableSyncMode();
+  }
+});
+
+// Prevent user from controlling video (only when sync is enabled)
 videoPlayer.addEventListener('play', (e) => {
-  if (!isSeeking) {
+  if (syncEnabled && !isSeeking) {
     e.preventDefault();
     videoPlayer.pause();
     addSystemMessage('⚠️ Only the admin can control playback');
@@ -122,7 +152,7 @@ videoPlayer.addEventListener('play', (e) => {
 });
 
 videoPlayer.addEventListener('pause', (e) => {
-  if (!isSeeking && !videoPlayer.ended) {
+  if (syncEnabled && !isSeeking && !videoPlayer.ended) {
     e.preventDefault();
     videoPlayer.play().catch(() => {});
     addSystemMessage('⚠️ Only the admin can control playback');
@@ -130,7 +160,7 @@ videoPlayer.addEventListener('pause', (e) => {
 });
 
 videoPlayer.addEventListener('seeking', (e) => {
-  if (!isSeeking) {
+  if (syncEnabled && !isSeeking) {
     // User tried to seek manually - prevent it
     e.preventDefault();
     socket.emit('sync-request');
@@ -238,18 +268,22 @@ socket.on('queue-updated', (queue) => {
 
 // Request initial sync
 setTimeout(() => {
-  socket.emit('sync-request');
+  if (syncEnabled) {
+    socket.emit('sync-request');
+  }
 }, 1000);
 
 // Moderate sync checks - every 2 seconds for balanced synchronization
 setInterval(() => {
-  if (videoPlayer.src) {
+  if (videoPlayer.src && syncEnabled) {
     socket.emit('sync-request');
   }
 }, 2000);
 
 // Sync watchdog - detect if sync stops
 setInterval(() => {
+  if (!syncEnabled) return; // Skip watchdog when sync disabled
+
   const timeSinceLastSync = Date.now() - lastSyncTime;
   if (videoPlayer.src && timeSinceLastSync > 10000) {
     console.warn('Sync timeout - forcing re-sync');
@@ -257,3 +291,41 @@ setInterval(() => {
     addSystemMessage('⚠️ Connection issue detected, re-syncing...');
   }
 }, 5000);
+
+// Save watch progress every 30 seconds
+setInterval(() => {
+  if (videoPlayer.src && currentVideoFilename && videoPlayer.duration) {
+    const watchPercentage = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+    const isSyncSession = syncEnabled;
+
+    fetch('/watch-progress', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        videoFilename: currentVideoFilename,
+        watchPercentage: Math.round(watchPercentage),
+        isSyncSession
+      })
+    }).catch(err => {
+      // Silently fail - user might not be logged in
+      console.log('Watch progress not saved (user not logged in?)');
+    });
+  }
+}, 30000);
+
+// Save progress when video ends
+videoPlayer.addEventListener('ended', () => {
+  if (currentVideoFilename) {
+    fetch('/watch-progress', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        videoFilename: currentVideoFilename,
+        watchPercentage: 100,
+        isSyncSession: syncEnabled
+      })
+    }).catch(err => {
+      console.log('Watch progress not saved (user not logged in?)');
+    });
+  }
+});

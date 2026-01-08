@@ -19,6 +19,7 @@ const queueList = document.getElementById('queueList');
 const emptyQueue = document.getElementById('emptyQueue');
 const playNextBtn = document.getElementById('playNextBtn');
 const clearQueueBtn = document.getElementById('clearQueueBtn');
+const syncToggle = document.getElementById('syncToggle');
 
 let isAdmin = false;
 let currentVideoState = {
@@ -373,3 +374,30 @@ videoPlayer.addEventListener('ended', () => {
     socket.emit('video-ended');
   }
 });
+
+// Sync toggle
+syncToggle.addEventListener('change', () => {
+  const enabled = syncToggle.checked;
+  fetch('/sync-toggle', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ enabled })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      addSystemMessage(enabled ? '🔒 Sync mode enabled - clients will follow your playback' : '🔓 Sync mode disabled - users can watch independently');
+    }
+  })
+  .catch(error => {
+    console.error('Sync toggle error:', error);
+    syncToggle.checked = !enabled; // Revert on error
+  });
+});
+
+// Load initial sync status
+fetch('/sync-status')
+  .then(response => response.json())
+  .then(data => {
+    syncToggle.checked = data.syncEnabled;
+  });

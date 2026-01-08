@@ -7,13 +7,21 @@
     "start": "node server.js",
     "dev": "node server.js"
   },
-  "keywords": ["video", "sync", "streaming", "anime"],
+  "keywords": [
+    "video",
+    "sync",
+    "streaming",
+    "anime"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^12.5.0",
     "express": "^4.18.2",
-    "socket.io": "^4.6.1",
+    "express-session": "^1.18.2",
+    "fluent-ffmpeg": "^2.1.2",
     "multer": "^1.4.5-lts.1",
-    "fluent-ffmpeg": "^2.1.2"
+    "socket.io": "^4.6.1"
   }
 }

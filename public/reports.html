@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anime Club - Reports</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .reports-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+
+    .reports-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .reports-header h1 {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 10px;
+    }
+
+    .nav-links a {
+      padding: 8px 16px;
+      background: #667eea;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+
+    .nav-links a:hover {
+      background: #764ba2;
+    }
+
+    .report-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .report-tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-size: 16px;
+      color: #666;
+      transition: all 0.3s;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+    }
+
+    .report-tab.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+
+    .report-section {
+      display: none;
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .report-section.active {
+      display: block;
+    }
+
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .report-table th,
+    .report-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .report-table th {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-weight: 600;
+    }
+
+    .report-table tr:hover {
+      background: #f5f5f5;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background: #e0e0e0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transition: width 0.3s;
+    }
+
+    .badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-sync {
+      background: #4facfe;
+      color: white;
+    }
+
+    .badge-async {
+      background: #f093fb;
+      color: white;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+    }
+
+    .user-auth-notice {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 20px;
+      color: #856404;
+    }
+
+    .user-auth-notice a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .user-auth-notice a:hover {
+      text-decoration: underline;
+    }
+
+    .user-info {
+      background: #e3f2fd;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .user-info-text {
+      color: #1976d2;
+      font-weight: 600;
+    }
+
+    .logout-btn {
+      padding: 8px 16px;
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: #ff5252;
+    }
+  </style>
+</head>
+<body>
+  <div class="reports-container">
+    <div class="reports-header">
+      <h1>📊 Anime Club Reports</h1>
+      <div class="nav-links">
+        <a href="/">Viewer</a>
+        <a href="/admin">Admin</a>
+      </div>
+    </div>
+
+    <div id="userAuthNotice" class="user-auth-notice" style="display: none;">
+      Please <a href="/login?redirect=/reports">login</a> to track your watch progress.
+    </div>
+
+    <div id="userInfo" class="user-info" style="display: none;">
+      <span class="user-info-text">Logged in as: <span id="currentUsername"></span></span>
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    </div>
+
+    <div class="report-tabs">
+      <button class="report-tab active" data-tab="by-video">By Video</button>
+      <button class="report-tab" data-tab="by-user">By User</button>
+    </div>
+
+    <div id="byVideoReport" class="report-section active">
+      <h2>Video Watch Statistics</h2>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>Video</th>
+            <th>Unique Viewers</th>
+            <th>Avg Completion</th>
+            <th>Max Completion</th>
+            <th>Sync Watches</th>
+            <th>Async Watches</th>
+          </tr>
+        </thead>
+        <tbody id="videoReportBody">
+          <tr>
+            <td colspan="6" class="empty-state">Loading...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="byUserReport" class="report-section">
+      <h2>User Watch Statistics</h2>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Videos Watched</th>
+            <th>Avg Completion</th>
+            <th>Sync Watches</th>
+            <th>Async Watches</th>
+          </tr>
+        </thead>
+        <tbody id="userReportBody">
+          <tr>
+            <td colspan="5" class="empty-state">Loading...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="reports.js"></script>
+</body>
+</html>
