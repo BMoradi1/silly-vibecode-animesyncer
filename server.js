@@ -154,6 +154,8 @@ app.get('/', (req, res) => {
 });
 
 app.get('/admin', (req, res) => {
+  // Mark this session as admin
+  req.session.isAdmin = true;
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
@@ -162,6 +164,10 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/reports', (req, res) => {
+  // Only allow admin access to reports
+  if (!req.session.isAdmin) {
+    return res.status(403).send('Access denied. Admin only.');
+  }
   res.sendFile(path.join(__dirname, 'public', 'reports.html'));
 });
 
@@ -413,8 +419,16 @@ app.post('/watch-progress', (req, res) => {
   }
 });
 
-// Reports endpoints
-app.get('/reports/by-video', (req, res) => {
+// Admin-only middleware for reports
+function requireAdmin(req, res, next) {
+  if (!req.session.isAdmin) {
+    return res.status(403).json({ error: 'Access denied. Admin only.' });
+  }
+  next();
+}
+
+// Reports endpoints (admin-only)
+app.get('/reports/by-video', requireAdmin, (req, res) => {
   try {
     const reports = db.prepare(`
       SELECT
@@ -436,7 +450,7 @@ app.get('/reports/by-video', (req, res) => {
   }
 });
 
-app.get('/reports/by-user', (req, res) => {
+app.get('/reports/by-user', requireAdmin, (req, res) => {
   try {
     const reports = db.prepare(`
       SELECT
@@ -458,7 +472,7 @@ app.get('/reports/by-user', (req, res) => {
   }
 });
 
-app.get('/reports/video-details/:filename', (req, res) => {
+app.get('/reports/video-details/:filename', requireAdmin, (req, res) => {
   try {
     const { filename } = req.params;
     const details = db.prepare(`
