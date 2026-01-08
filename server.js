@@ -187,6 +187,7 @@ app.post('/upload', upload.single('video'), async (req, res) => {
     if (needsTranscoding) {
       // Transcode to MP4
       const outputFilename = req.file.filename.replace(ext, '.mp4');
+      const inputPath = path.join(uploadsDir, req.file.filename);
       const outputPath = path.join(uploadsDir, outputFilename);
 
       res.json({
@@ -196,7 +197,7 @@ app.post('/upload', upload.single('video'), async (req, res) => {
       });
 
       // Transcode in background
-      transcodeVideo(req.file.path, outputPath, socketId, req.file.originalname)
+      transcodeVideo(inputPath, outputPath, socketId, req.file.originalname)
         .then(() => {
           currentVideo = {
             filename: outputFilename,
