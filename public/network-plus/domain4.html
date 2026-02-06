@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Domain 4: Network Security &mdash; CompTIA Network+ N10-009 Study Guide</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-domain="4">
+
+  <nav class="topnav">
+    <a href="index.html" class="topnav-brand">Network+ N10-009 <span>Study Guide</span></a>
+    <button class="hamburger" aria-label="Menu">&#9776;</button>
+    <ul class="topnav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="domain1.html">1. Concepts</a></li>
+      <li><a href="domain2.html">2. Implementation</a></li>
+      <li><a href="domain3.html">3. Operations</a></li>
+      <li><a href="domain4.html" class="active">4. Security</a></li>
+      <li><a href="domain5.html">5. Troubleshooting</a></li>
+    </ul>
+  </nav>
+
+  <div class="domain-page">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="domain-sidebar">
+      <div class="sidebar-title">Domain 4 &mdash; Security</div>
+      <ul class="sidebar-nav">
+        <li><a href="#concepts">Security Concepts</a></li>
+        <li><a href="#attacks">Common Network Attacks</a></li>
+        <li><a href="#hardening">Network Hardening</a></li>
+        <li><a href="#firewalls">Firewalls &amp; ACLs</a></li>
+        <li><a href="#vpn">VPN &amp; Remote Access</a></li>
+        <li><a href="#physical">Physical Security &amp; Monitoring</a></li>
+        <li><a href="#quiz">Domain 4 Quiz</a></li>
+      </ul>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="domain-content">
+
+      <div class="progress-section">
+        <h3>Domain 4 Progress</h3>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" style="width: 0%"></div>
+        </div>
+        <p class="progress-text">0 of 6 sections completed (0%)</p>
+      </div>
+
+      <!-- ============================================================
+           SECTION 1 — SECURITY CONCEPTS
+           ============================================================ -->
+      <div class="content-section" id="concepts">
+        <h2>4.1 Security Concepts</h2>
+
+        <p>Network security begins with a solid understanding of foundational principles. These concepts guide every security decision you make, from designing network architectures to choosing authentication methods.</p>
+
+        <h3>The CIA Triad</h3>
+        <p>The CIA triad represents the three core objectives of information security. Every security control you implement maps back to at least one of these goals.</p>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Principle</th><th>Goal</th><th>Example Controls</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Confidentiality</strong></td>
+                <td>Ensure data is accessible only to authorized parties</td>
+                <td>Encryption, access controls, VPNs, file permissions</td>
+              </tr>
+              <tr>
+                <td><strong>Integrity</strong></td>
+                <td>Ensure data has not been altered or tampered with</td>
+                <td>Hashing (SHA-256), digital signatures, checksums, version control</td>
+              </tr>
+              <tr>
+                <td><strong>Availability</strong></td>
+                <td>Ensure systems and data are accessible when needed</td>
+                <td>Redundancy, load balancing, backups, fault tolerance, UPS</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box note">
+          <strong>Exam Tip</strong>
+          The exam loves scenario questions about the CIA triad. If a question describes encrypting data, it targets <em>confidentiality</em>. If it asks about verifying data hasn't changed, that's <em>integrity</em>. If it asks about uptime or failover, think <em>availability</em>.
+        </div>
+
+        <h3>AAA Framework</h3>
+        <p>AAA stands for <strong>Authentication, Authorization, and Accounting</strong>. It is the backbone of network access control.</p>
+        <ul>
+          <li><strong>Authentication</strong> &mdash; Verifying the identity of a user, device, or system. "Who are you?" Accomplished through usernames/passwords, certificates, biometrics, or tokens.</li>
+          <li><strong>Authorization</strong> &mdash; Determining what an authenticated user is allowed to do. "What can you access?" Controlled through permissions, group policies, and access control lists.</li>
+          <li><strong>Accounting</strong> &mdash; Tracking and logging what authenticated users do on the network. "What did you do?" Provides audit trails through logs, session tracking, and usage records.</li>
+        </ul>
+
+        <p>Common AAA protocols include:</p>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Protocol</th><th>Port(s)</th><th>Key Details</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>RADIUS</strong></td>
+                <td>UDP 1812/1813</td>
+                <td>Encrypts only the password; widely used for network access (Wi-Fi, VPN). Combines authentication and authorization in one step.</td>
+              </tr>
+              <tr>
+                <td><strong>TACACS+</strong></td>
+                <td>TCP 49</td>
+                <td>Encrypts the entire packet; separates authentication, authorization, and accounting. Cisco-developed. Preferred for device administration.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Multifactor Authentication (MFA)</h3>
+        <p>MFA requires two or more <em>different types</em> of authentication factors. Using two passwords is NOT multifactor because they are both the same factor type.</p>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Factor Type</th><th>Description</th><th>Examples</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Something you know</strong></td>
+                <td>Knowledge-based secret</td>
+                <td>Password, PIN, security question</td>
+              </tr>
+              <tr>
+                <td><strong>Something you have</strong></td>
+                <td>Physical possession</td>
+                <td>Smart card, hardware token, authenticator app, phone (SMS code)</td>
+              </tr>
+              <tr>
+                <td><strong>Something you are</strong></td>
+                <td>Biometric trait</td>
+                <td>Fingerprint, retina scan, facial recognition, voice print</td>
+              </tr>
+              <tr>
+                <td><strong>Somewhere you are</strong></td>
+                <td>Location-based</td>
+                <td>GPS location, IP address geolocation</td>
+              </tr>
+              <tr>
+                <td><strong>Something you do</strong></td>
+                <td>Behavioral biometric</td>
+                <td>Typing pattern, gait analysis, signature dynamics</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box warning">
+          <strong>Common Exam Trap</strong>
+          A username + password + PIN is NOT multifactor authentication. Both the password and the PIN are "something you know." True MFA requires factors from <em>different categories</em> (e.g., a password + a fingerprint).
+        </div>
+
+        <h3>Zero Trust Model</h3>
+        <p>The zero trust security model operates on the principle of <strong>"never trust, always verify."</strong> Unlike traditional perimeter-based security, zero trust assumes that threats may exist both inside and outside the network.</p>
+        <ul>
+          <li>No implicit trust based on network location (internal vs. external)</li>
+          <li>Every access request is fully authenticated, authorized, and encrypted</li>
+          <li>Least privilege access is enforced at all times</li>
+          <li>Microsegmentation limits lateral movement within the network</li>
+          <li>Continuous monitoring and validation of security posture</li>
+        </ul>
+
+        <h3>Defense in Depth</h3>
+        <p>Defense in depth uses multiple layers of security controls so that if one layer fails, others continue to provide protection. Think of it like a castle with a moat, walls, guards, and a locked vault.</p>
+
+        <div class="diagram">
+  +-----------------------------------------+
+  |          Physical Security               |  Locks, cameras, guards
+  |  +------------------------------------+  |
+  |  |       Network Security              |  |  Firewalls, IDS/IPS, ACLs
+  |  |  +-------------------------------+  |  |
+  |  |  |     Host Security              |  |  |  Antivirus, patching, hardening
+  |  |  |  +--------------------------+  |  |  |
+  |  |  |  |   Application Security   |  |  |  |  Input validation, WAF
+  |  |  |  |  +--------------------+  |  |  |  |
+  |  |  |  |  |   Data Security    |  |  |  |  |  Encryption, backups, DLP
+  |  |  |  |  +--------------------+  |  |  |  |
+  |  |  |  +--------------------------+  |  |  |
+  |  |  +-------------------------------+  |  |
+  |  +------------------------------------+  |
+  +-----------------------------------------+</div>
+
+        <h3>Least Privilege</h3>
+        <p>The principle of least privilege dictates that users, systems, and processes should be granted only the minimum access rights needed to perform their job function &mdash; nothing more. This limits the damage that can occur from accidents, errors, or unauthorized use.</p>
+
+        <h3>Role-Based Access Control (RBAC)</h3>
+        <p>RBAC assigns permissions to <em>roles</em> rather than to individual users. Users are then assigned to roles based on their job function. This simplifies administration: when an employee changes roles, you simply change their role assignment instead of modifying individual permissions.</p>
+
+        <div class="flashcard-deck">
+          <div class="flashcard">
+            <div class="flashcard-front">What is the difference between RBAC and DAC?</div>
+            <div class="flashcard-back">
+              <strong>RBAC (Role-Based Access Control)</strong> assigns permissions to roles; users get permissions through role membership. An administrator defines the roles centrally.<br><br>
+              <strong>DAC (Discretionary Access Control)</strong> allows the data owner to decide who has access. The owner can grant or revoke permissions at their discretion (e.g., file sharing permissions in Windows).
+            </div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">What is MAC (Mandatory Access Control)?</div>
+            <div class="flashcard-back">
+              MAC uses classification labels (e.g., Top Secret, Secret, Confidential) assigned by a central authority. Users cannot override these labels. Access decisions are based on the label of the resource and the clearance level of the user. Used in military/government environments.
+            </div>
+          </div>
+        </div>
+
+        <h3>Certificate-Based Authentication &amp; PKI</h3>
+        <p><strong>Public Key Infrastructure (PKI)</strong> is a framework for managing digital certificates and public/private key pairs. It enables secure communication and identity verification.</p>
+        <ul>
+          <li><strong>Certificate Authority (CA)</strong> &mdash; A trusted entity that issues digital certificates. The CA verifies identity before issuing a certificate.</li>
+          <li><strong>Digital Certificate</strong> &mdash; An electronic document that binds a public key to an identity. Contains the subject name, public key, issuer (CA), validity period, and a digital signature.</li>
+          <li><strong>Certificate Revocation List (CRL)</strong> &mdash; A list of certificates that have been revoked before expiration.</li>
+          <li><strong>OCSP (Online Certificate Status Protocol)</strong> &mdash; A real-time alternative to CRLs for checking certificate validity.</li>
+        </ul>
+
+        <h3>Encryption Types</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Type</th><th>How It Works</th><th>Speed</th><th>Examples</th><th>Use Cases</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Symmetric</strong></td>
+                <td>Same key for encryption and decryption</td>
+                <td>Fast</td>
+                <td>AES, DES, 3DES, Blowfish</td>
+                <td>Bulk data encryption, disk encryption, VPN tunnels</td>
+              </tr>
+              <tr>
+                <td><strong>Asymmetric</strong></td>
+                <td>Paired public and private keys; one encrypts, the other decrypts</td>
+                <td>Slower</td>
+                <td>RSA, ECC, Diffie-Hellman, DSA</td>
+                <td>Key exchange, digital signatures, certificate-based auth, email encryption</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box tip">
+          <strong>How They Work Together</strong>
+          In practice, asymmetric encryption is used to securely exchange a symmetric session key. Then symmetric encryption handles the bulk data transfer because it's much faster. This hybrid approach is used in TLS/SSL, IPSec, and most VPNs.
+        </div>
+
+        <label class="mark-read" data-domain="4" data-section="concepts">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </div>
+
+      <!-- ============================================================
+           SECTION 2 — COMMON NETWORK ATTACKS
+           ============================================================ -->
+      <div class="content-section" id="attacks">
+        <h2>4.2 Common Network Attacks</h2>
+
+        <p>Understanding attack types is essential for both the exam and real-world network defense. You need to know how each attack works, what it targets, and how to mitigate it.</p>
+
+        <h3>Denial-of-Service (DoS) and Distributed Denial-of-Service (DDoS)</h3>
+        <p>DoS attacks aim to make a network resource unavailable by overwhelming it with traffic or exploiting a vulnerability. DDoS attacks use multiple compromised systems (a botnet) to launch the attack simultaneously.</p>
+        <ul>
+          <li><strong>SYN Flood</strong> &mdash; The attacker sends a massive number of TCP SYN packets but never completes the three-way handshake. The target's connection table fills up with half-open connections, preventing legitimate users from connecting.</li>
+          <li><strong>Amplification Attack</strong> &mdash; The attacker sends small requests to a third-party server (e.g., DNS, NTP) with the source IP spoofed to the victim's address. The server replies with much larger responses directed at the victim, amplifying the attack volume.</li>
+          <li><strong>Reflection Attack</strong> &mdash; Similar to amplification, the attacker bounces traffic off legitimate servers. The victim receives the reflected responses. Often combined with amplification for maximum impact.</li>
+        </ul>
+
+        <div class="info-box danger">
+          <strong>Key Distinction</strong>
+          A <strong>DoS</strong> attack comes from a single source. A <strong>DDoS</strong> attack comes from many distributed sources (botnet). DDoS is much harder to mitigate because you cannot simply block one IP address.
+        </div>
+
+        <h3>Man-in-the-Middle (MITM) / On-Path Attacks</h3>
+        <p>In an on-path attack, the attacker secretly intercepts and possibly alters communication between two parties who believe they are communicating directly. The attacker can eavesdrop on traffic, steal credentials, or inject malicious content.</p>
+        <ul>
+          <li>Can occur at multiple layers (Layer 2 with ARP spoofing, Layer 7 with SSL stripping)</li>
+          <li>Mitigated by encryption (TLS/SSL), certificate validation, and network monitoring</li>
+        </ul>
+
+        <h3>ARP Spoofing / ARP Poisoning</h3>
+        <p>The attacker sends falsified ARP (Address Resolution Protocol) messages on a local network, linking the attacker's MAC address with the IP address of a legitimate host (like the default gateway). Traffic intended for the gateway is then redirected through the attacker's machine.</p>
+        <ul>
+          <li>Enables man-in-the-middle attacks on LANs</li>
+          <li><strong>Mitigation:</strong> Dynamic ARP Inspection (DAI), static ARP entries, network segmentation</li>
+        </ul>
+
+        <h3>DNS Poisoning / DNS Spoofing</h3>
+        <p>The attacker corrupts the DNS cache so that domain name queries return an incorrect IP address, redirecting users to malicious websites. This can be done by intercepting DNS queries or compromising a DNS server.</p>
+        <ul>
+          <li>Users may visit fake banking or login sites without realizing it</li>
+          <li><strong>Mitigation:</strong> DNSSEC (DNS Security Extensions), encrypted DNS (DoH/DoT), monitoring DNS logs</li>
+        </ul>
+
+        <h3>VLAN Hopping</h3>
+        <p>An attacker gains access to traffic on a VLAN they are not assigned to. Two primary methods:</p>
+        <ul>
+          <li><strong>Switch Spoofing</strong> &mdash; The attacker configures their NIC to act as a trunk port, negotiating a trunk link with the switch using DTP (Dynamic Trunking Protocol). This gives access to all VLANs on the trunk.</li>
+          <li><strong>Double Tagging</strong> &mdash; The attacker sends a frame with two 802.1Q VLAN tags. The first switch strips the outer tag, and the inner tag routes the frame to the target VLAN.</li>
+        </ul>
+        <p><strong>Mitigation:</strong> Disable DTP on all access ports (<code>switchport mode access</code>), set native VLAN to an unused VLAN, enable VLAN pruning.</p>
+
+        <h3>Rogue DHCP Server</h3>
+        <p>An unauthorized DHCP server on the network hands out incorrect IP configurations to clients. This can redirect traffic through an attacker-controlled gateway (enabling MITM attacks) or cause denial of service by assigning invalid addresses.</p>
+        <p><strong>Mitigation:</strong> DHCP snooping &mdash; configures switch ports as trusted (where legitimate DHCP servers reside) or untrusted (blocks DHCP offers from those ports).</p>
+
+        <h3>Evil Twin</h3>
+        <p>An attacker sets up a rogue wireless access point with the same SSID (and sometimes the same MAC address) as a legitimate AP. Unsuspecting users connect to the evil twin, and the attacker can intercept all their traffic.</p>
+        <p><strong>Mitigation:</strong> 802.1X authentication, wireless intrusion prevention systems (WIPS), user education, certificate-based wireless authentication.</p>
+
+        <h3>Social Engineering Attacks</h3>
+        <ul>
+          <li><strong>Phishing</strong> &mdash; Fraudulent emails that appear to come from a trusted source, tricking the recipient into clicking malicious links or providing credentials.</li>
+          <li><strong>Spear Phishing</strong> &mdash; Targeted phishing aimed at specific individuals or organizations, often using personal details to appear convincing.</li>
+          <li><strong>Vishing</strong> &mdash; Voice phishing; social engineering conducted over the phone.</li>
+          <li><strong>Smishing</strong> &mdash; Phishing via SMS text messages.</li>
+          <li><strong>Tailgating / Piggybacking</strong> &mdash; An unauthorized person follows an authorized individual through a secure door or entry point without scanning their own credentials.</li>
+          <li><strong>Shoulder Surfing</strong> &mdash; Watching someone enter credentials or sensitive information over their shoulder.</li>
+        </ul>
+
+        <h3>Malware Types</h3>
+        <ul>
+          <li><strong>Ransomware</strong> &mdash; Encrypts the victim's files and demands payment for the decryption key. Can spread laterally across a network.</li>
+          <li><strong>Virus</strong> &mdash; Malicious code that attaches itself to a legitimate program. Requires user action to execute.</li>
+          <li><strong>Worm</strong> &mdash; Self-replicating malware that spreads across networks without user interaction.</li>
+          <li><strong>Trojan</strong> &mdash; Malware disguised as legitimate software. Does not self-replicate but provides backdoor access.</li>
+          <li><strong>Rootkit</strong> &mdash; Hides deep within the OS to maintain persistent, privileged access while evading detection.</li>
+          <li><strong>Spyware</strong> &mdash; Secretly monitors user activity (keystrokes, browsing, etc.) and reports it to the attacker.</li>
+        </ul>
+
+        <h3>Insider Threats</h3>
+        <p>Threats originating from within the organization &mdash; employees, contractors, or partners with legitimate access. Insider threats can be intentional (data theft, sabotage) or unintentional (accidental data exposure, falling for phishing). They are among the hardest threats to detect because the attacker already has valid credentials.</p>
+
+        <h3>Password Attacks</h3>
+        <ul>
+          <li><strong>Brute Force</strong> &mdash; Systematically tries every possible combination until the correct password is found. Effective against short or weak passwords.</li>
+          <li><strong>Dictionary Attack</strong> &mdash; Uses a pre-built list of common words and passwords. Faster than brute force for common passwords.</li>
+          <li><strong>Rainbow Table</strong> &mdash; A precomputed table of password hashes. The attacker compares captured hashes against the table for instant lookups. <strong>Mitigated by salting</strong> (adding random data to each password before hashing).</li>
+          <li><strong>Credential Stuffing</strong> &mdash; Uses username/password pairs stolen from one breach to attempt logins at other services, exploiting password reuse.</li>
+        </ul>
+
+        <h3>Deauthentication Attacks</h3>
+        <p>The attacker sends forged deauthentication frames (802.11 management frames) to a wireless client or access point, disconnecting the client. This can be used to force a client to reconnect to an evil twin AP or to disrupt service.</p>
+        <p><strong>Mitigation:</strong> 802.11w (Management Frame Protection), WPA3 (which mandates protected management frames).</p>
+
+        <h3>Attack Summary Table</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Attack</th><th>Layer</th><th>Description</th><th>Key Mitigation</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>SYN Flood</td><td>L4</td><td>Fills target connection table with half-open TCP connections</td><td>SYN cookies, rate limiting, firewall rules</td></tr>
+              <tr><td>DDoS Amplification</td><td>L3-L4</td><td>Spoofed requests to reflectors create massive traffic to victim</td><td>Ingress filtering (BCP38), rate limiting</td></tr>
+              <tr><td>ARP Spoofing</td><td>L2</td><td>Falsified ARP replies link attacker's MAC to gateway IP</td><td>Dynamic ARP Inspection (DAI)</td></tr>
+              <tr><td>DNS Poisoning</td><td>L7</td><td>Corrupted DNS cache returns attacker-controlled IP addresses</td><td>DNSSEC, encrypted DNS</td></tr>
+              <tr><td>VLAN Hopping</td><td>L2</td><td>Gains access to traffic on other VLANs via spoofing or double tagging</td><td>Disable DTP, set native VLAN</td></tr>
+              <tr><td>Rogue DHCP</td><td>L3</td><td>Unauthorized DHCP server provides false network configuration</td><td>DHCP snooping</td></tr>
+              <tr><td>Evil Twin</td><td>L1-L2</td><td>Rogue AP mimics legitimate SSID to intercept wireless traffic</td><td>802.1X, WIPS, certificates</td></tr>
+              <tr><td>Phishing</td><td>L7+</td><td>Fraudulent messages trick users into revealing credentials</td><td>User training, email filtering, MFA</td></tr>
+              <tr><td>Ransomware</td><td>L7</td><td>Encrypts files and demands payment for decryption key</td><td>Backups, patching, user training</td></tr>
+              <tr><td>Deauthentication</td><td>L2</td><td>Forged 802.11 frames disconnect wireless clients</td><td>802.11w / WPA3</td></tr>
+              <tr><td>Brute Force</td><td>L7</td><td>Systematically tries all password combinations</td><td>Account lockout, MFA, strong passwords</td></tr>
+              <tr><td>On-Path (MITM)</td><td>Varies</td><td>Attacker intercepts and relays traffic between two parties</td><td>TLS/SSL, certificate pinning</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <label class="mark-read" data-domain="4" data-section="attacks">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </div>
+
+      <!-- ============================================================
+           SECTION 3 — NETWORK HARDENING
+           ============================================================ -->
+      <div class="content-section" id="hardening">
+        <h2>4.3 Network Hardening</h2>
+
+        <p>Network hardening is the process of reducing the attack surface by eliminating unnecessary services, securing configurations, and applying protective measures. A hardened network is significantly more resistant to attacks.</p>
+
+        <h3>Disabling Unused Ports and Services</h3>
+        <p>Every open port and running service is a potential entry point for an attacker. Hardening involves:</p>
+        <ul>
+          <li>Shutting down unused switch ports (<code>shutdown</code> command on unused interfaces)</li>
+          <li>Disabling unnecessary network services (Telnet, HTTP management interfaces, SNMP v1/v2 if not needed)</li>
+          <li>Removing or disabling unused software and protocols from servers and network devices</li>
+          <li>Performing regular port scans to identify unexpected open ports</li>
+        </ul>
+
+        <h3>Changing Default Credentials</h3>
+        <p>Many network devices ship with well-known default usernames and passwords (e.g., admin/admin, admin/password). Attackers maintain databases of default credentials. <strong>Always change defaults immediately upon deployment.</strong></p>
+
+        <div class="info-box danger">
+          <strong>Critical Security Practice</strong>
+          Default credentials are one of the most common causes of network breaches. This applies to routers, switches, firewalls, wireless APs, IoT devices, and management interfaces. Change the username where possible, and use strong, unique passwords.
+        </div>
+
+        <h3>Firmware Updates and Patch Management</h3>
+        <ul>
+          <li>Keep firmware on all network devices (routers, switches, APs, firewalls) current</li>
+          <li>Apply security patches promptly to close known vulnerabilities</li>
+          <li>Establish a patch management policy with testing procedures before deployment</li>
+          <li>Subscribe to vendor security advisories and CVE notifications</li>
+          <li>Maintain a current inventory of all devices and their firmware versions</li>
+        </ul>
+
+        <h3>Disabling Unnecessary Protocols</h3>
+        <p>Protocols that are not needed should be disabled to reduce attack surface:</p>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Protocol to Disable</th><th>Why</th><th>Secure Alternative</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Telnet (TCP 23)</td><td>Sends credentials in cleartext</td><td>SSH (TCP 22)</td></tr>
+              <tr><td>HTTP (TCP 80) for management</td><td>Unencrypted management traffic</td><td>HTTPS (TCP 443)</td></tr>
+              <tr><td>SNMPv1/v2c</td><td>Community strings sent in cleartext</td><td>SNMPv3 (encrypted + authenticated)</td></tr>
+              <tr><td>FTP (TCP 20/21)</td><td>Credentials and data in cleartext</td><td>SFTP (TCP 22) or FTPS</td></tr>
+              <tr><td>SSL / early TLS</td><td>Known vulnerabilities (POODLE, BEAST)</td><td>TLS 1.2 or TLS 1.3</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>MAC Filtering</h3>
+        <p>MAC filtering restricts network access based on the hardware (MAC) address of the connecting device. The switch or access point maintains a whitelist of allowed MAC addresses.</p>
+        <ul>
+          <li>Provides a basic layer of access control, especially on wireless networks</li>
+          <li><strong>Limitation:</strong> MAC addresses can be easily spoofed, so MAC filtering should never be the sole security mechanism</li>
+          <li>Best used as one layer in a defense-in-depth strategy</li>
+        </ul>
+
+        <h3>802.1X (Port-Based Network Access Control)</h3>
+        <p>802.1X is an IEEE standard for port-based NAC. It prevents devices from accessing the network until they authenticate. Three key components:</p>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Component</th><th>Role</th><th>Example</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Supplicant</strong></td>
+                <td>The client device requesting access</td>
+                <td>Laptop, phone, workstation</td>
+              </tr>
+              <tr>
+                <td><strong>Authenticator</strong></td>
+                <td>The network device controlling access (the gatekeeper)</td>
+                <td>Switch port or wireless AP</td>
+              </tr>
+              <tr>
+                <td><strong>Authentication Server</strong></td>
+                <td>Validates credentials and grants/denies access</td>
+                <td>RADIUS server</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="diagram">
+  +-------------+          +----------------+          +------------------+
+  |  Supplicant |  &lt;---&gt;   |  Authenticator |  &lt;---&gt;   |  Authentication  |
+  |  (Client)   |  EAPoL   |  (Switch / AP) |  RADIUS  |     Server       |
+  +-------------+          +----------------+          +------------------+
+
+  1. Client connects to port (port is BLOCKED)
+  2. Switch requests identity from client
+  3. Client sends credentials via EAP over LAN (EAPoL)
+  4. Switch forwards credentials to RADIUS server
+  5. RADIUS authenticates &rarr; sends Accept/Reject
+  6. If accepted, switch opens the port</div>
+
+        <div class="info-box note">
+          <strong>Exam Tip</strong>
+          802.1X uses <strong>EAP (Extensible Authentication Protocol)</strong> for the authentication framework. Common EAP types include EAP-TLS (certificate-based, very secure), PEAP (uses a server certificate to create a TLS tunnel), and EAP-FAST (Cisco's method using a PAC).
+        </div>
+
+        <h3>DHCP Snooping</h3>
+        <p>DHCP snooping is a Layer 2 security feature that filters untrusted DHCP messages and builds a binding table of valid IP-to-MAC mappings.</p>
+        <ul>
+          <li><strong>Trusted ports</strong> &mdash; Connected to legitimate DHCP servers; allow DHCP offers and acknowledgments</li>
+          <li><strong>Untrusted ports</strong> &mdash; Connected to clients; only DHCP requests are allowed. DHCP offers from these ports are dropped.</li>
+          <li>Prevents rogue DHCP server attacks</li>
+          <li>The binding table is also used by Dynamic ARP Inspection and IP Source Guard</li>
+        </ul>
+
+        <h3>Dynamic ARP Inspection (DAI)</h3>
+        <p>DAI validates ARP packets on the network using the DHCP snooping binding table. It intercepts ARP replies on untrusted ports and verifies that the IP-to-MAC mapping is legitimate. Invalid ARP packets are dropped, preventing ARP spoofing attacks.</p>
+
+        <h3>Wireless Security Settings</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Protocol</th><th>Encryption</th><th>Status</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>WEP</td><td>RC4 (24-bit IV)</td><td>Deprecated / Broken</td><td>Easily cracked in minutes. Never use.</td></tr>
+              <tr><td>WPA</td><td>TKIP (RC4-based)</td><td>Deprecated</td><td>Improved IV handling, but still vulnerable.</td></tr>
+              <tr><td>WPA2</td><td>AES-CCMP</td><td>Current standard</td><td>Strong encryption. Use WPA2-Enterprise (802.1X) for business.</td></tr>
+              <tr><td>WPA3</td><td>AES-GCMP / SAE</td><td>Latest standard</td><td>SAE replaces PSK handshake. Mandatory PMF. Enhanced open (OWE).</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Segmentation and Microsegmentation</h3>
+        <ul>
+          <li><strong>Network Segmentation</strong> &mdash; Dividing the network into smaller segments (VLANs, subnets) to contain breaches and limit lateral movement. A compromised host in one segment cannot easily reach hosts in another.</li>
+          <li><strong>Microsegmentation</strong> &mdash; Granular segmentation at the workload or application level, often implemented through software-defined networking (SDN). Each workload or server has its own security policies, even within the same subnet.</li>
+        </ul>
+
+        <h3>Privileged Access Management (PAM)</h3>
+        <p>PAM controls and monitors access to privileged accounts (admin, root, service accounts). Key practices include:</p>
+        <ul>
+          <li>Storing privileged credentials in a secure vault (not in scripts or spreadsheets)</li>
+          <li>Requiring check-out/check-in of privileged credentials with session recording</li>
+          <li>Just-in-time (JIT) access &mdash; granting elevated privileges only when needed and for a limited time</li>
+          <li>Auditing and logging all privileged access sessions</li>
+        </ul>
+
+        <label class="mark-read" data-domain="4" data-section="hardening">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </div>
+
+      <!-- ============================================================
+           SECTION 4 — FIREWALLS & ACLs
+           ============================================================ -->
+      <div class="content-section" id="firewalls">
+        <h2>4.4 Firewalls &amp; ACLs</h2>
+
+        <p>Firewalls are the primary perimeter defense for any network. Combined with access control lists, they determine what traffic is permitted and denied based on defined rules.</p>
+
+        <h3>Firewall Types</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Type</th><th>How It Works</th><th>Pros / Cons</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Stateless (Packet Filtering)</strong></td>
+                <td>Examines each packet individually based on source/destination IP, port, and protocol. No awareness of connection state.</td>
+                <td>Fast but cannot track TCP sessions or detect complex attacks. Each packet is evaluated in isolation.</td>
+              </tr>
+              <tr>
+                <td><strong>Stateful</strong></td>
+                <td>Tracks the state of active connections. Packets are evaluated in the context of their connection (new, established, related).</td>
+                <td>More secure than stateless. Can determine if a packet is part of a legitimate session. Most common firewall type.</td>
+              </tr>
+              <tr>
+                <td><strong>NGFW (Next-Generation Firewall)</strong></td>
+                <td>Combines stateful inspection with deep packet inspection (DPI), application awareness, IPS, and threat intelligence.</td>
+                <td>Can identify and control applications (e.g., block Facebook but allow LinkedIn). Inspects encrypted traffic. Higher cost.</td>
+              </tr>
+              <tr>
+                <td><strong>UTM (Unified Threat Management)</strong></td>
+                <td>All-in-one security appliance: firewall + IDS/IPS + antivirus + content filter + VPN + anti-spam.</td>
+                <td>Convenient for small-to-medium businesses. Single point of management but also single point of failure.</td>
+              </tr>
+              <tr>
+                <td><strong>WAF (Web Application Firewall)</strong></td>
+                <td>Specifically protects web applications by filtering HTTP/HTTPS traffic. Operates at Layer 7.</td>
+                <td>Blocks SQL injection, cross-site scripting (XSS), and other web attacks. Does not replace a network firewall.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Implicit Deny</h3>
+        <p><strong>Implicit deny</strong> is a fundamental firewall principle: any traffic that is not explicitly permitted by a rule is automatically denied. This means that at the end of every ACL or firewall rule set, there is an invisible "deny all" rule. You must specifically create rules for the traffic you want to allow.</p>
+
+        <div class="info-box warning">
+          <strong>Exam Favorite</strong>
+          If you configure a firewall with no rules, ALL traffic will be blocked due to the implicit deny. This is a very commonly tested concept. Always remember: if a rule set does not explicitly permit the traffic, it is denied.
+        </div>
+
+        <h3>Access Control Lists (ACLs)</h3>
+        <p>ACLs are ordered lists of rules that permit or deny traffic based on criteria such as source/destination IP, port numbers, and protocols. Rules are processed top-down &mdash; the first matching rule is applied, and processing stops.</p>
+
+        <h4>ACL Rule Components</h4>
+        <ul>
+          <li><strong>Action</strong> &mdash; <code>permit</code> or <code>deny</code></li>
+          <li><strong>Protocol</strong> &mdash; TCP, UDP, ICMP, IP (any)</li>
+          <li><strong>Source</strong> &mdash; Source IP address (with wildcard mask)</li>
+          <li><strong>Destination</strong> &mdash; Destination IP address (with wildcard mask)</li>
+          <li><strong>Port</strong> &mdash; Source and/or destination port number</li>
+          <li><strong>Direction</strong> &mdash; Applied inbound or outbound on an interface</li>
+        </ul>
+
+        <h4>Example ACL with Explanation</h4>
+<pre>
+! Extended ACL applied to the inside interface (inbound)
+access-list 110 permit tcp 192.168.1.0 0.0.0.255 any eq 443
+access-list 110 permit tcp 192.168.1.0 0.0.0.255 any eq 80
+access-list 110 permit udp 192.168.1.0 0.0.0.255 any eq 53
+access-list 110 permit icmp 192.168.1.0 0.0.0.255 any echo
+access-list 110 deny   ip  10.0.0.0 0.255.255.255 any log
+access-list 110 deny   ip  any any
+!
+interface GigabitEthernet0/1
+  ip access-group 110 in
+</pre>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Line</th><th>What It Does</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>permit tcp ... eq 443</code></td><td>Allows HTTPS traffic from the 192.168.1.0/24 network to any destination</td></tr>
+              <tr><td><code>permit tcp ... eq 80</code></td><td>Allows HTTP traffic from the 192.168.1.0/24 network to any destination</td></tr>
+              <tr><td><code>permit udp ... eq 53</code></td><td>Allows DNS lookups from the internal network</td></tr>
+              <tr><td><code>permit icmp ... echo</code></td><td>Allows ping (echo requests) from the internal network</td></tr>
+              <tr><td><code>deny ip 10.0.0.0 ...</code></td><td>Blocks and logs any traffic from RFC 1918 10.x.x.x addresses (possible spoofing)</td></tr>
+              <tr><td><code>deny ip any any</code></td><td>Explicit deny all &mdash; blocks everything else (same effect as implicit deny, but makes the intent clear and enables logging)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box tip">
+          <strong>ACL Best Practices</strong>
+          Place the most specific rules at the top (processed first). Put frequently matched rules higher for performance. Always include an explicit deny at the end with logging enabled so you can audit blocked traffic. Apply ACLs as close to the source of traffic as possible for extended ACLs.
+        </div>
+
+        <h3>Firewall Zones</h3>
+        <p>Firewalls organize the network into security zones, each with a different trust level:</p>
+        <ul>
+          <li><strong>Trusted (Inside/Internal)</strong> &mdash; The internal LAN. Highest trust level. Users and internal servers reside here.</li>
+          <li><strong>Untrusted (Outside/External)</strong> &mdash; The internet or any uncontrolled network. Lowest trust level. Treated as hostile.</li>
+          <li><strong>DMZ (Demilitarized Zone) / Screened Subnet</strong> &mdash; A semi-trusted zone between internal and external networks. Hosts public-facing servers (web, email, DNS) that need to be accessible from the internet but are isolated from the internal network.</li>
+        </ul>
+
+        <div class="diagram">
+                          INTERNET
+                             |
+                     +-------+-------+
+                     |   Firewall    |
+                     | (Outside Int) |
+                     +---+-------+---+
+                         |       |
+                   +-----+     +-+------+
+                   | DMZ |     | Inside |
+                   +-----+     +--------+
+                Web Server     Internal LAN
+                Mail Server    Workstations
+                DNS Server     File Servers
+
+  Traffic Flow Rules:
+  Inside &rarr; DMZ:      Allowed (controlled)
+  Inside &rarr; Outside:  Allowed (with NAT)
+  Outside &rarr; DMZ:     Allowed (specific ports only)
+  Outside &rarr; Inside:  DENIED (implicit deny)
+  DMZ &rarr; Inside:      DENIED (prevents compromised DMZ host from reaching LAN)</div>
+
+        <h3>Rule-Based Management</h3>
+        <ul>
+          <li>Document every firewall rule with a justification and an owner</li>
+          <li>Review rules periodically to remove obsolete or overly permissive entries</li>
+          <li>Use change management procedures before modifying firewall rules</li>
+          <li>Test rule changes in a staging environment when possible</li>
+          <li>Follow the principle of least privilege: only allow what is necessary</li>
+        </ul>
+
+        <h3>Geofencing</h3>
+        <p>Geofencing restricts or permits access based on geographic location. A firewall or security system can block connections from specific countries or regions. Commonly used to block traffic from regions where the organization has no business presence, reducing exposure to foreign threat actors.</p>
+
+        <h3>Content Filtering</h3>
+        <p>Content filtering inspects web traffic to block access to inappropriate, dangerous, or policy-violating content categories (malware sites, gambling, social media during business hours). Can be implemented on firewalls, proxy servers, or dedicated content filtering appliances. Often uses URL categorization databases.</p>
+
+        <label class="mark-read" data-domain="4" data-section="firewalls">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </div>
+
+      <!-- ============================================================
+           SECTION 5 — VPN & REMOTE ACCESS
+           ============================================================ -->
+      <div class="content-section" id="vpn">
+        <h2>4.5 VPN &amp; Remote Access</h2>
+
+        <p>Virtual Private Networks create encrypted tunnels over public networks, enabling secure remote connectivity. Understanding VPN types and protocols is essential for both the exam and real-world network administration.</p>
+
+        <h3>VPN Types</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>VPN Type</th><th>Description</th><th>Use Case</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Site-to-Site</strong></td>
+                <td>Connects two entire networks (e.g., branch office to headquarters). The VPN tunnel is established between two VPN gateways (routers/firewalls). Individual clients are unaware of the VPN.</td>
+                <td>Connecting branch offices to HQ over the internet. Always-on connection.</td>
+              </tr>
+              <tr>
+                <td><strong>Client-to-Site (Remote Access)</strong></td>
+                <td>A single remote user connects to the corporate network using VPN client software. The tunnel is established between the user's device and the VPN gateway.</td>
+                <td>Remote workers connecting to the office. Telecommuting.</td>
+              </tr>
+              <tr>
+                <td><strong>Clientless VPN</strong></td>
+                <td>No VPN client software is needed. The user connects via a web browser using SSL/TLS. Access is typically limited to web-based applications, file shares, and email.</td>
+                <td>Quick access from unmanaged devices (kiosks, personal computers). Limited application support.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>IPSec (Internet Protocol Security)</h3>
+        <p>IPSec is a suite of protocols that provides encryption, integrity, and authentication at the network layer (Layer 3). It is the most common protocol for site-to-site VPNs.</p>
+
+        <h4>IPSec Components</h4>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Component</th><th>Function</th><th>Details</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>AH (Authentication Header)</strong></td>
+                <td>Provides integrity and authentication</td>
+                <td>Verifies that the packet was not altered in transit. Does NOT encrypt data. Protocol number 51.</td>
+              </tr>
+              <tr>
+                <td><strong>ESP (Encapsulating Security Payload)</strong></td>
+                <td>Provides encryption, integrity, and authentication</td>
+                <td>Encrypts the payload for confidentiality AND provides integrity checking. Protocol number 50. Most commonly used.</td>
+              </tr>
+              <tr>
+                <td><strong>IKE (Internet Key Exchange)</strong></td>
+                <td>Negotiates security associations and exchanges keys</td>
+                <td>IKE Phase 1: establishes a secure channel (ISAKMP SA). IKE Phase 2: negotiates the IPSec SA for actual data transfer. Uses UDP port 500 (and 4500 for NAT traversal).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>IPSec Modes</h4>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Mode</th><th>What Is Encrypted</th><th>Use Case</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Transport Mode</strong></td>
+                <td>Only the payload is encrypted; the original IP header remains intact</td>
+                <td>Host-to-host communication (e.g., two servers communicating directly). Lower overhead.</td>
+              </tr>
+              <tr>
+                <td><strong>Tunnel Mode</strong></td>
+                <td>The entire original packet (header + payload) is encrypted and encapsulated with a new IP header</td>
+                <td>Site-to-site VPNs. The most common mode. Hides the original source and destination IPs.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="diagram">
+  Transport Mode:
+  [Original IP Header] [ESP/AH Header] [Encrypted Payload]
+   (unchanged)
+
+  Tunnel Mode:
+  [New IP Header] [ESP/AH Header] [Encrypted Original IP Header + Payload]
+   (VPN gateway IPs)        (entire original packet is hidden)</div>
+
+        <div class="info-box note">
+          <strong>Exam Tip</strong>
+          If a question mentions encrypting traffic between two VPN gateways (site-to-site), the answer is <strong>tunnel mode</strong>. If it mentions encrypting between two individual hosts, think <strong>transport mode</strong>. ESP is preferred over AH because ESP provides encryption (confidentiality), while AH only provides integrity and authentication.
+        </div>
+
+        <h3>SSL/TLS VPN</h3>
+        <p>SSL/TLS VPNs use the TLS protocol (typically over TCP 443) to create encrypted tunnels. Because they use the same port as HTTPS, they pass through most firewalls and NAT devices without issues.</p>
+        <ul>
+          <li>Easier to deploy than IPSec &mdash; no special client software for clientless mode</li>
+          <li>Works well through firewalls and proxy servers (port 443 is almost always open)</li>
+          <li>Can provide full network access (with a client) or application-level access (clientless)</li>
+          <li>Common in remote access / client-to-site deployments</li>
+        </ul>
+
+        <h3>Split Tunnel vs. Full Tunnel</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Type</th><th>How It Works</th><th>Pros</th><th>Cons</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Split Tunnel</strong></td>
+                <td>Only traffic destined for the corporate network goes through the VPN. Internet traffic goes directly to the internet via the user's local connection.</td>
+                <td>Reduces VPN bandwidth usage, faster internet browsing for the user</td>
+                <td>Internet traffic bypasses corporate security controls; potential data leakage</td>
+              </tr>
+              <tr>
+                <td><strong>Full Tunnel</strong></td>
+                <td>ALL traffic (corporate and internet) is routed through the VPN tunnel to the corporate network.</td>
+                <td>All traffic is inspected by corporate security (firewall, content filter, IDS)</td>
+                <td>Higher bandwidth usage on VPN, slower internet experience for users</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box warning">
+          <strong>Security vs. Performance Trade-off</strong>
+          Full tunnel is more secure because all traffic passes through corporate security controls. Split tunnel is more efficient but creates a risk: the user's device is simultaneously connected to the corporate network and the open internet, potentially acting as a bridge for attacks.
+        </div>
+
+        <h3>DMVPN (Dynamic Multipoint VPN)</h3>
+        <p>DMVPN allows multiple sites to communicate directly (spoke-to-spoke) without routing all traffic through a central hub. It dynamically builds IPSec tunnels between sites on demand.</p>
+        <ul>
+          <li>Reduces latency for spoke-to-spoke communication</li>
+          <li>Simplifies configuration &mdash; adding a new site doesn't require reconfiguring every other site</li>
+          <li>Uses NHRP (Next Hop Resolution Protocol) to discover tunnel endpoints</li>
+          <li>Ideal for large enterprise networks with many branch offices</li>
+        </ul>
+
+        <h3>Always-On VPN</h3>
+        <p>The VPN connection is established automatically whenever the device is powered on and connected to a network. The user cannot disconnect or bypass the VPN. This ensures that all traffic is always protected and passes through corporate security controls. Common in organizations with strict security requirements.</p>
+
+        <h3>Remote Access Methods</h3>
+
+        <h4>Remote Desktop Protocols</h4>
+        <ul>
+          <li><strong>RDP (Remote Desktop Protocol)</strong> &mdash; Microsoft protocol (TCP 3389). Provides full graphical remote access to a Windows desktop. Should be used over a VPN, never exposed directly to the internet.</li>
+          <li><strong>VNC (Virtual Network Computing)</strong> &mdash; Platform-independent remote desktop protocol (TCP 5900). Traffic is not encrypted by default; use over an SSH tunnel or VPN.</li>
+        </ul>
+
+        <h4>Out-of-Band (OOB) Management</h4>
+        <p>Out-of-band management provides a separate, dedicated management path to network devices that does not rely on the production network. If the primary network goes down, you can still access devices for troubleshooting and recovery.</p>
+        <ul>
+          <li>Console port (serial) access via a console server</li>
+          <li>Dedicated management VLAN or network</li>
+          <li>Cellular/modem connection for emergency access</li>
+        </ul>
+
+        <h4>Jump Server / Jump Box</h4>
+        <p>A jump server is a hardened, dedicated server that acts as an intermediary access point between a trusted network and a less-trusted environment (like a DMZ or server VLAN). Administrators connect to the jump server first, then connect from the jump server to the target device. This:</p>
+        <ul>
+          <li>Centralizes access control and audit logging</li>
+          <li>Reduces the attack surface by limiting direct access to critical systems</li>
+          <li>Provides a single point to enforce MFA and session monitoring</li>
+        </ul>
+
+        <h4>SSH Tunneling / Port Forwarding</h4>
+        <p>SSH tunneling creates an encrypted tunnel for forwarding traffic from one port to another through an SSH connection. This allows you to securely access services that don't natively support encryption.</p>
+<pre>
+# Local port forwarding: access remote service via local port
+# This forwards local port 8080 to remote-db-server:3306 through ssh-server
+ssh -L 8080:remote-db-server:3306 user@ssh-server
+
+# Now connect to localhost:8080 to securely reach the database
+</pre>
+        <ul>
+          <li><strong>Local Port Forwarding</strong> &mdash; Forwards a local port through the SSH tunnel to a remote destination</li>
+          <li><strong>Remote Port Forwarding</strong> &mdash; Makes a local service accessible from the remote side of the SSH tunnel</li>
+          <li><strong>Dynamic Port Forwarding</strong> &mdash; Creates a SOCKS proxy through the SSH tunnel, routing all traffic dynamically</li>
+        </ul>
+
+        <label class="mark-read" data-domain="4" data-section="vpn">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </div>
+
+      <!-- ============================================================
+           SECTION 6 — PHYSICAL SECURITY & MONITORING
+           ============================================================ -->
+      <div class="content-section" id="physical">
+        <h2>4.6 Physical Security &amp; Monitoring</h2>
+
+        <p>Physical security controls protect network equipment and infrastructure from unauthorized physical access, theft, and environmental damage. Monitoring systems detect intrusions and provide the visibility needed for incident response.</p>
+
+        <h3>Physical Access Controls</h3>
+
+        <h4>Video Surveillance (CCTV)</h4>
+        <p>Closed-circuit television cameras monitor sensitive areas such as server rooms, wiring closets, and building entrances. Provides both deterrence and forensic evidence. Modern IP-based cameras support remote viewing, motion-triggered recording, and integration with access control systems.</p>
+
+        <h4>Badge Readers and Biometrics</h4>
+        <ul>
+          <li><strong>Badge/Proximity Card Readers</strong> &mdash; Use RFID or smart card technology. Employees tap or swipe a badge to gain entry. Logs who accessed what area and when.</li>
+          <li><strong>Biometric Readers</strong> &mdash; Fingerprint scanners, retina/iris scanners, facial recognition. Much harder to forge than a badge. Consider false acceptance rate (FAR) and false rejection rate (FRR) when evaluating systems.</li>
+        </ul>
+
+        <h4>Mantrap / Security Vestibule</h4>
+        <p>A mantrap (now commonly called a security vestibule) is a small room with two interlocking doors. Only one door can be open at a time. A person must authenticate to enter the first door, then the first door locks before the second door can be opened. This prevents tailgating and ensures only one authenticated individual enters at a time.</p>
+
+        <div class="diagram">
+                 Badge Reader          Badge Reader
+                     |                     |
+  [Public Area]  [Door 1] =[Vestibule]= [Door 2]  [Secure Area]
+                          (only one door
+                           open at a time)
+
+  1. Person badges in at Door 1 &rarr; enters vestibule
+  2. Door 1 locks behind them
+  3. Person badges in at Door 2 &rarr; enters secure area
+  4. If authentication fails at Door 2, person is trapped</div>
+
+        <h4>Locking Cabinets and Rack Security</h4>
+        <ul>
+          <li>Server racks should have locking front and rear doors</li>
+          <li>Cable lock slots prevent physical theft of equipment</li>
+          <li>Wiring closets (IDF/MDF rooms) should be locked at all times</li>
+          <li>Key management: track who has keys/combinations; change when personnel leave</li>
+        </ul>
+
+        <h4>Security Guards</h4>
+        <p>Human security guards provide adaptive security that automated systems cannot. They verify identities, respond to incidents, patrol facilities, and enforce policies. Often stationed at building entrances and data center lobbies.</p>
+
+        <h4>Motion Detection</h4>
+        <p>Motion sensors detect movement in restricted areas and trigger alerts or cameras. Used in server rooms, wiring closets, and after-hours zones. Can be infrared, ultrasonic, or microwave-based.</p>
+
+        <h3>Asset Tracking and Disposal</h3>
+        <ul>
+          <li><strong>Asset Tracking</strong> &mdash; Maintain an inventory of all network equipment with serial numbers, locations, and responsible personnel. Use asset tags (barcode or RFID) for automated tracking.</li>
+          <li><strong>Secure Disposal</strong> &mdash; When decommissioning equipment, ensure all data is securely erased. Methods include degaussing (for magnetic media), physical destruction (shredding), and cryptographic erasure. Storage media that contained sensitive data must not be simply discarded or recycled without proper sanitization.</li>
+        </ul>
+
+        <div class="info-box danger">
+          <strong>Data Destruction Matters</strong>
+          Simply deleting files or formatting a drive does NOT destroy data &mdash; it can be recovered with forensic tools. For sensitive data, use DoD 5220.22-M wipe standards, physical destruction, or cryptographic erasure (destroy the encryption key, rendering the encrypted data irrecoverable).
+        </div>
+
+        <h3>Security Information and Event Management (SIEM)</h3>
+        <p>A SIEM system aggregates, correlates, and analyzes log data from multiple sources across the network in real time. It provides a centralized view of security events and enables rapid detection and response to threats.</p>
+        <ul>
+          <li><strong>Log Aggregation</strong> &mdash; Collects logs from firewalls, IDS/IPS, servers, switches, routers, endpoints, and applications into a single platform</li>
+          <li><strong>Correlation</strong> &mdash; Identifies patterns across multiple log sources that might indicate an attack (e.g., failed login on server + port scan from same IP + firewall alert)</li>
+          <li><strong>Alerting</strong> &mdash; Generates real-time alerts when predefined rules or thresholds are triggered</li>
+          <li><strong>Reporting</strong> &mdash; Produces compliance reports and dashboards for security teams and auditors</li>
+          <li><strong>Retention</strong> &mdash; Stores logs for the required retention period (often mandated by regulations)</li>
+        </ul>
+
+        <h3>Log Management and Review</h3>
+        <p>Effective log management is critical for troubleshooting, forensics, and compliance:</p>
+        <ul>
+          <li>Centralize logs using syslog servers (UDP 514) or SIEM platforms</li>
+          <li>Synchronize clocks across all devices using NTP so log timestamps are consistent</li>
+          <li>Review logs regularly &mdash; not just after incidents</li>
+          <li>Protect log integrity &mdash; logs should be write-once or sent to a separate, secured system to prevent tampering</li>
+          <li>Define retention policies based on organizational and regulatory requirements</li>
+        </ul>
+
+        <div class="info-box note">
+          <strong>Exam Tip</strong>
+          NTP (Network Time Protocol, UDP 123) synchronization is essential for log correlation. If device clocks are out of sync, reconstructing the timeline of a security incident becomes extremely difficult or impossible.
+        </div>
+
+        <h3>Packet Capture</h3>
+        <p>Packet capture (pcap) records the raw network traffic for detailed analysis. Useful for troubleshooting, forensic investigation, and verifying that security controls are working.</p>
+        <ul>
+          <li><strong>Tools:</strong> Wireshark (GUI), tcpdump (CLI), network TAPs, SPAN/mirror ports</li>
+          <li><strong>SPAN (Switched Port Analyzer)</strong> &mdash; Configures a switch to copy traffic from one or more ports to a monitoring port for capture</li>
+          <li><strong>Network TAP</strong> &mdash; A physical device inserted into a network link that copies all traffic to a monitoring port without affecting the original traffic flow</li>
+        </ul>
+
+        <h3>IDS vs. IPS</h3>
+        <p>Intrusion Detection Systems (IDS) and Intrusion Prevention Systems (IPS) monitor network traffic for malicious activity. The key difference is in their response capability.</p>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Feature</th><th>IDS (Detection)</th><th>IPS (Prevention)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Action</strong></td><td>Detects and <em>alerts</em> on threats (passive)</td><td>Detects, alerts, AND <em>blocks</em> threats (active/inline)</td></tr>
+              <tr><td><strong>Placement</strong></td><td>Connected to a SPAN/mirror port (out-of-band)</td><td>Placed inline &mdash; traffic passes through it</td></tr>
+              <tr><td><strong>Impact on Traffic</strong></td><td>No impact &mdash; does not alter traffic flow</td><td>Can block, drop, or modify malicious packets</td></tr>
+              <tr><td><strong>Latency</strong></td><td>None (passive monitoring)</td><td>Introduces slight latency (inline processing)</td></tr>
+              <tr><td><strong>Risk</strong></td><td>May miss blocking an attack (only alerts)</td><td>False positives can block legitimate traffic</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Detection Methods</h4>
+        <ul>
+          <li><strong>Signature-Based</strong> &mdash; Compares traffic against a database of known attack patterns (signatures). Effective against known threats. Cannot detect new (zero-day) attacks. Requires regular signature updates.</li>
+          <li><strong>Anomaly-Based (Behavioral)</strong> &mdash; Establishes a baseline of normal network behavior and alerts when traffic deviates significantly from that baseline. Can detect unknown/zero-day attacks. Higher false positive rate.</li>
+          <li><strong>Heuristic-Based</strong> &mdash; Uses rules, algorithms, and experience-based analysis to identify potentially malicious behavior. Falls between signature and anomaly-based. Can detect variants of known attacks.</li>
+        </ul>
+
+        <div class="flashcard-deck">
+          <div class="flashcard">
+            <div class="flashcard-front">NIDS vs. HIDS &mdash; What is the difference?</div>
+            <div class="flashcard-back">
+              <strong>NIDS (Network-Based IDS)</strong> monitors network traffic at strategic points (e.g., network perimeter). Analyzes packets flowing across the network.<br><br>
+              <strong>HIDS (Host-Based IDS)</strong> is installed on individual hosts/servers. Monitors system calls, file integrity, log files, and registry changes on that specific host. Protects the endpoint rather than the network.
+            </div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">What is the crossover error rate (CER)?</div>
+            <div class="flashcard-back">
+              The CER (also called the Equal Error Rate / EER) is the point at which the <strong>False Acceptance Rate (FAR)</strong> equals the <strong>False Rejection Rate (FRR)</strong> in a biometric system. A lower CER indicates a more accurate biometric system. It is used to compare the overall accuracy of different biometric devices.
+            </div>
+          </div>
+        </div>
+
+        <h3>Port Security</h3>
+        <p>Port security is a Layer 2 feature on switches that restricts which MAC addresses can connect to a given port. It limits the number of MAC addresses allowed on a port and defines what happens when a violation occurs.</p>
+        <ul>
+          <li><strong>Static MAC</strong> &mdash; Manually configure allowed MAC addresses on each port</li>
+          <li><strong>Sticky MAC</strong> &mdash; The switch dynamically learns and saves MAC addresses; they persist across reboots</li>
+          <li><strong>Violation Modes:</strong>
+            <ul>
+              <li><code>Protect</code> &mdash; Drops traffic from unknown MACs; no alert generated</li>
+              <li><code>Restrict</code> &mdash; Drops traffic from unknown MACs; generates a syslog alert and increments violation counter</li>
+              <li><code>Shutdown</code> &mdash; Places the port in error-disabled state (most secure). Port must be manually re-enabled. This is the default on most switches.</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h3>Network Access Control (NAC)</h3>
+        <p>NAC solutions evaluate devices before allowing them onto the network. A device must meet security requirements (updated antivirus, current patches, compliant configuration) before being granted access. Non-compliant devices are quarantined or given limited access.</p>
+        <ul>
+          <li><strong>Pre-admission NAC</strong> &mdash; Checks the device BEFORE granting network access</li>
+          <li><strong>Post-admission NAC</strong> &mdash; Continuously monitors devices after they are on the network; can revoke access if compliance changes</li>
+          <li><strong>Agent-based</strong> &mdash; Requires software installed on the endpoint for health checks</li>
+          <li><strong>Agentless</strong> &mdash; Performs checks without requiring software on the endpoint (e.g., via network scanning)</li>
+        </ul>
+
+        <div class="info-box tip">
+          <strong>Putting It All Together</strong>
+          A comprehensive security posture combines physical controls (locks, cameras, mantraps), logical controls (firewalls, ACLs, IDS/IPS, NAC), and administrative controls (policies, training, auditing). No single control is sufficient &mdash; defense in depth is the key principle.
+        </div>
+
+        <label class="mark-read" data-domain="4" data-section="physical">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </div>
+
+      <!-- ============================================================
+           QUIZ — DOMAIN 4
+           ============================================================ -->
+      <div class="quiz-container" id="quiz" data-domain="4">
+        <h2>Domain 4 Quiz &mdash; Network Security</h2>
+        <p>Test your knowledge of network security concepts. Select the best answer for each question, then submit to see your score.</p>
+
+        <!-- Q1 -->
+        <div class="quiz-question" data-answer="C">
+          <p>1. Which component of the CIA triad is MOST directly addressed by implementing a hashing algorithm to verify file downloads?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q4_1" value="A"> Confidentiality</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q4_1" value="B"> Availability</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q4_1" value="C"> Integrity</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q4_1" value="D"> Authentication</li>
+          </ul>
+          <div class="quiz-explanation">Hashing verifies that data has not been altered or corrupted &mdash; this directly addresses <strong>integrity</strong>. Confidentiality would be addressed by encryption, and availability by redundancy/uptime measures. Authentication is part of AAA, not the CIA triad.</div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="quiz-question" data-answer="B">
+          <p>2. An attacker sends spoofed DNS requests to a public DNS server with the source IP set to the victim's address. The DNS server replies with large responses directed at the victim. What type of attack is this?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q4_2" value="A"> SYN flood</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q4_2" value="B"> DNS amplification attack</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q4_2" value="C"> ARP poisoning</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q4_2" value="D"> Evil twin attack</li>
+          </ul>
+          <div class="quiz-explanation">This describes a <strong>DNS amplification attack</strong>. The attacker spoofs the victim's IP and sends small queries to a DNS server, which replies with much larger responses to the victim. This amplifies the attack traffic and is a type of DDoS attack.</div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="quiz-question" data-answer="D">
+          <p>3. A company wants to prevent unauthorized DHCP servers from assigning IP addresses on their network. Which feature should they enable on their switches?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q4_3" value="A"> Port security</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q4_3" value="B"> Dynamic ARP Inspection</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q4_3" value="C"> VLAN pruning</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q4_3" value="D"> DHCP snooping</li>
+          </ul>
+          <div class="quiz-explanation"><strong>DHCP snooping</strong> classifies switch ports as trusted or untrusted. Only trusted ports (connected to legitimate DHCP servers) are allowed to send DHCP offers. Untrusted ports that attempt to send DHCP offers have those packets dropped, preventing rogue DHCP servers.</div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="quiz-question" data-answer="A">
+          <p>4. In an 802.1X deployment, what is the role of the authenticator?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q4_4" value="A"> The network device (switch or AP) that controls port access</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q4_4" value="B"> The RADIUS server that validates credentials</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q4_4" value="C"> The client device requesting network access</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q4_4" value="D"> The certificate authority that issues digital certificates</li>
+          </ul>
+          <div class="quiz-explanation">In 802.1X, the <strong>authenticator</strong> is the network device (switch or wireless AP) that acts as the gatekeeper. It blocks access until the supplicant (client) authenticates through the authentication server (RADIUS). The authenticator forwards credentials but does not validate them itself.</div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="quiz-question" data-answer="C">
+          <p>5. What is the PRIMARY difference between an IDS and an IPS?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q4_5" value="A"> An IDS uses signatures while an IPS uses anomaly detection</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q4_5" value="B"> An IDS operates at Layer 3 while an IPS operates at Layer 7</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q4_5" value="C"> An IDS only alerts on threats while an IPS can actively block them</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q4_5" value="D"> An IDS is hardware-based while an IPS is software-based</li>
+          </ul>
+          <div class="quiz-explanation">The primary difference is that an <strong>IDS</strong> passively monitors traffic and generates alerts, while an <strong>IPS</strong> is placed inline and can actively block or drop malicious traffic. Both can use signature-based, anomaly-based, or heuristic detection methods.</div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="quiz-question" data-answer="B">
+          <p>6. A remote employee uses a VPN where only traffic destined for the corporate network is sent through the encrypted tunnel, while internet browsing goes directly through their home ISP. What type of VPN configuration is this?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q4_6" value="A"> Full tunnel</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q4_6" value="B"> Split tunnel</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q4_6" value="C"> Site-to-site VPN</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q4_6" value="D"> Always-on VPN</li>
+          </ul>
+          <div class="quiz-explanation"><strong>Split tunnel</strong> sends only corporate-destined traffic through the VPN while allowing internet traffic to go directly through the user's local ISP. A full tunnel would route ALL traffic through the VPN, including general internet browsing.</div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="quiz-question" data-answer="D">
+          <p>7. Which firewall type combines stateful inspection, deep packet inspection, application awareness, and integrated intrusion prevention?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q4_7" value="A"> Stateless packet filter</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q4_7" value="B"> Web Application Firewall (WAF)</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q4_7" value="C"> Stateful firewall</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q4_7" value="D"> Next-Generation Firewall (NGFW)</li>
+          </ul>
+          <div class="quiz-explanation">A <strong>Next-Generation Firewall (NGFW)</strong> combines traditional stateful inspection with deep packet inspection, application-level awareness (Layer 7), and integrated IPS capabilities. A standard stateful firewall does not provide application awareness or DPI.</div>
+        </div>
+
+        <!-- Q8 -->
+        <div class="quiz-question" data-answer="A">
+          <p>8. A security administrator needs to ensure that a compromised web server in the DMZ cannot be used to attack the internal network. Which firewall rule best accomplishes this?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q4_8" value="A"> Deny all traffic from the DMZ to the internal network</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q4_8" value="B"> Permit all traffic from the DMZ to the internal network</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q4_8" value="C"> Deny all traffic from the internet to the DMZ</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q4_8" value="D"> Permit all traffic from the internal network to the DMZ</li>
+          </ul>
+          <div class="quiz-explanation">A core DMZ security principle is that <strong>DMZ-to-internal traffic should be denied</strong>. If a server in the DMZ is compromised, this rule prevents the attacker from using it as a pivot point to reach internal resources. Traffic from the inside to the DMZ may be allowed, but never the reverse.</div>
+        </div>
+
+        <!-- Q9 -->
+        <div class="quiz-question" data-answer="C">
+          <p>9. Which IPSec component provides both encryption and integrity verification for VPN traffic?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q4_9" value="A"> AH (Authentication Header)</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q4_9" value="B"> IKE (Internet Key Exchange)</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q4_9" value="C"> ESP (Encapsulating Security Payload)</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q4_9" value="D"> GRE (Generic Routing Encapsulation)</li>
+          </ul>
+          <div class="quiz-explanation"><strong>ESP (Encapsulating Security Payload)</strong> provides confidentiality (encryption), integrity, and authentication. AH provides integrity and authentication but does NOT encrypt data. IKE is used for key negotiation, not data protection. GRE is a tunneling protocol with no built-in security.</div>
+        </div>
+
+        <!-- Q10 -->
+        <div class="quiz-question" data-answer="B">
+          <p>10. A small room with two interlocking doors is installed at the entrance to a data center. Only one door can be open at a time, and a person must authenticate before each door opens. What is this physical security control called?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q4_10" value="A"> Faraday cage</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q4_10" value="B"> Mantrap / Security vestibule</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q4_10" value="C"> Air gap</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q4_10" value="D"> Honeypot</li>
+          </ul>
+          <div class="quiz-explanation">A <strong>mantrap (security vestibule)</strong> is a small room with two interlocking doors where only one can be open at a time. It prevents tailgating by ensuring only one authenticated person passes through at a time. A Faraday cage blocks electromagnetic signals, an air gap is a network isolation method, and a honeypot is a decoy system.</div>
+        </div>
+
+        <button class="btn btn-primary btn-quiz-submit" style="width: 100%; margin-top: 1rem;">Submit Answers</button>
+
+        <div class="quiz-score">
+          <div class="score-number"></div>
+          <div class="score-label"></div>
+        </div>
+      </div>
+
+      <!-- ===== PREV / NEXT NAV ===== -->
+      <div class="domain-nav">
+        <a href="domain3.html" class="prev">
+          <div class="direction">&larr; Previous</div>
+          <div class="title">Domain 3: Network Operations</div>
+        </a>
+        <a href="domain5.html" class="next">
+          <div class="direction">Next &rarr;</div>
+          <div class="title">Domain 5: Network Troubleshooting</div>
+        </a>
+      </div>
+
+    </div><!-- /.domain-content -->
+  </div><!-- /.domain-page -->
+
+  <footer class="site-footer">
+    <p>Network+ N10-009 Study Guide &mdash; Not affiliated with CompTIA. For educational use only.</p>
+    <p style="margin-top: 0.5rem;"><a href="/">Back to Anime Syncer</a></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

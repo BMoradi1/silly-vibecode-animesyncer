@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Domain 3: Network Operations - CompTIA Network+ N10-009 Study Guide</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-domain="3">
+
+  <nav class="topnav">
+    <a href="index.html" class="topnav-brand">Network+ N10-009 <span>Study Guide</span></a>
+    <button class="hamburger" aria-label="Menu">&#9776;</button>
+    <ul class="topnav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="domain1.html">1. Concepts</a></li>
+      <li><a href="domain2.html">2. Implementation</a></li>
+      <li><a href="domain3.html" class="active">3. Operations</a></li>
+      <li><a href="domain4.html">4. Security</a></li>
+      <li><a href="domain5.html">5. Troubleshooting</a></li>
+    </ul>
+  </nav>
+
+  <div class="domain-page">
+
+    <!-- Sidebar -->
+    <aside class="domain-sidebar">
+      <div class="sidebar-title">Domain 3 &mdash; 16%</div>
+      <ul class="sidebar-nav">
+        <li><a href="#monitoring">3.1 Network Monitoring</a></li>
+        <li><a href="#documentation">3.2 Network Documentation</a></li>
+        <li><a href="#availability">3.3 High Availability &amp; DR</a></li>
+        <li><a href="#backup">3.4 Backup &amp; Recovery</a></li>
+        <li><a href="#performance">3.5 Performance &amp; QoS</a></li>
+        <li><a href="#policies">3.6 Organizational Policies</a></li>
+        <li><a href="#quiz">Domain 3 Quiz</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="domain-content">
+
+      <div class="progress-section">
+        <h3>Domain 3 Progress</h3>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" style="width: 0%"></div>
+        </div>
+        <p class="progress-text">0 of 6 sections completed (0%)</p>
+      </div>
+
+      <!-- ============================================ -->
+      <!-- SECTION 1: NETWORK MONITORING                -->
+      <!-- ============================================ -->
+      <section class="content-section" id="monitoring">
+        <h2>3.1 Network Monitoring</h2>
+
+        <p>Network monitoring is the practice of continuously observing a network for failures, performance degradation, and suspicious activity. Effective monitoring allows administrators to detect and resolve issues before they impact users, maintain service-level agreements, and plan for future capacity needs.</p>
+
+        <h3>SNMP (Simple Network Management Protocol)</h3>
+        <p>SNMP is the dominant protocol for collecting information from and configuring network devices. It uses a manager-agent architecture: a central <strong>Network Management Station (NMS)</strong> queries <strong>agents</strong> running on managed devices such as switches, routers, firewalls, and servers.</p>
+
+        <h4>SNMP Versions</h4>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>SNMPv1</th>
+                <th>SNMPv2c</th>
+                <th>SNMPv3</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Authentication</td>
+                <td>Community string (plaintext)</td>
+                <td>Community string (plaintext)</td>
+                <td>Username-based (HMAC-MD5 / HMAC-SHA)</td>
+              </tr>
+              <tr>
+                <td>Encryption</td>
+                <td>None</td>
+                <td>None</td>
+                <td>DES / AES</td>
+              </tr>
+              <tr>
+                <td>Message Integrity</td>
+                <td>No</td>
+                <td>No</td>
+                <td>Yes (hash-based)</td>
+              </tr>
+              <tr>
+                <td>Bulk Retrieval</td>
+                <td>No</td>
+                <td>Yes (<code>GetBulk</code>)</td>
+                <td>Yes</td>
+              </tr>
+              <tr>
+                <td>64-bit Counters</td>
+                <td>No</td>
+                <td>Yes</td>
+                <td>Yes</td>
+              </tr>
+              <tr>
+                <td>Security Model</td>
+                <td>Community-based</td>
+                <td>Community-based</td>
+                <td>User-based Security Model (USM)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box danger">
+          <strong>Exam Alert</strong>
+          SNMPv1 and v2c send community strings in cleartext. On the exam, if security is a concern, <strong>SNMPv3</strong> is always the correct choice because it provides authentication, encryption, and message integrity.
+        </div>
+
+        <h4>Community Strings</h4>
+        <p>Community strings function as passwords in SNMPv1 and v2c. There are two default types:</p>
+        <ul>
+          <li><strong>Read-Only (RO)</strong> &mdash; Typically defaults to <code>public</code>. Allows the NMS to query data but not change configurations.</li>
+          <li><strong>Read-Write (RW)</strong> &mdash; Typically defaults to <code>private</code>. Allows the NMS to both read and modify device configurations.</li>
+        </ul>
+        <p>Default community strings should <strong>always</strong> be changed in production environments because they are well known to attackers.</p>
+
+        <h4>MIBs and OIDs</h4>
+        <p>A <strong>Management Information Base (MIB)</strong> is a hierarchical database that defines every manageable object on a device. Each object is identified by a unique <strong>Object Identifier (OID)</strong>, which is a numeric string like <code>1.3.6.1.2.1.1.3.0</code> (system uptime). Vendors publish custom MIB files for their devices so that NMS platforms can interpret proprietary data.</p>
+
+        <h4>Traps vs. Polling</h4>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>Direction</th>
+                <th>Description</th>
+                <th>Port</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Polling</strong></td>
+                <td>NMS &rarr; Agent</td>
+                <td>The NMS sends periodic <code>Get</code> requests to collect data from agents. Predictable but generates regular traffic overhead.</td>
+                <td>UDP 161</td>
+              </tr>
+              <tr>
+                <td><strong>Traps</strong></td>
+                <td>Agent &rarr; NMS</td>
+                <td>The agent sends an unsolicited alert to the NMS when a predefined event occurs (e.g., link down, high CPU). Efficient but unreliable since traps use UDP with no acknowledgment.</td>
+                <td>UDP 162</td>
+              </tr>
+              <tr>
+                <td><strong>Informs</strong></td>
+                <td>Agent &rarr; NMS</td>
+                <td>Similar to traps but include an acknowledgment mechanism. The agent retransmits if no acknowledgment is received. Introduced in SNMPv2c.</td>
+                <td>UDP 162</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="diagram">
+  NMS (Manager)                        Managed Devices (Agents)
+ +-----------+     Polling (Get)      +----------+
+ |           | ---------------------> |  Router  |
+ |  Network  |     Response           +----------+
+ | Monitoring| <---------------------
+ |  Station  |                        +----------+
+ |           | <----- Trap (alert) -- |  Switch  |
+ +-----------+       UDP 162          +----------+
+   UDP 161                            +----------+
+                                      | Firewall |
+                                      +----------+
+        </div>
+
+        <h3>Syslog</h3>
+        <p>Syslog is a standard protocol (UDP port 514, or TCP 514 / TCP 6514 with TLS) for sending log messages from network devices to a centralized <strong>syslog server</strong>. Centralizing logs is critical for security analysis, troubleshooting, and compliance.</p>
+
+        <h4>Syslog Severity Levels</h4>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Level</th>
+                <th>Keyword</th>
+                <th>Description</th>
+                <th>Example</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>0</td><td><strong>Emergency</strong></td><td>System is unusable</td><td>Complete system failure</td></tr>
+              <tr><td>1</td><td><strong>Alert</strong></td><td>Immediate action needed</td><td>Database corruption detected</td></tr>
+              <tr><td>2</td><td><strong>Critical</strong></td><td>Critical conditions</td><td>Hardware failure, fan stopped</td></tr>
+              <tr><td>3</td><td><strong>Error</strong></td><td>Error conditions</td><td>Interface link errors</td></tr>
+              <tr><td>4</td><td><strong>Warning</strong></td><td>Warning conditions</td><td>Configuration change, memory low</td></tr>
+              <tr><td>5</td><td><strong>Notification</strong></td><td>Normal but significant</td><td>Interface up/down transitions</td></tr>
+              <tr><td>6</td><td><strong>Informational</strong></td><td>Informational messages</td><td>User login, command executed</td></tr>
+              <tr><td>7</td><td><strong>Debugging</strong></td><td>Debug-level messages</td><td>Detailed packet-level info</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box tip">
+          <strong>Mnemonic</strong>
+          Remember the syslog levels with: <em>"Every Awesome Cisco Engineer Will Need Ice-cream Daily"</em> &mdash; Emergency, Alert, Critical, Error, Warning, Notification, Informational, Debugging. Level 0 is the most severe.
+        </div>
+
+        <h3>NetFlow, sFlow, and IPFIX</h3>
+        <p>These are <strong>flow-based</strong> monitoring technologies that provide visibility into traffic patterns, application usage, and bandwidth consumption.</p>
+        <ul>
+          <li><strong>NetFlow</strong> &mdash; Developed by Cisco. Operates on routers and switches to collect IP traffic information as it enters or exits an interface. Tracks flows (defined by source/destination IP, ports, protocol, ToS, and interface). NetFlow v5 is IPv4-only; NetFlow v9 added templates and IPv6 support.</li>
+          <li><strong>sFlow</strong> &mdash; An industry-standard, multi-vendor sampling protocol. Rather than tracking every packet, sFlow samples 1-in-N packets and forwards the sample to a collector. Less resource-intensive than NetFlow on high-speed interfaces.</li>
+          <li><strong>IPFIX</strong> &mdash; IP Flow Information Export. Based on NetFlow v9 and standardized by the IETF. Considered the evolution of NetFlow with flexible template support and vendor-neutral design.</li>
+        </ul>
+
+        <h3>Bandwidth Monitoring and Interface Statistics</h3>
+        <p>Monitoring tools track key interface metrics in real time:</p>
+        <ul>
+          <li><strong>Bandwidth utilization</strong> &mdash; Percentage of available link capacity in use.</li>
+          <li><strong>Error counters</strong> &mdash; CRC errors, frame errors, collisions, input/output errors.</li>
+          <li><strong>Discards / drops</strong> &mdash; Packets dropped by the interface, often due to buffer overflow or QoS policies.</li>
+          <li><strong>Interface status</strong> &mdash; Up/down state, speed, and duplex settings.</li>
+          <li><strong>Packet counts</strong> &mdash; Unicast, broadcast, and multicast packets sent and received.</li>
+        </ul>
+
+        <h3>Baselines and Anomaly Detection</h3>
+        <p>A <strong>baseline</strong> is a snapshot of normal network behavior captured over time (typically days or weeks). Baselines establish what is "normal" for metrics like bandwidth usage, latency, CPU utilization, and connection counts. Once a reliable baseline exists, monitoring tools can detect <strong>anomalies</strong> &mdash; deviations that may indicate performance problems, misconfigurations, or security incidents.</p>
+
+        <div class="flashcard-deck">
+          <div class="flashcard">
+            <div class="flashcard-front">What port does SNMP polling use?</div>
+            <div class="flashcard-back">UDP port 161 for queries (Get/Set). Traps and Informs are sent to UDP port 162.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">What makes SNMPv3 more secure than v1/v2c?</div>
+            <div class="flashcard-back">SNMPv3 adds authentication (username + HMAC-MD5/SHA), encryption (DES/AES), and message integrity verification, replacing the plaintext community string model.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">What is the difference between a trap and an inform?</div>
+            <div class="flashcard-back">Both are agent-initiated alerts, but traps are unacknowledged (fire-and-forget), while informs require an acknowledgment from the NMS and will retransmit if not received.</div>
+          </div>
+        </div>
+
+        <label class="mark-read" data-domain="3" data-section="monitoring">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- SECTION 2: NETWORK DOCUMENTATION             -->
+      <!-- ============================================ -->
+      <section class="content-section" id="documentation">
+        <h2>3.2 Network Documentation</h2>
+
+        <p>Thorough documentation is the backbone of reliable network operations. Without it, troubleshooting takes longer, changes introduce more risk, and new team members struggle to get up to speed. The exam expects you to understand each documentation type and its purpose.</p>
+
+        <h3>Network Diagrams</h3>
+        <p>Network diagrams come in two main forms, each serving a distinct purpose:</p>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Diagram Type</th>
+                <th>Shows</th>
+                <th>Used For</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Physical Diagram</strong></td>
+                <td>Actual device locations, rack positions, cable paths, port connections, patch panels, and building/floor layouts</td>
+                <td>Cabling projects, data center planning, hardware troubleshooting, facility moves</td>
+              </tr>
+              <tr>
+                <td><strong>Logical Diagram</strong></td>
+                <td>IP addressing schemes, VLANs, subnets, routing domains, WAN links, and traffic flows &mdash; regardless of physical location</td>
+                <td>Network design review, troubleshooting connectivity, capacity planning, security audits</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="diagram">
+  Physical Diagram Example          Logical Diagram Example
+
+  [Server Room - Rack A]            VLAN 10 (192.168.10.0/24)
+   |-- Patch Panel 1A               +-----------+
+   |   |-- Port 1 --&gt; SW1 Gi0/1    | SW-CORE   |---- VLAN 20 (192.168.20.0/24)
+   |   |-- Port 2 --&gt; SW1 Gi0/2    | 10.0.0.1  |
+   |                                +-----------+
+  [Server Room - Rack B]                 |
+   |-- Patch Panel 2A              +-----+-----+
+   |   |-- Port 1 --&gt; SW2 Gi0/1   |           |
+                                 SW-ACC1    SW-ACC2
+                                 10.0.0.2   10.0.0.3
+        </div>
+
+        <h3>Wiring Documentation and Labeling Standards</h3>
+        <p>Proper cable management documentation includes:</p>
+        <ul>
+          <li><strong>Cable labels</strong> &mdash; Both ends of every cable should be labeled with a unique identifier (e.g., <code>R1-Gi0/1_to_SW1-Gi0/24</code>).</li>
+          <li><strong>Patch panel schedules</strong> &mdash; A document mapping each patch panel port to its destination jack and the connected device port.</li>
+          <li><strong>Wiring closet layouts</strong> &mdash; Diagrams showing rack elevations, power distribution, and cable pathways within MDF/IDF rooms.</li>
+          <li><strong>TIA/EIA-606 standard</strong> &mdash; Defines labeling and record-keeping for telecommunications infrastructure.</li>
+        </ul>
+
+        <h3>IP Address Management (IPAM)</h3>
+        <p>IPAM is the practice of planning, tracking, and managing IP address space across the network. IPAM tools (spreadsheets in small shops, dedicated platforms like Infoblox or phpIPAM in larger environments) track:</p>
+        <ul>
+          <li>Subnet allocations and available addresses</li>
+          <li>Static IP assignments with device names and locations</li>
+          <li>DHCP scopes and reservations</li>
+          <li>DNS records associated with IP addresses</li>
+          <li>VLAN-to-subnet mappings</li>
+        </ul>
+
+        <div class="info-box warning">
+          <strong>Exam Tip</strong>
+          IP address conflicts are a common troubleshooting scenario. Proper IPAM practices prevent duplicate static assignments and overlapping DHCP scopes. Always verify IPAM records when diagnosing connectivity issues.
+        </div>
+
+        <h3>Asset Management</h3>
+        <p>An <strong>asset inventory</strong> tracks every network device (routers, switches, APs, firewalls, servers, UPS units) along with:</p>
+        <ul>
+          <li>Make, model, serial number, and firmware/OS version</li>
+          <li>Physical location (building, floor, rack, rack unit)</li>
+          <li>Purchase date, warranty status, and end-of-life dates</li>
+          <li>Assigned IP addresses and hostnames</li>
+          <li>License information</li>
+        </ul>
+
+        <h3>Change Management</h3>
+        <p>Change management is a formal process to control modifications to the network infrastructure. It reduces the risk of outages caused by poorly planned changes. A typical change management workflow includes:</p>
+        <ol>
+          <li><strong>Request</strong> &mdash; Submit a change request describing the proposed modification.</li>
+          <li><strong>Review</strong> &mdash; A Change Advisory Board (CAB) evaluates the risk, impact, and rollback plan.</li>
+          <li><strong>Approve/Deny</strong> &mdash; The CAB approves, denies, or requests modifications.</li>
+          <li><strong>Schedule</strong> &mdash; Approved changes are scheduled during a maintenance window.</li>
+          <li><strong>Implement</strong> &mdash; The change is carried out following the documented procedure.</li>
+          <li><strong>Verify</strong> &mdash; Confirm the change works as intended.</li>
+          <li><strong>Document</strong> &mdash; Update all relevant documentation (diagrams, IPAM, configs, etc.).</li>
+        </ol>
+
+        <div class="info-box note">
+          <strong>Key Term</strong>
+          A <strong>rollback plan</strong> is a predefined set of steps to reverse a change and restore the previous working state. Every change request should include one before it is approved.
+        </div>
+
+        <h3>Standard Operating Procedures (SOPs)</h3>
+        <p>SOPs are documented, step-by-step instructions for routine tasks such as adding a new switch to the network, onboarding a user, configuring a VPN tunnel, or performing a firmware upgrade. SOPs ensure consistency, reduce human error, and allow any qualified team member to execute the task.</p>
+
+        <h3>Baseline Configurations</h3>
+        <p>A <strong>baseline configuration</strong> (also called a "golden configuration") is a standardized, security-hardened device configuration template. Every new device of a given type (e.g., access switch, branch router) should start from the baseline, with minimal deviation. Baseline configs typically include: banners, SNMP settings, syslog server, NTP server, AAA settings, disabling unused ports, and applying standard ACLs.</p>
+
+        <div class="flashcard-deck">
+          <div class="flashcard">
+            <div class="flashcard-front">What is the difference between a physical and logical network diagram?</div>
+            <div class="flashcard-back">A physical diagram shows actual hardware, cable paths, and locations. A logical diagram shows IP addresses, VLANs, subnets, and traffic flow regardless of physical placement.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">What is the purpose of a Change Advisory Board (CAB)?</div>
+            <div class="flashcard-back">The CAB reviews proposed changes to assess risk, impact, and feasibility, then approves, denies, or requests modifications before any changes are implemented.</div>
+          </div>
+        </div>
+
+        <label class="mark-read" data-domain="3" data-section="documentation">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- SECTION 3: HIGH AVAILABILITY & DR            -->
+      <!-- ============================================ -->
+      <section class="content-section" id="availability">
+        <h2>3.3 High Availability &amp; Disaster Recovery</h2>
+
+        <p>High availability (HA) is the design goal of minimizing downtime by eliminating single points of failure. Disaster recovery (DR) defines how to restore operations after a major outage or catastrophic event. Together, HA and DR ensure business continuity.</p>
+
+        <h3>Core HA Concepts</h3>
+        <ul>
+          <li><strong>Redundancy</strong> &mdash; Deploying duplicate components (links, power supplies, devices) so that a backup can take over if the primary fails.</li>
+          <li><strong>Fault Tolerance</strong> &mdash; The ability of a system to continue operating without interruption when a component fails. Requires redundancy plus automatic failover.</li>
+          <li><strong>Load Balancing</strong> &mdash; Distributing traffic or workloads across multiple resources (servers, links) to optimize performance and provide redundancy. Methods include round-robin, least connections, and weighted algorithms.</li>
+        </ul>
+
+        <h3>NIC Teaming / Bonding</h3>
+        <p>NIC teaming (Windows terminology) or NIC bonding (Linux terminology) combines two or more physical network interfaces into a single logical interface. Benefits include:</p>
+        <ul>
+          <li><strong>Failover</strong> &mdash; If one NIC fails, traffic automatically shifts to the remaining NIC(s).</li>
+          <li><strong>Increased throughput</strong> &mdash; Aggregate bandwidth of all member NICs (e.g., two 1 Gbps NICs = up to 2 Gbps throughput).</li>
+          <li><strong>Load distribution</strong> &mdash; Traffic is spread across all active NICs.</li>
+        </ul>
+
+        <h3>Link Aggregation (LACP)</h3>
+        <p><strong>Link Aggregation Control Protocol (LACP)</strong>, defined in IEEE 802.3ad (now 802.1AX), bundles multiple physical switch-to-switch or switch-to-server links into a single logical link. LACP provides:</p>
+        <ul>
+          <li>Increased bandwidth (combined capacity of all member links)</li>
+          <li>Redundancy (the aggregated link survives individual member link failures)</li>
+          <li>Dynamic negotiation between both ends to ensure both sides agree on the aggregation</li>
+        </ul>
+
+        <div class="diagram">
+        Link Aggregation (LACP)
+
+  +----------+    Gi0/1    +----------+
+  |          |=============|          |
+  | Switch A |    Gi0/2    | Switch B |
+  |          |=============|          |
+  |          |    Gi0/3    |          |
+  |          |=============|          |
+  +----------+             +----------+
+
+  3 x 1 Gbps = 1 Logical Link (up to 3 Gbps)
+  If one link fails, the aggregate continues at 2 Gbps
+        </div>
+
+        <h3>Redundant Power</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Power Solution</th>
+                <th>Purpose</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>UPS (Uninterruptible Power Supply)</strong></td>
+                <td>Provides battery backup during power loss; conditions power to prevent surges/sags</td>
+                <td>Minutes to ~1 hour (enough to gracefully shut down or until generator starts)</td>
+              </tr>
+              <tr>
+                <td><strong>Generator</strong></td>
+                <td>Provides long-term backup power during extended outages</td>
+                <td>Hours to days (limited by fuel supply)</td>
+              </tr>
+              <tr>
+                <td><strong>Dual Power Supplies</strong></td>
+                <td>Redundant PSUs in servers/switches connected to separate circuits; one can fail without device going offline</td>
+                <td>Continuous (no interruption)</td>
+              </tr>
+              <tr>
+                <td><strong>PDU (Power Distribution Unit)</strong></td>
+                <td>Distributes power to rack equipment; managed PDUs allow remote monitoring and outlet control</td>
+                <td>Continuous</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Clustering and Failover</h3>
+        <p><strong>Clustering</strong> groups multiple devices or servers to act as a single system. If one node fails, another node takes over the workload. Types include:</p>
+        <ul>
+          <li><strong>Active/Passive (Failover)</strong> &mdash; One node handles traffic while the standby monitors. The standby takes over only when the active node fails. Simple but the standby sits idle.</li>
+          <li><strong>Active/Active</strong> &mdash; All nodes handle traffic simultaneously. If one fails, the remaining nodes absorb its load. More efficient but more complex to configure.</li>
+        </ul>
+
+        <h3>First Hop Redundancy Protocols (FHRPs)</h3>
+        <p>FHRPs provide gateway redundancy by allowing multiple routers to share a single <strong>virtual IP address</strong> as the default gateway. If the active router fails, a standby router takes over the virtual IP seamlessly.</p>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Protocol</th>
+                <th>Full Name</th>
+                <th>Standard</th>
+                <th>Key Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>HSRP</strong></td>
+                <td>Hot Standby Router Protocol</td>
+                <td>Cisco proprietary</td>
+                <td>Active/standby model. One active router, one or more standby routers. Uses priority to elect active. Virtual MAC: <code>0000.0c07.acXX</code>.</td>
+              </tr>
+              <tr>
+                <td><strong>VRRP</strong></td>
+                <td>Virtual Router Redundancy Protocol</td>
+                <td>IEEE / IETF open standard (RFC 5798)</td>
+                <td>Master/backup model. Similar to HSRP but vendor-neutral. Uses priority to elect master. Virtual MAC: <code>0000.5e00.01XX</code>.</td>
+              </tr>
+              <tr>
+                <td><strong>GLBP</strong></td>
+                <td>Gateway Load Balancing Protocol</td>
+                <td>Cisco proprietary</td>
+                <td>Provides both redundancy <em>and</em> load balancing. Multiple routers actively forward traffic for the same virtual IP using different virtual MACs.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="diagram">
+  First Hop Redundancy (HSRP/VRRP)
+
+            Virtual IP: 10.0.0.1
+                    |
+         +----------+----------+
+         |                     |
+  +------+------+       +------+------+
+  |   Router A  |       |   Router B  |
+  |  10.0.0.2   |       |  10.0.0.3   |
+  |  (Active)   |       |  (Standby)  |
+  | Priority 110|       | Priority 100|
+  +-------------+       +-------------+
+
+  Hosts use 10.0.0.1 as default gateway.
+  If Router A fails, Router B claims the virtual IP.
+        </div>
+
+        <div class="info-box note">
+          <strong>Exam Note</strong>
+          HSRP and GLBP are <strong>Cisco proprietary</strong>. VRRP is the <strong>open standard</strong>. The exam may test whether you can identify which protocol is vendor-specific vs. vendor-neutral.
+        </div>
+
+        <h3>SLA Concepts</h3>
+        <p>A <strong>Service Level Agreement (SLA)</strong> is a contract between a service provider and customer that defines measurable performance metrics and guarantees, including:</p>
+        <ul>
+          <li><strong>Uptime guarantees</strong> &mdash; Often expressed as "nines" (99.9% = 8.76 hours downtime/year; 99.99% = 52.6 minutes/year; 99.999% = 5.26 minutes/year).</li>
+          <li><strong>Mean Time To Repair (MTTR)</strong> &mdash; Average time to restore service after a failure.</li>
+          <li><strong>Mean Time Between Failures (MTBF)</strong> &mdash; Average operational time between failures.</li>
+          <li><strong>Response and resolution time commitments</strong></li>
+        </ul>
+
+        <h3>RPO and RTO</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Definition</th>
+                <th>Question It Answers</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>RPO (Recovery Point Objective)</strong></td>
+                <td>The maximum acceptable amount of data loss measured in time</td>
+                <td>"How much data can we afford to lose?" (e.g., RPO of 1 hour means you need backups at least every hour)</td>
+              </tr>
+              <tr>
+                <td><strong>RTO (Recovery Time Objective)</strong></td>
+                <td>The maximum acceptable time to restore service after a disaster</td>
+                <td>"How quickly must we be back online?" (e.g., RTO of 4 hours means systems must be operational within 4 hours)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box tip">
+          <strong>Remember</strong>
+          RPO looks <em>backward</em> (how much past data can we lose?). RTO looks <em>forward</em> (how quickly must we recover?). A lower RPO requires more frequent backups. A lower RTO requires faster recovery mechanisms (hot sites, automated failover).
+        </div>
+
+        <h3>Multipathing</h3>
+        <p><strong>Multipathing</strong> provides multiple physical paths between a server and its storage (typically in SAN environments). If one path fails, the server continues to access storage over the remaining paths. Multipathing can also load-balance I/O across paths for improved performance.</p>
+
+        <div class="flashcard-deck">
+          <div class="flashcard">
+            <div class="flashcard-front">What is the difference between active/passive and active/active failover?</div>
+            <div class="flashcard-back">In active/passive, only one node processes traffic while the other waits on standby. In active/active, all nodes process traffic simultaneously, and surviving nodes absorb the failed node's load.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">Which FHRP is the open standard?</div>
+            <div class="flashcard-back">VRRP (Virtual Router Redundancy Protocol) is the open standard defined in RFC 5798. HSRP and GLBP are Cisco proprietary.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">What does 99.999% uptime ("five nines") allow in annual downtime?</div>
+            <div class="flashcard-back">Approximately 5.26 minutes of downtime per year.</div>
+          </div>
+        </div>
+
+        <label class="mark-read" data-domain="3" data-section="availability">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- SECTION 4: BACKUP & RECOVERY                 -->
+      <!-- ============================================ -->
+      <section class="content-section" id="backup">
+        <h2>3.4 Backup &amp; Recovery</h2>
+
+        <p>Backup and recovery strategies protect organizations from data loss due to hardware failures, ransomware, accidental deletion, or natural disasters. Choosing the right backup type and recovery site depends on RPO, RTO, and budget constraints.</p>
+
+        <h3>Backup Types</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Backup Type</th>
+                <th>What It Backs Up</th>
+                <th>Speed (Backup)</th>
+                <th>Speed (Restore)</th>
+                <th>Storage Used</th>
+                <th>Archive Bit</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Full</strong></td>
+                <td>All selected data, every time</td>
+                <td>Slowest</td>
+                <td>Fastest (single set needed)</td>
+                <td>Most</td>
+                <td>Clears</td>
+              </tr>
+              <tr>
+                <td><strong>Incremental</strong></td>
+                <td>Only data changed since the <em>last backup of any type</em></td>
+                <td>Fastest</td>
+                <td>Slowest (need full + all incrementals)</td>
+                <td>Least</td>
+                <td>Clears</td>
+              </tr>
+              <tr>
+                <td><strong>Differential</strong></td>
+                <td>All data changed since the <em>last full backup</em></td>
+                <td>Medium</td>
+                <td>Medium (need full + latest differential)</td>
+                <td>Medium (grows over time)</td>
+                <td>Does NOT clear</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="diagram">
+  Backup Comparison Over a Week (Full on Sunday)
+
+  Sunday: FULL backup (all data)
+     |
+  Monday:
+     Incremental: changes since Sunday (small)
+     Differential: changes since Sunday (small)
+     |
+  Tuesday:
+     Incremental: changes since Monday only (small)
+     Differential: changes since Sunday (growing)
+     |
+  Wednesday:
+     Incremental: changes since Tuesday only (small)
+     Differential: changes since Sunday (larger)
+
+  RESTORE on Wednesday failure:
+     Incremental: Full + Mon-inc + Tue-inc + Wed-inc (4 sets)
+     Differential: Full + Wed-diff (2 sets)
+        </div>
+
+        <div class="info-box danger">
+          <strong>Exam Alert</strong>
+          The key difference: <strong>Incremental</strong> backs up changes since the last backup <em>of any type</em> (and clears the archive bit). <strong>Differential</strong> backs up all changes since the last <em>full</em> backup (and does NOT clear the archive bit). This distinction is heavily tested.
+        </div>
+
+        <h3>The 3-2-1 Backup Rule</h3>
+        <p>An industry best practice for data protection:</p>
+        <ul>
+          <li><strong>3</strong> copies of your data (1 primary + 2 backups)</li>
+          <li><strong>2</strong> different storage media types (e.g., local disk + tape, or disk + cloud)</li>
+          <li><strong>1</strong> copy stored offsite (protects against site-level disasters like fire or flood)</li>
+        </ul>
+
+        <h3>Backup Rotation Schemes</h3>
+        <p><strong>Grandfather-Father-Son (GFS)</strong> is a common rotation scheme:</p>
+        <ul>
+          <li><strong>Son</strong> = Daily backups (incremental or differential), rotated weekly</li>
+          <li><strong>Father</strong> = Weekly full backups, rotated monthly</li>
+          <li><strong>Grandfather</strong> = Monthly full backups, retained for a year or longer</li>
+        </ul>
+        <p>GFS balances storage costs with retention depth, ensuring you can recover recent data granularly and older data at weekly or monthly intervals.</p>
+
+        <h3>Recovery Sites</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Site Type</th>
+                <th>Infrastructure</th>
+                <th>Data</th>
+                <th>Recovery Time</th>
+                <th>Cost</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Cold Site</strong></td>
+                <td>Basic facility (power, cooling, space) but no equipment pre-installed</td>
+                <td>None &mdash; must be shipped and restored</td>
+                <td>Days to weeks</td>
+                <td>Lowest</td>
+              </tr>
+              <tr>
+                <td><strong>Warm Site</strong></td>
+                <td>Facility with some hardware pre-installed; may need configuration</td>
+                <td>Partial or periodic replication</td>
+                <td>Hours to days</td>
+                <td>Moderate</td>
+              </tr>
+              <tr>
+                <td><strong>Hot Site</strong></td>
+                <td>Fully equipped, mirror of production environment, ready to go</td>
+                <td>Real-time or near-real-time replication</td>
+                <td>Minutes to hours</td>
+                <td>Highest</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box warning">
+          <strong>Exam Tip</strong>
+          A <strong>cloud site</strong> is increasingly common and operates similarly to a hot site but leverages cloud infrastructure. The exam may also mention it as a recovery option.
+        </div>
+
+        <h3>Snapshots</h3>
+        <p>A <strong>snapshot</strong> captures the state of a virtual machine or storage volume at a specific point in time. Snapshots are not true backups (they typically depend on the original data), but they allow rapid rollback if a change causes problems. Best practice: take a snapshot before applying patches or making major config changes, then delete it once stability is confirmed.</p>
+
+        <h3>Data Replication</h3>
+        <ul>
+          <li><strong>Synchronous replication</strong> &mdash; Data is written to both primary and remote storage simultaneously. Zero data loss (RPO = 0) but adds latency and requires low-latency links.</li>
+          <li><strong>Asynchronous replication</strong> &mdash; Data is written to the primary first, then replicated to the remote site after a short delay. Lower latency impact but some data loss is possible (RPO > 0).</li>
+        </ul>
+
+        <h3>Recovery Procedures and Verification</h3>
+        <p>A backup is only as good as your ability to restore from it. Critical practices include:</p>
+        <ul>
+          <li><strong>Regular restore testing</strong> &mdash; Periodically perform test restores to verify backup integrity and validate recovery procedures.</li>
+          <li><strong>Documented recovery procedures</strong> &mdash; Step-by-step instructions for restoring from each backup type and failover to recovery sites.</li>
+          <li><strong>Backup verification</strong> &mdash; Check logs for errors, verify file counts and checksums, and confirm backup completion.</li>
+          <li><strong>Tabletop exercises</strong> &mdash; Walk through disaster scenarios with the team to identify gaps in recovery plans without actually performing a failover.</li>
+        </ul>
+
+        <div class="flashcard-deck">
+          <div class="flashcard">
+            <div class="flashcard-front">To restore from incremental backups, what do you need?</div>
+            <div class="flashcard-back">The last full backup plus every incremental backup taken since that full. This makes incremental restores the slowest but the backup process itself the fastest.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">What does the 3-2-1 rule mean?</div>
+            <div class="flashcard-back">Keep 3 copies of data, on 2 different media types, with 1 copy stored offsite.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">What is the difference between a cold site and a hot site?</div>
+            <div class="flashcard-back">A cold site is an empty facility with just power and cooling (days to recover). A hot site is a fully equipped mirror of production with real-time data replication (minutes to recover). Hot sites cost significantly more.</div>
+          </div>
+        </div>
+
+        <label class="mark-read" data-domain="3" data-section="backup">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- SECTION 5: PERFORMANCE METRICS & QOS         -->
+      <!-- ============================================ -->
+      <section class="content-section" id="performance">
+        <h2>3.5 Performance Metrics &amp; Optimization</h2>
+
+        <p>Understanding the key metrics that define network performance is essential for both daily operations and the exam. This section covers the core measurements and the Quality of Service (QoS) mechanisms used to optimize traffic.</p>
+
+        <h3>Key Performance Metrics</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Definition</th>
+                <th>Typical Concern</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Bandwidth</strong></td>
+                <td>The maximum theoretical data transfer capacity of a link (e.g., 1 Gbps). It is a measure of capacity, not actual speed.</td>
+                <td>Insufficient bandwidth causes congestion during peak usage.</td>
+              </tr>
+              <tr>
+                <td><strong>Throughput</strong></td>
+                <td>The actual amount of data successfully transferred per unit of time. Always less than or equal to bandwidth due to overhead, errors, and congestion.</td>
+                <td>Low throughput despite high bandwidth indicates a problem (errors, congestion, misconfiguration).</td>
+              </tr>
+              <tr>
+                <td><strong>Latency</strong></td>
+                <td>The time it takes for a packet to travel from source to destination (measured in milliseconds). Includes propagation, serialization, processing, and queuing delays.</td>
+                <td>High latency degrades real-time applications (VoIP, video conferencing).</td>
+              </tr>
+              <tr>
+                <td><strong>Jitter</strong></td>
+                <td>The variation in latency between consecutive packets. If packets arrive at inconsistent intervals, the receiving application struggles to reassemble them smoothly.</td>
+                <td>VoIP and video are very sensitive to jitter. A jitter buffer can compensate for small variations.</td>
+              </tr>
+              <tr>
+                <td><strong>Packet Loss</strong></td>
+                <td>The percentage of packets that fail to reach their destination. Causes include congestion, faulty hardware, or errors on the link.</td>
+                <td>Even 1-2% packet loss can severely degrade VoIP quality. TCP retransmits lost packets; UDP does not.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box note">
+          <strong>Key Distinction</strong>
+          <strong>Bandwidth</strong> is the theoretical maximum capacity of a pipe (like the diameter of a water pipe). <strong>Throughput</strong> is how much water actually flows through. You can have a 1 Gbps link (bandwidth) but only achieve 600 Mbps throughput due to overhead, congestion, or errors.
+        </div>
+
+        <h3>Quality of Service (QoS)</h3>
+        <p>QoS is a set of techniques for managing network resources to prioritize certain traffic types over others. Without QoS, all traffic is treated equally (best effort), which can cause latency-sensitive traffic like VoIP to suffer during congestion.</p>
+
+        <h4>Traffic Classification and Marking</h4>
+        <p>Before QoS policies can act on traffic, packets must be identified and marked:</p>
+        <ul>
+          <li><strong>CoS (Class of Service)</strong> &mdash; Operates at Layer 2. Uses the 3-bit Priority Code Point (PCP) field in the 802.1Q VLAN tag. Values range from 0 (best effort) to 7 (highest priority). Only works on tagged (trunked) links.</li>
+          <li><strong>DSCP (Differentiated Services Code Point)</strong> &mdash; Operates at Layer 3. Uses 6 bits of the IP header's ToS (Type of Service) field, providing 64 possible values (0-63). DSCP markings persist across routed networks, making DSCP the preferred marking method.</li>
+        </ul>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>DSCP Value</th>
+                <th>Per-Hop Behavior</th>
+                <th>Common Use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>0 (BE)</td><td>Best Effort (Default)</td><td>General data traffic</td></tr>
+              <tr><td>46 (EF)</td><td>Expedited Forwarding</td><td>VoIP bearer (voice audio) &mdash; low latency, low jitter, low loss</td></tr>
+              <tr><td>34 (AF41)</td><td>Assured Forwarding Class 4</td><td>Video conferencing</td></tr>
+              <tr><td>26 (AF31)</td><td>Assured Forwarding Class 3</td><td>Streaming video</td></tr>
+              <tr><td>24 (CS3)</td><td>Class Selector 3</td><td>Call signaling (SIP, H.323)</td></tr>
+              <tr><td>10 (AF11)</td><td>Assured Forwarding Class 1</td><td>Bulk data transfers</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Traffic Shaping vs. Traffic Policing</h4>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Mechanism</th>
+                <th>Action on Excess Traffic</th>
+                <th>Effect</th>
+                <th>Where Used</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Traffic Shaping</strong></td>
+                <td>Buffers (delays) excess packets and sends them later when bandwidth is available</td>
+                <td>Smooths traffic to conform to a rate limit; introduces additional latency</td>
+                <td>Typically outbound on WAN interfaces</td>
+              </tr>
+              <tr>
+                <td><strong>Traffic Policing</strong></td>
+                <td>Drops or re-marks excess packets immediately</td>
+                <td>Strictly enforces a rate limit; can cause packet loss if traffic exceeds the limit</td>
+                <td>Typically inbound or at network boundaries</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box tip">
+          <strong>Exam Tip</strong>
+          Traffic <strong>shaping</strong> = buffers and delays (smoother, adds latency). Traffic <strong>policing</strong> = drops excess (stricter, causes loss). Shaping is generally used on outbound traffic; policing on inbound.
+        </div>
+
+        <h3>Congestion Management</h3>
+        <p>When a link is congested, queuing algorithms determine which packets are sent first:</p>
+        <ul>
+          <li><strong>FIFO (First In, First Out)</strong> &mdash; Default; no prioritization. All packets treated equally in a single queue.</li>
+          <li><strong>Weighted Fair Queuing (WFQ)</strong> &mdash; Allocates bandwidth proportionally among flows. Low-volume flows get priority over high-volume flows.</li>
+          <li><strong>Class-Based Weighted Fair Queuing (CBWFQ)</strong> &mdash; Extends WFQ by allowing administrators to define traffic classes with guaranteed bandwidth minimums.</li>
+          <li><strong>Low Latency Queuing (LLQ)</strong> &mdash; Adds a strict priority queue to CBWFQ for delay-sensitive traffic like VoIP. The priority queue is always served first.</li>
+        </ul>
+
+        <h3>WAN Optimization</h3>
+        <p>WAN optimization techniques reduce bandwidth consumption and improve application performance over slow or expensive WAN links:</p>
+        <ul>
+          <li><strong>Deduplication</strong> &mdash; Identifies and eliminates redundant data patterns across transfers, sending only unique byte sequences.</li>
+          <li><strong>Compression</strong> &mdash; Reduces the size of data in transit using algorithms like LZ or deflate.</li>
+          <li><strong>Protocol optimization</strong> &mdash; Reduces the "chattiness" of protocols like CIFS/SMB and HTTP by locally acknowledging requests and batching operations.</li>
+          <li><strong>Caching</strong> &mdash; Stores frequently accessed content locally so subsequent requests are served without traversing the WAN.</li>
+        </ul>
+
+        <h3>CDN (Content Delivery Network)</h3>
+        <p>A CDN is a geographically distributed network of proxy servers that cache and deliver content from locations close to end users. CDNs reduce latency, offload traffic from the origin server, and improve availability. Examples include Cloudflare, Akamai, and AWS CloudFront.</p>
+
+        <div class="flashcard-deck">
+          <div class="flashcard">
+            <div class="flashcard-front">What DSCP value is used for VoIP bearer traffic?</div>
+            <div class="flashcard-back">DSCP 46, which maps to the Expedited Forwarding (EF) Per-Hop Behavior. EF provides low latency, low jitter, and low packet loss treatment.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">What is the difference between traffic shaping and policing?</div>
+            <div class="flashcard-back">Shaping buffers excess traffic and releases it at a controlled rate (adds latency but avoids drops). Policing drops or re-marks packets that exceed the configured rate (no buffering, may cause packet loss).</div>
+          </div>
+        </div>
+
+        <label class="mark-read" data-domain="3" data-section="performance">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- SECTION 6: ORGANIZATIONAL POLICIES           -->
+      <!-- ============================================ -->
+      <section class="content-section" id="policies">
+        <h2>3.6 Organizational Policies</h2>
+
+        <p>Network operations exist within a framework of organizational policies and procedures. These policies govern how employees, contractors, and systems interact with the network. The exam tests your ability to identify the correct policy for a given scenario.</p>
+
+        <h3>Acceptable Use Policy (AUP)</h3>
+        <p>An AUP defines what users are and are not allowed to do on the organization's network and IT resources. It typically covers:</p>
+        <ul>
+          <li>Permitted use of internet, email, and company devices</li>
+          <li>Prohibited activities (illegal downloads, personal business, accessing inappropriate content)</li>
+          <li>Consequences for violations</li>
+          <li>Monitoring disclosure (informing users their activity may be monitored)</li>
+        </ul>
+        <p>Employees typically sign the AUP during onboarding.</p>
+
+        <h3>Password Policies</h3>
+        <p>Password policies define the minimum requirements for authentication credentials:</p>
+        <ul>
+          <li><strong>Complexity requirements</strong> &mdash; Minimum length, mix of uppercase, lowercase, numbers, and special characters</li>
+          <li><strong>Expiration / rotation</strong> &mdash; How often passwords must be changed (note: modern guidance like NIST 800-63B de-emphasizes forced rotation)</li>
+          <li><strong>Account lockout</strong> &mdash; Number of failed attempts before an account is locked</li>
+          <li><strong>Password history</strong> &mdash; Prevents reuse of recent passwords</li>
+          <li><strong>Multi-factor authentication (MFA)</strong> &mdash; Requiring a second factor (something you have or are) in addition to the password</li>
+        </ul>
+
+        <h3>BYOD (Bring Your Own Device) Policies</h3>
+        <p>BYOD policies govern the use of personal devices (smartphones, laptops, tablets) on the corporate network. Key considerations:</p>
+        <ul>
+          <li>Which devices and operating systems are permitted</li>
+          <li>Required security controls (MDM enrollment, encryption, screen lock, antivirus)</li>
+          <li>Network segmentation (placing BYOD devices on a separate VLAN/SSID)</li>
+          <li>Data ownership and remote wipe capabilities</li>
+          <li>Privacy boundaries between personal and corporate data</li>
+        </ul>
+
+        <h3>Remote Access Policies</h3>
+        <p>These policies define the rules for connecting to the corporate network from external locations:</p>
+        <ul>
+          <li>Approved remote access methods (VPN, virtual desktop, SSH)</li>
+          <li>Required security posture (up-to-date OS, active antivirus, personal firewall)</li>
+          <li>MFA requirements for remote sessions</li>
+          <li>Restrictions on split tunneling</li>
+          <li>Session timeout and idle disconnect settings</li>
+        </ul>
+
+        <h3>Security Policies</h3>
+        <p>Overarching security policies establish the organization's security posture and serve as the foundation for all other security-related documents. They define:</p>
+        <ul>
+          <li>Information classification levels (public, internal, confidential, restricted)</li>
+          <li>Access control principles (least privilege, need-to-know)</li>
+          <li>Physical security requirements</li>
+          <li>Encryption requirements for data at rest and in transit</li>
+          <li>Audit and logging requirements</li>
+        </ul>
+
+        <h3>Onboarding and Offboarding Procedures</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Onboarding (New Employee)</th>
+                <th>Offboarding (Departing Employee)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Create user accounts (AD, email, VPN, applications)</td><td>Disable / delete user accounts immediately</td></tr>
+              <tr><td>Assign appropriate group memberships and permissions</td><td>Revoke VPN, badge access, and MFA tokens</td></tr>
+              <tr><td>Issue hardware (laptop, phone, badge)</td><td>Collect company hardware, badge, and keys</td></tr>
+              <tr><td>Sign AUP, NDA, and security policy acknowledgments</td><td>Transfer or archive user data and email</td></tr>
+              <tr><td>Provide security awareness training</td><td>Change shared credentials the user had access to</td></tr>
+              <tr><td>Configure workstation per baseline config</td><td>Conduct exit interview regarding data handling</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box warning">
+          <strong>Exam Tip</strong>
+          The <strong>most critical offboarding step</strong> is immediately disabling the departing employee's accounts and revoking access. Delays in this process create a security risk (a disgruntled ex-employee could access systems).
+        </div>
+
+        <h3>Safety Procedures</h3>
+        <ul>
+          <li><strong>ESD (Electrostatic Discharge) prevention</strong> &mdash; Use anti-static wrist straps, ESD mats, and grounded workstations when handling sensitive electronics to prevent static damage to components.</li>
+          <li><strong>Proper lifting techniques</strong> &mdash; Bend at the knees, keep the back straight, and use equipment carts or ask for help when moving heavy items like servers, UPS units, or switches.</li>
+          <li><strong>Electrical safety</strong> &mdash; De-energize circuits before working on them, use lockout/tagout (LOTO) procedures, and be aware of high-voltage components in UPS and PDU systems.</li>
+          <li><strong>Material Safety Data Sheets (MSDS/SDS)</strong> &mdash; Documentation for chemical hazards (e.g., battery acid in UPS, toner cartridges). Must be accessible to all employees.</li>
+        </ul>
+
+        <h3>Key Agreements and Plans</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Document</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>NDA (Non-Disclosure Agreement)</strong></td>
+                <td>Legal contract preventing employees or contractors from sharing confidential information with unauthorized parties.</td>
+              </tr>
+              <tr>
+                <td><strong>SLA (Service Level Agreement)</strong></td>
+                <td>Defines measurable service performance targets between a provider and customer (uptime, response time, MTTR).</td>
+              </tr>
+              <tr>
+                <td><strong>MOU (Memorandum of Understanding)</strong></td>
+                <td>A non-binding agreement between parties outlining mutual intentions. Less formal than an SLA.</td>
+              </tr>
+              <tr>
+                <td><strong>Incident Response Plan</strong></td>
+                <td>Documented procedures for detecting, containing, eradicating, and recovering from security incidents. Defines roles, escalation paths, and communication procedures.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Data Loss Prevention (DLP)</h3>
+        <p>DLP systems monitor and control data movement to prevent sensitive information from leaving the organization. DLP can operate at multiple levels:</p>
+        <ul>
+          <li><strong>Network DLP</strong> &mdash; Monitors data in transit across the network (email, web uploads, file transfers).</li>
+          <li><strong>Endpoint DLP</strong> &mdash; Monitors and controls data on user devices (copy to USB, print, screenshot).</li>
+          <li><strong>Cloud DLP</strong> &mdash; Monitors data stored in and transferred to cloud services.</li>
+        </ul>
+        <p>DLP policies can be configured to detect credit card numbers, Social Security numbers, medical records, and other sensitive data patterns, then block, quarantine, or alert on the transfer.</p>
+
+        <h3>Compliance Frameworks</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Framework</th>
+                <th>Full Name</th>
+                <th>Applies To</th>
+                <th>Focus</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>GDPR</strong></td>
+                <td>General Data Protection Regulation</td>
+                <td>Any organization handling personal data of EU residents</td>
+                <td>Data privacy, consent, right to erasure, breach notification within 72 hours</td>
+              </tr>
+              <tr>
+                <td><strong>HIPAA</strong></td>
+                <td>Health Insurance Portability and Accountability Act</td>
+                <td>Healthcare providers, insurers, business associates in the US</td>
+                <td>Protection of PHI (Protected Health Information), requires encryption, audit controls, access restrictions</td>
+              </tr>
+              <tr>
+                <td><strong>PCI-DSS</strong></td>
+                <td>Payment Card Industry Data Security Standard</td>
+                <td>Any organization that stores, processes, or transmits credit card data</td>
+                <td>Cardholder data protection, network segmentation, encryption, vulnerability management, access control</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box note">
+          <strong>Exam Note</strong>
+          You do not need to memorize every detail of these compliance frameworks, but you should know which framework applies to a given scenario. GDPR = EU personal data. HIPAA = US healthcare data. PCI-DSS = credit card data.
+        </div>
+
+        <div class="flashcard-deck">
+          <div class="flashcard">
+            <div class="flashcard-front">What is an Acceptable Use Policy (AUP)?</div>
+            <div class="flashcard-back">A document that defines the permitted and prohibited uses of an organization's network and IT resources by its users. It is typically signed during onboarding.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">Which compliance framework governs credit card data?</div>
+            <div class="flashcard-back">PCI-DSS (Payment Card Industry Data Security Standard). It applies to any organization that stores, processes, or transmits cardholder data.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">What is DLP and what are its three deployment types?</div>
+            <div class="flashcard-back">DLP (Data Loss Prevention) monitors and controls data movement to prevent sensitive information from leaving the organization. It can be deployed as Network DLP (in transit), Endpoint DLP (on devices), and Cloud DLP (in cloud services).</div>
+          </div>
+        </div>
+
+        <label class="mark-read" data-domain="3" data-section="policies">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- QUIZ                                         -->
+      <!-- ============================================ -->
+      <div class="quiz-container" id="quiz" data-domain="3">
+        <h2>Domain 3 Quiz &mdash; Network Operations</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Test your knowledge of network monitoring, documentation, HA/DR, backups, performance, and organizational policies. Select the best answer for each question.</p>
+
+        <!-- Q1 -->
+        <div class="quiz-question" data-answer="C">
+          <p>1. Which version of SNMP provides authentication, encryption, and message integrity?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q3-1" value="A"> SNMPv1</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q3-1" value="B"> SNMPv2c</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q3-1" value="C"> SNMPv3</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q3-1" value="D"> SNMPv2p</li>
+          </ul>
+          <div class="quiz-explanation">SNMPv3 uses the User-based Security Model (USM) providing authentication (HMAC-MD5/SHA), encryption (DES/AES), and message integrity. SNMPv1 and v2c only use community strings sent in cleartext.</div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="quiz-question" data-answer="B">
+          <p>2. A network administrator needs to restore a server after a failure. The backup strategy uses a full backup on Sunday and incremental backups Monday through Friday. The failure occurs on Thursday morning. Which backups are needed?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q3-2" value="A"> Sunday full + Wednesday incremental only</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q3-2" value="B"> Sunday full + Monday, Tuesday, and Wednesday incrementals</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q3-2" value="C"> Sunday full only</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q3-2" value="D"> Wednesday incremental only</li>
+          </ul>
+          <div class="quiz-explanation">Incremental backups only capture changes since the last backup of any type. To restore, you need the last full backup plus every incremental since then: Sunday full + Monday, Tuesday, and Wednesday incrementals.</div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="quiz-question" data-answer="D">
+          <p>3. What is syslog severity level 0?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q3-3" value="A"> Debugging</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q3-3" value="B"> Warning</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q3-3" value="C"> Informational</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q3-3" value="D"> Emergency</li>
+          </ul>
+          <div class="quiz-explanation">Syslog severity level 0 is Emergency (system unusable), the most critical level. Level 7 (Debugging) is the least severe. Remember: lower number = higher severity.</div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="quiz-question" data-answer="A">
+          <p>4. Which first hop redundancy protocol is an open standard?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q3-4" value="A"> VRRP</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q3-4" value="B"> HSRP</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q3-4" value="C"> GLBP</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q3-4" value="D"> STP</li>
+          </ul>
+          <div class="quiz-explanation">VRRP (Virtual Router Redundancy Protocol) is the open standard (RFC 5798). HSRP and GLBP are both Cisco proprietary. STP is a spanning tree protocol, not an FHRP.</div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="quiz-question" data-answer="C">
+          <p>5. An organization needs the fastest possible recovery time and can afford the highest cost. Which disaster recovery site type should they implement?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q3-5" value="A"> Cold site</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q3-5" value="B"> Warm site</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q3-5" value="C"> Hot site</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q3-5" value="D"> Mobile site</li>
+          </ul>
+          <div class="quiz-explanation">A hot site is a fully equipped mirror of the production environment with real-time data replication. It provides the fastest recovery time (minutes to hours) but at the highest cost.</div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="quiz-question" data-answer="B">
+          <p>6. Which QoS mechanism buffers excess traffic and sends it later at a controlled rate rather than dropping it?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q3-6" value="A"> Traffic policing</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q3-6" value="B"> Traffic shaping</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q3-6" value="C"> Traffic classification</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q3-6" value="D"> Traffic mirroring</li>
+          </ul>
+          <div class="quiz-explanation">Traffic shaping buffers excess traffic and releases it at a controlled rate, smoothing bursts. Traffic policing drops or re-marks excess traffic immediately without buffering.</div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="quiz-question" data-answer="D">
+          <p>7. A departing employee's access should be handled according to which procedure?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q3-7" value="A"> Onboarding</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q3-7" value="B"> Change management</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q3-7" value="C"> Incident response</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q3-7" value="D"> Offboarding</li>
+          </ul>
+          <div class="quiz-explanation">Offboarding procedures handle departing employees, including disabling accounts, revoking access, collecting hardware, and archiving data. This must be done immediately to prevent unauthorized access.</div>
+        </div>
+
+        <!-- Q8 -->
+        <div class="quiz-question" data-answer="A">
+          <p>8. Which compliance framework specifically governs the protection of credit card holder data?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q3-8" value="A"> PCI-DSS</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q3-8" value="B"> HIPAA</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q3-8" value="C"> GDPR</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q3-8" value="D"> SOX</li>
+          </ul>
+          <div class="quiz-explanation">PCI-DSS (Payment Card Industry Data Security Standard) applies to any organization that stores, processes, or transmits credit card data. HIPAA covers healthcare data, and GDPR covers EU personal data.</div>
+        </div>
+
+        <!-- Q9 -->
+        <div class="quiz-question" data-answer="C">
+          <p>9. What does RPO (Recovery Point Objective) measure?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q3-9" value="A"> The maximum time to restore a failed system</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q3-9" value="B"> The average time between hardware failures</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q3-9" value="C"> The maximum acceptable amount of data loss measured in time</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q3-9" value="D"> The percentage of uptime guaranteed by a vendor</li>
+          </ul>
+          <div class="quiz-explanation">RPO defines the maximum acceptable amount of data loss, measured in time. An RPO of 4 hours means you can tolerate losing up to 4 hours of data. The maximum time to restore is the RTO (Recovery Time Objective).</div>
+        </div>
+
+        <!-- Q10 -->
+        <div class="quiz-question" data-answer="B">
+          <p>10. A network monitoring system sends periodic GET requests to devices to collect interface statistics. Which SNMP method is this?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q3-10" value="A"> Trap</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q3-10" value="B"> Polling</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q3-10" value="C"> Inform</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q3-10" value="D"> Walk</li>
+          </ul>
+          <div class="quiz-explanation">Polling is when the NMS (Network Management Station) sends periodic Get requests to agents on managed devices (UDP port 161). Traps and Informs are agent-initiated alerts sent to the NMS (UDP port 162).</div>
+        </div>
+
+        <button class="btn btn-primary btn-quiz-submit">Submit Answers</button>
+
+        <div class="quiz-score">
+          <div class="score-number"></div>
+          <div class="score-label"></div>
+        </div>
+      </div>
+
+      <!-- Prev / Next Navigation -->
+      <div class="domain-nav">
+        <a href="domain2.html" class="prev">
+          <div class="direction">&larr; Previous</div>
+          <div class="title">Domain 2: Network Implementation</div>
+        </a>
+        <a href="domain4.html" class="next">
+          <div class="direction">Next &rarr;</div>
+          <div class="title">Domain 4: Network Security</div>
+        </a>
+      </div>
+
+    </div><!-- /domain-content -->
+  </div><!-- /domain-page -->
+
+  <footer class="site-footer">
+    <p>Network+ N10-009 Study Guide &mdash; Not affiliated with CompTIA. For educational use only.</p>
+    <p style="margin-top: 0.5rem;"><a href="/">Back to Anime Syncer</a></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
