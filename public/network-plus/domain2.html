@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Domain 2: Network Implementation &mdash; CompTIA Network+ N10-009</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-domain="2">
+
+  <nav class="topnav">
+    <a href="index.html" class="topnav-brand">Network+ N10-009 <span>Study Guide</span></a>
+    <button class="hamburger" aria-label="Menu">&#9776;</button>
+    <ul class="topnav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="domain1.html">1. Concepts</a></li>
+      <li><a href="domain2.html" class="active">2. Implementation</a></li>
+      <li><a href="domain3.html">3. Operations</a></li>
+      <li><a href="domain4.html">4. Security</a></li>
+      <li><a href="domain5.html">5. Troubleshooting</a></li>
+    </ul>
+  </nav>
+
+  <div class="domain-page">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="domain-sidebar">
+      <div class="sidebar-title">Domain 2 &mdash; 19%</div>
+      <ul class="sidebar-nav">
+        <li><a href="#routing">Routing Concepts</a></li>
+        <li><a href="#switching">Switching &amp; VLANs</a></li>
+        <li><a href="#wireless">Wireless Networking</a></li>
+        <li><a href="#wan">WAN Technologies</a></li>
+        <li><a href="#cabling">Cabling &amp; Connectors</a></li>
+        <li><a href="#devices">Network Devices</a></li>
+        <li><a href="#quiz">Domain 2 Quiz</a></li>
+      </ul>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="domain-content">
+
+      <div class="progress-section">
+        <h3>Domain 2 Progress</h3>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" style="width: 0%"></div>
+        </div>
+        <p class="progress-text">0 of 6 sections completed (0%)</p>
+      </div>
+
+      <!-- ============================================================ -->
+      <!--  SECTION 1: ROUTING CONCEPTS                                 -->
+      <!-- ============================================================ -->
+      <section class="content-section" id="routing">
+        <h2>2.1 Routing Concepts</h2>
+
+        <p>Routing is the process of selecting a path across one or more networks for traffic to travel from a source to a destination. Routers operate at <strong>Layer 3 (Network)</strong> of the OSI model and make forwarding decisions based on destination IP addresses.</p>
+
+        <h3>Default Gateway</h3>
+        <p>The <strong>default gateway</strong> is the router interface that serves as the exit point for a subnet. When a host needs to communicate with a device on a different network, it forwards the packet to its default gateway. Without a properly configured default gateway, a host can only communicate with devices on its own local subnet.</p>
+
+        <div class="info-box note">
+          <strong>Exam Note</strong>
+          The default gateway must be on the same subnet as the host. A misconfigured default gateway is one of the most common causes of connectivity problems to remote networks.
+        </div>
+
+        <h3>Routing Tables</h3>
+        <p>Every router maintains a <strong>routing table</strong> &mdash; a data structure that lists known network destinations and the best path (next-hop address or exit interface) to reach each one. Routing table entries are populated by:</p>
+        <ul>
+          <li><strong>Directly connected networks</strong> &mdash; automatically added when interfaces are configured and brought up</li>
+          <li><strong>Static routes</strong> &mdash; manually configured by an administrator</li>
+          <li><strong>Dynamic routing protocols</strong> &mdash; learned automatically from neighboring routers</li>
+        </ul>
+
+        <p>When a packet arrives, the router performs a <strong>longest prefix match</strong> lookup. If multiple routes match, the most specific route (longest subnet mask) wins. If no match is found, the packet is forwarded via the <strong>default route</strong> (0.0.0.0/0) or dropped if none exists.</p>
+
+        <div class="diagram">
+Routing Table Example
+=====================================================
+Destination       Subnet Mask       Next Hop     Type
+-----------------------------------------------------
+10.1.1.0          255.255.255.0     --           Connected
+10.2.2.0          255.255.255.0     10.1.1.2     Static
+192.168.0.0       255.255.0.0       10.1.1.3     OSPF
+0.0.0.0           0.0.0.0           10.1.1.1     Default
+=====================================================
+        </div>
+
+        <h3>Static vs. Dynamic Routing</h3>
+        <p><strong>Static routing</strong> requires an administrator to manually add, modify, and remove routes. It works well for small, predictable networks but does not adapt to topology changes automatically.</p>
+        <p><strong>Dynamic routing</strong> uses routing protocols so routers exchange information and automatically update their tables when the network changes. It is essential for large, complex, or frequently changing environments.</p>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Static Routing</th>
+                <th>Dynamic Routing</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Configuration</td><td>Manual</td><td>Automatic (protocol-based)</td></tr>
+              <tr><td>Scalability</td><td>Low &mdash; impractical for large networks</td><td>High &mdash; scales well</td></tr>
+              <tr><td>Adaptability</td><td>Does not adapt to changes</td><td>Adapts to topology changes</td></tr>
+              <tr><td>Resource usage</td><td>No CPU/bandwidth overhead</td><td>Consumes CPU, memory, and bandwidth</td></tr>
+              <tr><td>Security</td><td>More secure (no route advertisements)</td><td>Potential for route poisoning/spoofing</td></tr>
+              <tr><td>Best for</td><td>Stub networks, default routes, small sites</td><td>Enterprise, campus, WAN, ISPs</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Distance-Vector vs. Link-State Protocols</h3>
+        <p>Dynamic routing protocols fall into two major categories:</p>
+        <ul>
+          <li><strong>Distance-vector</strong> &mdash; Routers share their entire routing table with directly connected neighbors at regular intervals. They choose paths based on a metric such as hop count. Examples: <strong>RIP</strong>, <strong>EIGRP</strong> (hybrid/advanced distance-vector). Susceptible to routing loops; mitigations include split horizon, route poisoning, and hold-down timers.</li>
+          <li><strong>Link-state</strong> &mdash; Routers build a complete map (topology database) of the network by flooding link-state advertisements (LSAs). Each router independently calculates the shortest path using Dijkstra's SPF algorithm. Example: <strong>OSPF</strong>. Converges faster, but uses more memory and CPU.</li>
+        </ul>
+
+        <h3>Path-Vector Protocol</h3>
+        <p><strong>BGP (Border Gateway Protocol)</strong> is classified as a <strong>path-vector</strong> protocol. It is the routing protocol of the Internet, exchanging reachability information between autonomous systems (AS). BGP makes routing decisions based on path attributes, policies, and network policies rather than a simple metric.</p>
+
+        <h3>Routing Protocol Comparison</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Protocol</th>
+                <th>Type</th>
+                <th>Algorithm</th>
+                <th>Metric</th>
+                <th>AD</th>
+                <th>Scope</th>
+                <th>Key Facts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>RIPv2</strong></td>
+                <td>Distance-vector</td>
+                <td>Bellman-Ford</td>
+                <td>Hop count (max 15)</td>
+                <td>120</td>
+                <td>Interior (IGP)</td>
+                <td>Simple, slow convergence, 30-sec updates, limited to small networks</td>
+              </tr>
+              <tr>
+                <td><strong>OSPF</strong></td>
+                <td>Link-state</td>
+                <td>Dijkstra (SPF)</td>
+                <td>Cost (based on bandwidth)</td>
+                <td>110</td>
+                <td>Interior (IGP)</td>
+                <td>Fast convergence, uses areas for scalability, open standard</td>
+              </tr>
+              <tr>
+                <td><strong>EIGRP</strong></td>
+                <td>Advanced distance-vector (hybrid)</td>
+                <td>DUAL</td>
+                <td>Composite (bandwidth, delay, load, reliability)</td>
+                <td>90 (internal) / 170 (external)</td>
+                <td>Interior (IGP)</td>
+                <td>Cisco-originated (now open), fast convergence, supports unequal-cost load balancing</td>
+              </tr>
+              <tr>
+                <td><strong>BGP</strong></td>
+                <td>Path-vector</td>
+                <td>Best-path selection</td>
+                <td>Path attributes (AS-path, MED, local pref, etc.)</td>
+                <td>20 (eBGP) / 200 (iBGP)</td>
+                <td>Exterior (EGP)</td>
+                <td>Internet backbone, policy-based, connects autonomous systems</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Administrative Distance (AD)</h3>
+        <p>When a router learns about the same destination from multiple sources, it uses <strong>administrative distance</strong> to determine which source is most trustworthy. <strong>Lower AD = more trusted.</strong></p>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Route Source</th><th>Administrative Distance</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Directly connected</td><td>0</td></tr>
+              <tr><td>Static route</td><td>1</td></tr>
+              <tr><td>eBGP</td><td>20</td></tr>
+              <tr><td>EIGRP (internal)</td><td>90</td></tr>
+              <tr><td>OSPF</td><td>110</td></tr>
+              <tr><td>RIP</td><td>120</td></tr>
+              <tr><td>EIGRP (external)</td><td>170</td></tr>
+              <tr><td>iBGP</td><td>200</td></tr>
+              <tr><td>Unknown / untrusted</td><td>255 (never used)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box tip">
+          <strong>Memory Aid</strong>
+          Remember the AD values: Connected (0), Static (1), eBGP (20), EIGRP (90), OSPF (110), RIP (120). Think: "Calm Students Earn Every Outstanding Result" for the order from lowest to highest.
+        </div>
+
+        <div class="flashcard-deck">
+          <div class="flashcard">
+            <div class="flashcard-front">What is the maximum hop count for RIP?</div>
+            <div class="flashcard-back">15 hops. A destination 16 hops away is considered unreachable. This limits RIP to small network deployments.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">What algorithm does OSPF use?</div>
+            <div class="flashcard-back">Dijkstra's Shortest Path First (SPF) algorithm. Each OSPF router builds a topology map and independently calculates the best path to every destination.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">What is the difference between IGP and EGP?</div>
+            <div class="flashcard-back">An Interior Gateway Protocol (IGP) routes within a single autonomous system (e.g., OSPF, EIGRP, RIP). An Exterior Gateway Protocol (EGP) routes between autonomous systems (e.g., BGP).</div>
+          </div>
+        </div>
+
+        <label class="mark-read" data-domain="2" data-section="routing">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </section>
+
+      <!-- ============================================================ -->
+      <!--  SECTION 2: SWITCHING & VLANs                                -->
+      <!-- ============================================================ -->
+      <section class="content-section" id="switching">
+        <h2>2.2 Switching &amp; VLANs</h2>
+
+        <p>Switching operates at <strong>Layer 2 (Data Link)</strong> of the OSI model. Switches use <strong>MAC addresses</strong> to forward frames within a local network, providing dedicated bandwidth to each port and creating separate collision domains.</p>
+
+        <h3>MAC Address Table</h3>
+        <p>A switch maintains a <strong>MAC address table</strong> (also called a CAM table) that maps MAC addresses to switch ports. When a frame arrives:</p>
+        <ol>
+          <li><strong>Learning</strong> &mdash; The switch records the source MAC address and the port it arrived on.</li>
+          <li><strong>Forwarding</strong> &mdash; If the destination MAC is in the table, the frame is sent out the associated port.</li>
+          <li><strong>Flooding</strong> &mdash; If the destination MAC is unknown (not in the table), the frame is sent out all ports except the one it arrived on.</li>
+          <li><strong>Filtering</strong> &mdash; If the source and destination are on the same port, the frame is dropped (filtered).</li>
+        </ol>
+
+        <h3>Spanning Tree Protocol (STP / 802.1D)</h3>
+        <p>When switches are connected in redundant topologies, <strong>Layer 2 loops</strong> can form, causing broadcast storms, MAC table instability, and duplicate frames. <strong>STP</strong> prevents this by logically blocking redundant paths.</p>
+        <ul>
+          <li><strong>Root Bridge</strong> &mdash; The switch with the lowest Bridge ID (priority + MAC) becomes the root. All traffic flows toward it.</li>
+          <li><strong>Root Port</strong> &mdash; Each non-root switch selects one port with the lowest cost path to the root bridge.</li>
+          <li><strong>Designated Port</strong> &mdash; One port per segment that forwards traffic toward the root bridge.</li>
+          <li><strong>Blocked Port</strong> &mdash; Redundant ports that are disabled to prevent loops but can activate if a failure occurs.</li>
+        </ul>
+        <p><strong>STP Port States:</strong> Blocking &rarr; Listening &rarr; Learning &rarr; Forwarding (convergence can take 30&ndash;50 seconds).</p>
+
+        <h3>Rapid Spanning Tree Protocol (RSTP / 802.1w)</h3>
+        <p>RSTP dramatically improves convergence time (often under 6 seconds) by introducing new port roles and states:</p>
+        <ul>
+          <li><strong>Alternate Port</strong> &mdash; Backup to the root port (replaces STP's blocked state for root port failure)</li>
+          <li><strong>Backup Port</strong> &mdash; Backup to the designated port on the same segment</li>
+          <li>Port states simplified to: <strong>Discarding</strong>, <strong>Learning</strong>, <strong>Forwarding</strong></li>
+        </ul>
+
+        <div class="info-box warning">
+          <strong>Exam Warning</strong>
+          Know the difference between STP (802.1D) and RSTP (802.1w). The exam tests on port states and convergence time. STP takes 30-50 seconds; RSTP converges in seconds.
+        </div>
+
+        <h3>VLANs (Virtual Local Area Networks)</h3>
+        <p>A VLAN is a <strong>logical segmentation</strong> of a physical switch into multiple broadcast domains. Devices on different VLANs cannot communicate without a Layer 3 device (router or Layer 3 switch).</p>
+        <ul>
+          <li>Reduces broadcast traffic by limiting the broadcast domain</li>
+          <li>Improves security by isolating sensitive traffic</li>
+          <li>Simplifies network management (group by function, not location)</li>
+          <li>VLAN 1 is the default VLAN on most switches (avoid using it in production)</li>
+        </ul>
+
+        <h3>Access Ports vs. Trunk Ports</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Feature</th><th>Access Port</th><th>Trunk Port</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>VLAN membership</td><td>Single VLAN</td><td>Multiple VLANs</td></tr>
+              <tr><td>Connected to</td><td>End devices (PCs, printers, phones)</td><td>Other switches, routers, or APs</td></tr>
+              <tr><td>Tagging</td><td>No VLAN tag on frames</td><td>Frames tagged with 802.1Q VLAN ID</td></tr>
+              <tr><td>Purpose</td><td>Assigns a port to a specific VLAN</td><td>Carries traffic for multiple VLANs between switches</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>802.1Q Tagging</h3>
+        <p><strong>IEEE 802.1Q</strong> is the standard for VLAN tagging. It inserts a 4-byte tag into the Ethernet frame header that includes the VLAN ID (12 bits, supporting VLANs 1&ndash;4094). The <strong>native VLAN</strong> is the VLAN whose traffic travels across a trunk port untagged. Both ends of a trunk must agree on the native VLAN to avoid VLAN mismatches.</p>
+
+        <h3>Inter-VLAN Routing</h3>
+        <p>Since VLANs are separate broadcast domains, a Layer 3 device is needed for communication between them:</p>
+        <ul>
+          <li><strong>Router-on-a-stick</strong> &mdash; A single router interface with sub-interfaces, each assigned to a VLAN. The router's physical port connects to the switch via a trunk link.</li>
+          <li><strong>Layer 3 switch (SVI)</strong> &mdash; A managed switch that can route between VLANs using Switch Virtual Interfaces. Faster and more common in enterprise environments.</li>
+        </ul>
+
+        <div class="diagram">
+Router-on-a-Stick
+================================
+       [Router]
+     Fa0/0.10 (VLAN 10)
+     Fa0/0.20 (VLAN 20)
+         |
+      Trunk (802.1Q)
+         |
+      [Switch]
+     /        \
+  Access     Access
+  Port 1     Port 2
+  VLAN 10    VLAN 20
+    |            |
+  [PC-A]      [PC-B]
+================================
+        </div>
+
+        <h3>Port Mirroring / SPAN</h3>
+        <p><strong>SPAN (Switched Port Analyzer)</strong> copies traffic from one or more source ports (or VLANs) to a destination port for monitoring. This allows a network analyzer or IDS to inspect traffic without being inline. <strong>RSPAN</strong> extends this capability across switches.</p>
+
+        <h3>Power over Ethernet (PoE)</h3>
+        <p>PoE delivers electrical power over Ethernet cabling, eliminating the need for separate power supplies for devices like IP phones, wireless access points, and security cameras.</p>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Standard</th><th>Name</th><th>Max Power (per port)</th><th>Common Use</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>802.3af</td><td>PoE</td><td>15.4 W</td><td>VoIP phones, basic APs</td></tr>
+              <tr><td>802.3at</td><td>PoE+</td><td>30 W</td><td>Pan-tilt-zoom cameras, advanced APs</td></tr>
+              <tr><td>802.3bt</td><td>PoE++ (Type 3/4)</td><td>60 W / 100 W</td><td>Video conferencing, digital signage, multi-radio APs</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box tip">
+          <strong>Exam Tip</strong>
+          Remember: PoE devices are called PDs (Powered Devices) and the switch providing power is the PSE (Power Sourcing Equipment). PoE only works on copper Ethernet (not fiber).
+        </div>
+
+        <div class="flashcard-deck">
+          <div class="flashcard">
+            <div class="flashcard-front">What is the native VLAN?</div>
+            <div class="flashcard-back">The native VLAN is the VLAN whose traffic crosses a trunk link untagged. By default it is VLAN 1. Both sides of a trunk must match on the native VLAN setting to avoid a mismatch.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">What problem does STP solve?</div>
+            <div class="flashcard-back">STP (Spanning Tree Protocol, 802.1D) prevents Layer 2 switching loops by logically blocking redundant paths. Without STP, broadcast storms, MAC table instability, and duplicate frames would occur.</div>
+          </div>
+        </div>
+
+        <label class="mark-read" data-domain="2" data-section="switching">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </section>
+
+      <!-- ============================================================ -->
+      <!--  SECTION 3: WIRELESS NETWORKING                              -->
+      <!-- ============================================================ -->
+      <section class="content-section" id="wireless">
+        <h2>2.3 Wireless Networking</h2>
+
+        <p>Wireless networking uses radio frequency (RF) signals to transmit data over the air, governed by the IEEE 802.11 family of standards. Understanding wireless standards, frequencies, security, and deployment considerations is essential for the Network+ exam.</p>
+
+        <h3>802.11 Standards Comparison</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Standard</th>
+                <th>Wi-Fi Generation</th>
+                <th>Frequency</th>
+                <th>Max Data Rate</th>
+                <th>Channel Width</th>
+                <th>Key Feature</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>802.11a</td>
+                <td>&mdash;</td>
+                <td>5 GHz</td>
+                <td>54 Mbps</td>
+                <td>20 MHz</td>
+                <td>OFDM, shorter range, less interference</td>
+              </tr>
+              <tr>
+                <td>802.11b</td>
+                <td>&mdash;</td>
+                <td>2.4 GHz</td>
+                <td>11 Mbps</td>
+                <td>22 MHz</td>
+                <td>DSSS, longer range, more interference</td>
+              </tr>
+              <tr>
+                <td>802.11g</td>
+                <td>&mdash;</td>
+                <td>2.4 GHz</td>
+                <td>54 Mbps</td>
+                <td>20 MHz</td>
+                <td>Backward compatible with 802.11b</td>
+              </tr>
+              <tr>
+                <td>802.11n</td>
+                <td>Wi-Fi 4</td>
+                <td>2.4 / 5 GHz</td>
+                <td>600 Mbps</td>
+                <td>20/40 MHz</td>
+                <td>MIMO (up to 4 spatial streams)</td>
+              </tr>
+              <tr>
+                <td>802.11ac</td>
+                <td>Wi-Fi 5</td>
+                <td>5 GHz</td>
+                <td>6.9 Gbps</td>
+                <td>20/40/80/160 MHz</td>
+                <td>MU-MIMO (downlink), beamforming, 256-QAM</td>
+              </tr>
+              <tr>
+                <td>802.11ax</td>
+                <td>Wi-Fi 6 / 6E</td>
+                <td>2.4 / 5 / 6 GHz</td>
+                <td>9.6 Gbps</td>
+                <td>20/40/80/160 MHz</td>
+                <td>OFDMA, MU-MIMO (up/down), BSS coloring, TWT</td>
+              </tr>
+              <tr>
+                <td>802.11be</td>
+                <td>Wi-Fi 7</td>
+                <td>2.4 / 5 / 6 GHz</td>
+                <td>46 Gbps</td>
+                <td>Up to 320 MHz</td>
+                <td>MLO (Multi-Link Operation), 4096-QAM</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Frequency Bands</h3>
+        <h4>2.4 GHz Band</h4>
+        <ul>
+          <li>11 channels in North America (1&ndash;11), only <strong>3 non-overlapping channels: 1, 6, 11</strong></li>
+          <li>Better range and wall penetration</li>
+          <li>More interference from microwaves, Bluetooth, cordless phones, and neighboring networks</li>
+        </ul>
+        <h4>5 GHz Band</h4>
+        <ul>
+          <li><strong>24 non-overlapping channels</strong> (using 20 MHz channels)</li>
+          <li>Higher throughput, less interference</li>
+          <li>Shorter range, less wall penetration</li>
+          <li>Some channels require <strong>DFS (Dynamic Frequency Selection)</strong> to avoid radar</li>
+        </ul>
+        <h4>6 GHz Band (Wi-Fi 6E / Wi-Fi 7)</h4>
+        <ul>
+          <li>59 additional 20 MHz channels (or 7 super-wide 160 MHz channels)</li>
+          <li>Extremely low congestion (new spectrum, no legacy devices)</li>
+          <li>Shortest range of the three bands</li>
+        </ul>
+
+        <div class="info-box note">
+          <strong>Exam Note</strong>
+          For the 2.4 GHz band, always plan your wireless deployment using channels 1, 6, and 11 to avoid co-channel interference. Adjacent APs should never be on the same or overlapping channels.
+        </div>
+
+        <h3>Channel Bonding</h3>
+        <p>Channel bonding combines adjacent channels to increase bandwidth. 802.11n supports 40 MHz (2 channels), 802.11ac supports up to 160 MHz (8 channels), and 802.11be supports up to 320 MHz. Wider channels provide more throughput but increase the chance of interference, especially in the crowded 2.4 GHz band where bonding is generally not recommended.</p>
+
+        <h3>Wireless Architecture</h3>
+        <ul>
+          <li><strong>SSID (Service Set Identifier)</strong> &mdash; The human-readable name of a wireless network</li>
+          <li><strong>BSS (Basic Service Set)</strong> &mdash; A single access point and its associated clients (identified by BSSID, which is the AP's MAC address)</li>
+          <li><strong>ESS (Extended Service Set)</strong> &mdash; Multiple APs sharing the same SSID to provide seamless roaming across a larger area</li>
+          <li><strong>IBSS (Independent BSS)</strong> &mdash; Ad-hoc mode where devices communicate directly without an AP</li>
+        </ul>
+
+        <h3>Wireless Security</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Protocol</th><th>Encryption</th><th>Authentication</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>WEP</td><td>RC4 (64/128-bit)</td><td>Open / Shared Key</td><td>Deprecated &mdash; easily cracked</td></tr>
+              <tr><td>WPA</td><td>TKIP (RC4-based)</td><td>PSK or 802.1X</td><td>Legacy &mdash; not recommended</td></tr>
+              <tr><td>WPA2</td><td>AES-CCMP</td><td>PSK or 802.1X (Enterprise)</td><td>Current standard, widely deployed</td></tr>
+              <tr><td>WPA3</td><td>AES-GCMP / SAE</td><td>SAE (Personal) or 802.1X (Enterprise)</td><td>Latest &mdash; stronger protections</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>WPA2-Personal</strong> uses a Pre-Shared Key (PSK). <strong>WPA2-Enterprise</strong> uses 802.1X with a RADIUS server for individual credentials. <strong>WPA3</strong> introduces SAE (Simultaneous Authentication of Equals), which replaces the 4-way handshake with a more secure key exchange resistant to offline dictionary attacks.</p>
+
+        <div class="info-box danger">
+          <strong>Security Alert</strong>
+          WEP is fundamentally broken and must never be used. WPA with TKIP is also deprecated. Always deploy WPA2 (AES) at minimum, or WPA3 when supported by all devices.
+        </div>
+
+        <h3>Wireless Controllers</h3>
+        <p>In enterprise environments, a <strong>Wireless LAN Controller (WLC)</strong> centrally manages multiple access points (called "lightweight APs" or LWAPs). Benefits include:</p>
+        <ul>
+          <li>Centralized configuration, firmware management, and policy enforcement</li>
+          <li>Automatic RF channel and power management</li>
+          <li>Seamless roaming between APs</li>
+          <li>Rogue AP detection</li>
+        </ul>
+        <p>Lightweight APs use <strong>CAPWAP (Control and Provisioning of Wireless Access Points)</strong> to communicate with the controller.</p>
+
+        <h3>Site Surveys &amp; Heat Maps</h3>
+        <p>A <strong>wireless site survey</strong> is performed before and after deploying a wireless network to optimize coverage and performance:</p>
+        <ul>
+          <li><strong>Predictive survey</strong> &mdash; Uses software to model RF behavior based on floor plans and building materials</li>
+          <li><strong>Active survey</strong> &mdash; A technician walks through the area with a survey tool, measuring signal strength, noise, and throughput</li>
+          <li><strong>Passive survey</strong> &mdash; Listens to RF signals without associating with any AP</li>
+        </ul>
+        <p>Results are visualized as <strong>heat maps</strong>, showing signal strength (RSSI) using color gradients. They help identify dead zones, areas of co-channel interference, and optimal AP placement.</p>
+
+        <div class="flashcard-deck">
+          <div class="flashcard">
+            <div class="flashcard-front">What are the three non-overlapping channels in 2.4 GHz?</div>
+            <div class="flashcard-back">Channels 1, 6, and 11. These channels do not overlap each other's frequency range and should be used to minimize interference between adjacent access points.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">What is the difference between WPA2-Personal and WPA2-Enterprise?</div>
+            <div class="flashcard-back">WPA2-Personal uses a shared Pre-Shared Key (PSK) for all users. WPA2-Enterprise uses 802.1X authentication with a RADIUS server, providing unique credentials per user and stronger security.</div>
+          </div>
+        </div>
+
+        <label class="mark-read" data-domain="2" data-section="wireless">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </section>
+
+      <!-- ============================================================ -->
+      <!--  SECTION 4: WAN TECHNOLOGIES                                 -->
+      <!-- ============================================================ -->
+      <section class="content-section" id="wan">
+        <h2>2.4 WAN Technologies</h2>
+
+        <p>A <strong>Wide Area Network (WAN)</strong> connects geographically dispersed LANs, often spanning cities, countries, or continents. WANs are typically provided by service providers (ISPs, telcos) and use a variety of technologies depending on bandwidth, cost, and availability requirements.</p>
+
+        <h3>Circuit-Switched vs. Packet-Switched</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Feature</th><th>Circuit-Switched</th><th>Packet-Switched</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Connection</td><td>Dedicated path for duration of session</td><td>Shared network; data divided into packets</td></tr>
+              <tr><td>Bandwidth</td><td>Guaranteed, fixed</td><td>Dynamic, shared</td></tr>
+              <tr><td>Examples</td><td>PSTN (analog phone), ISDN, T1/E1</td><td>Frame Relay, MPLS, Internet, ATM</td></tr>
+              <tr><td>Efficiency</td><td>Wastes bandwidth when idle</td><td>More efficient use of bandwidth</td></tr>
+              <tr><td>Latency</td><td>Consistent, low</td><td>Variable</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Point-to-Point vs. Multipoint</h3>
+        <ul>
+          <li><strong>Point-to-Point</strong> &mdash; A dedicated link between two locations (e.g., a leased line or T1). Simple, predictable, but expensive for many locations.</li>
+          <li><strong>Multipoint (Point-to-Multipoint)</strong> &mdash; One central site connects to multiple remote sites (e.g., hub-and-spoke MPLS, Frame Relay). More cost-effective for connecting many branches.</li>
+        </ul>
+
+        <h3>WAN Technology Overview</h3>
+
+        <h4>DSL (Digital Subscriber Line)</h4>
+        <ul>
+          <li>Uses existing copper telephone lines</li>
+          <li><strong>ADSL</strong>: Asymmetric &mdash; faster download than upload (typical home service)</li>
+          <li><strong>SDSL/VDSL</strong>: Symmetric or very high-speed variants</li>
+          <li>Speed degrades with distance from the DSLAM (Central Office)</li>
+          <li>Max range approximately 18,000 feet (5.5 km)</li>
+        </ul>
+
+        <h4>Cable (DOCSIS)</h4>
+        <ul>
+          <li>Uses coaxial cable (shared HFC &mdash; Hybrid Fiber-Coaxial) infrastructure</li>
+          <li>DOCSIS 3.0: up to ~1 Gbps downstream; DOCSIS 3.1: up to 10 Gbps</li>
+          <li>Shared bandwidth among neighbors (speeds can vary during peak hours)</li>
+        </ul>
+
+        <h4>Fiber Optic (SONET/SDH)</h4>
+        <ul>
+          <li><strong>SONET</strong> (Synchronous Optical Networking) &mdash; North American standard</li>
+          <li><strong>SDH</strong> (Synchronous Digital Hierarchy) &mdash; International equivalent</li>
+          <li>Provides high-speed, reliable, long-distance transport</li>
+          <li>Uses ring topologies with automatic failover for redundancy</li>
+          <li>FTTH/FTTP (Fiber to the Home/Premises) delivers fiber directly to end users</li>
+        </ul>
+
+        <h4>Satellite</h4>
+        <ul>
+          <li>Available almost anywhere with a clear view of the sky</li>
+          <li>Traditional GEO satellites: <strong>high latency</strong> (500&ndash;700 ms round-trip)</li>
+          <li>LEO constellations (e.g., Starlink): lower latency (20&ndash;50 ms), higher speeds</li>
+          <li>Affected by weather (rain fade) and line-of-sight obstructions</li>
+        </ul>
+
+        <h4>Cellular (4G LTE / 5G)</h4>
+        <ul>
+          <li><strong>4G LTE</strong>: 10&ndash;50 Mbps typical, up to 300+ Mbps</li>
+          <li><strong>5G</strong>: Sub-6 GHz (100&ndash;900 Mbps), mmWave (1&ndash;10+ Gbps, very short range)</li>
+          <li>Used for mobile connectivity, WAN failover, and fixed wireless access</li>
+          <li>Considerations: data caps, coverage area, signal strength</li>
+        </ul>
+
+        <h4>MPLS (Multiprotocol Label Switching)</h4>
+        <ul>
+          <li>Operates between Layer 2 and Layer 3 (sometimes called "Layer 2.5")</li>
+          <li>Uses <strong>labels</strong> instead of IP addresses for fast packet forwarding</li>
+          <li>Provides QoS, traffic engineering, and VPN services</li>
+          <li>Commonly used for enterprise WAN connecting multiple sites with guaranteed performance</li>
+          <li>More expensive than Internet-based VPNs but more reliable and predictable</li>
+        </ul>
+
+        <h4>Metro Ethernet</h4>
+        <ul>
+          <li>Extends Ethernet technology across a metropolitan area</li>
+          <li>Speeds from 10 Mbps to 100 Gbps</li>
+          <li>Simple to configure (familiar Ethernet interfaces)</li>
+          <li>Cost-effective alternative to MPLS for metro-area connectivity</li>
+        </ul>
+
+        <h4>Leased Lines (T1/T3, E1/E3)</h4>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Circuit</th><th>Speed</th><th>Channels</th><th>Region</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>T1</td><td>1.544 Mbps</td><td>24 DS0 (64 Kbps each)</td><td>North America</td></tr>
+              <tr><td>T3 (DS3)</td><td>44.736 Mbps</td><td>672 DS0 / 28 T1s</td><td>North America</td></tr>
+              <tr><td>E1</td><td>2.048 Mbps</td><td>32 channels</td><td>Europe/International</td></tr>
+              <tr><td>E3</td><td>34.368 Mbps</td><td>16 E1s</td><td>Europe/International</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>SD-WAN (Software-Defined WAN)</h3>
+        <p><strong>SD-WAN</strong> is a modern approach to WAN connectivity that abstracts the underlying transport (MPLS, broadband, LTE, etc.) and uses software to intelligently route traffic across multiple links based on application requirements.</p>
+        <ul>
+          <li><strong>Transport-agnostic</strong> &mdash; Can use any combination of MPLS, broadband, cellular, etc.</li>
+          <li><strong>Centralized management</strong> &mdash; Policies configured from a single controller/dashboard</li>
+          <li><strong>Application-aware routing</strong> &mdash; Steers traffic based on application type, latency, jitter, and packet loss</li>
+          <li><strong>Cost savings</strong> &mdash; Supplements or replaces expensive MPLS with cheaper broadband</li>
+          <li><strong>Built-in encryption</strong> &mdash; Typically uses IPsec tunnels for security</li>
+        </ul>
+
+        <div class="info-box tip">
+          <strong>Exam Tip</strong>
+          SD-WAN is a heavily tested topic on the N10-009. Know that it provides centralized management, uses multiple transport types simultaneously, and makes application-aware routing decisions.
+        </div>
+
+        <div class="flashcard-deck">
+          <div class="flashcard">
+            <div class="flashcard-front">What is the speed of a T1 line?</div>
+            <div class="flashcard-back">1.544 Mbps. A T1 consists of 24 DS0 channels, each running at 64 Kbps (24 x 64 Kbps = 1.536 Mbps + 8 Kbps framing = 1.544 Mbps).</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">What layer does MPLS operate at?</div>
+            <div class="flashcard-back">MPLS operates between Layer 2 and Layer 3, often called "Layer 2.5." It uses labels to make forwarding decisions rather than examining the full IP header at each hop.</div>
+          </div>
+        </div>
+
+        <label class="mark-read" data-domain="2" data-section="wan">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </section>
+
+      <!-- ============================================================ -->
+      <!--  SECTION 5: CABLING & CONNECTORS                            -->
+      <!-- ============================================================ -->
+      <section class="content-section" id="cabling">
+        <h2>2.5 Cabling &amp; Connectors</h2>
+
+        <p>Understanding cable types, connectors, standards, and their appropriate use is a core competency for Network+ and for real-world network implementation. The right cable for the job depends on speed requirements, distance, environment, and budget.</p>
+
+        <h3>Copper Cabling &mdash; Twisted Pair</h3>
+        <p>Twisted-pair cabling is the most common type of network cable. Wires are twisted together in pairs to reduce electromagnetic interference (EMI). UTP (Unshielded Twisted Pair) is standard; STP (Shielded Twisted Pair) adds a foil or braided shield for environments with high interference.</p>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Max Speed</th>
+                <th>Max Distance</th>
+                <th>Frequency</th>
+                <th>Common Use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Cat 5e</strong></td>
+                <td>1 Gbps</td>
+                <td>100 m (328 ft)</td>
+                <td>100 MHz</td>
+                <td>Gigabit Ethernet (legacy installs)</td>
+              </tr>
+              <tr>
+                <td><strong>Cat 6</strong></td>
+                <td>10 Gbps (up to 55 m) / 1 Gbps (100 m)</td>
+                <td>100 m (55 m for 10G)</td>
+                <td>250 MHz</td>
+                <td>10 Gigabit Ethernet (short runs)</td>
+              </tr>
+              <tr>
+                <td><strong>Cat 6a</strong></td>
+                <td>10 Gbps</td>
+                <td>100 m (328 ft)</td>
+                <td>500 MHz</td>
+                <td>10 Gigabit Ethernet (full distance)</td>
+              </tr>
+              <tr>
+                <td><strong>Cat 7</strong></td>
+                <td>10 Gbps</td>
+                <td>100 m</td>
+                <td>600 MHz</td>
+                <td>Shielded; data centers (not TIA recognized)</td>
+              </tr>
+              <tr>
+                <td><strong>Cat 8</strong></td>
+                <td>25/40 Gbps</td>
+                <td>30 m (98 ft)</td>
+                <td>2000 MHz</td>
+                <td>Data center switch-to-switch connections</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box note">
+          <strong>Exam Note</strong>
+          The maximum distance for standard copper Ethernet is 100 meters (328 feet) for Cat 5e through Cat 7. Cat 8 is limited to 30 meters due to its very high frequency. Know these numbers.
+        </div>
+
+        <h3>Coaxial Cable</h3>
+        <ul>
+          <li><strong>RG-6</strong> &mdash; Used for cable TV and cable Internet (DOCSIS). 75-ohm impedance.</li>
+          <li><strong>RG-59</strong> &mdash; Thinner, shorter-distance; used in older CCTV installations. 75-ohm.</li>
+          <li>Connectors: <strong>F-type</strong> (threaded, most common for cable), <strong>BNC</strong> (bayonet, used in legacy networking and some test equipment)</li>
+          <li>Provides good shielding against EMI due to its construction (center conductor, dielectric, shield, jacket)</li>
+        </ul>
+
+        <h3>Fiber Optic Cabling</h3>
+        <p>Fiber uses pulses of light to transmit data through a glass or plastic core. It is immune to EMI, supports very long distances, and provides the highest bandwidth.</p>
+
+        <h4>Single-Mode Fiber (SMF)</h4>
+        <ul>
+          <li>Very small core diameter: <strong>8&ndash;10 microns</strong></li>
+          <li>Uses a laser light source</li>
+          <li>Supports distances up to <strong>80+ km</strong> (with amplification, hundreds of km)</li>
+          <li>More expensive (laser transceivers)</li>
+          <li>Color code: <strong>Yellow</strong> jacket</li>
+        </ul>
+
+        <h4>Multimode Fiber (MMF)</h4>
+        <ul>
+          <li>Larger core diameter: <strong>50 or 62.5 microns</strong></li>
+          <li>Uses LED or VCSEL light source</li>
+          <li>Shorter distances (up to 550 m for 10G, depending on grade)</li>
+          <li>Less expensive than single-mode</li>
+          <li>Color codes: <strong>Orange</strong> (OM1/OM2) or <strong>Aqua</strong> (OM3/OM4) or <strong>Lime Green</strong> (OM5)</li>
+        </ul>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Fiber Grade</th><th>Core Size</th><th>10G Reach</th><th>40G/100G Reach</th><th>Jacket Color</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>OM1</strong></td><td>62.5 &mu;m</td><td>33 m</td><td>Not supported</td><td>Orange</td></tr>
+              <tr><td><strong>OM2</strong></td><td>50 &mu;m</td><td>82 m</td><td>Not supported</td><td>Orange</td></tr>
+              <tr><td><strong>OM3</strong></td><td>50 &mu;m</td><td>300 m</td><td>100 m</td><td>Aqua</td></tr>
+              <tr><td><strong>OM4</strong></td><td>50 &mu;m</td><td>400 m</td><td>150 m</td><td>Aqua</td></tr>
+              <tr><td><strong>OM5</strong></td><td>50 &mu;m</td><td>400 m</td><td>400 m (SWDM)</td><td>Lime Green</td></tr>
+              <tr><td><strong>OS1/OS2</strong></td><td>9 &mu;m (SMF)</td><td>10&ndash;40 km</td><td>10&ndash;40 km</td><td>Yellow</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Fiber Connectors</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Connector</th><th>Description</th><th>Common Use</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>SC</strong></td><td>Square (subscriber) connector; push-pull mechanism</td><td>Telecom, single-mode, patch panels</td></tr>
+              <tr><td><strong>LC</strong></td><td>Lucent connector; small form factor, push-pull latch</td><td>Most common in modern data centers, SFP/SFP+ modules</td></tr>
+              <tr><td><strong>ST</strong></td><td>Straight tip; bayonet-style twist-lock</td><td>Legacy multimode installations</td></tr>
+              <tr><td><strong>MTRJ</strong></td><td>Mechanical Transfer Registered Jack; duplex, small</td><td>Compact duplex connections</td></tr>
+              <tr><td><strong>MPO/MTP</strong></td><td>Multi-fiber push-on; 12 or 24 fibers in one connector</td><td>High-density data centers, 40G/100G</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Ethernet Standards</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Standard</th><th>Speed</th><th>Media</th><th>Max Distance</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>100BASE-TX</strong></td><td>100 Mbps</td><td>Cat 5 UTP (2 pairs)</td><td>100 m</td></tr>
+              <tr><td><strong>1000BASE-T</strong></td><td>1 Gbps</td><td>Cat 5e UTP (4 pairs)</td><td>100 m</td></tr>
+              <tr><td><strong>1000BASE-SX</strong></td><td>1 Gbps</td><td>Multimode fiber</td><td>220&ndash;550 m</td></tr>
+              <tr><td><strong>1000BASE-LX</strong></td><td>1 Gbps</td><td>Single-mode fiber</td><td>5 km</td></tr>
+              <tr><td><strong>10GBASE-T</strong></td><td>10 Gbps</td><td>Cat 6a UTP (4 pairs)</td><td>100 m</td></tr>
+              <tr><td><strong>10GBASE-SR</strong></td><td>10 Gbps</td><td>Multimode fiber</td><td>26&ndash;400 m</td></tr>
+              <tr><td><strong>10GBASE-LR</strong></td><td>10 Gbps</td><td>Single-mode fiber</td><td>10 km</td></tr>
+              <tr><td><strong>40GBASE-SR4</strong></td><td>40 Gbps</td><td>Multimode fiber (MPO)</td><td>100&ndash;150 m</td></tr>
+              <tr><td><strong>100GBASE-SR10</strong></td><td>100 Gbps</td><td>Multimode fiber (MPO)</td><td>100&ndash;150 m</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box tip">
+          <strong>Memory Aid</strong>
+          In Ethernet standard names: <strong>S</strong> = Short range (multimode), <strong>L</strong> = Long range (single-mode), <strong>T</strong> = Twisted pair (copper). The number before "BASE" is the speed in Gbps (or Mbps for 100BASE-TX).
+        </div>
+
+        <h3>T568A vs. T568B Wiring Standards</h3>
+        <p>These are the two standard pinout configurations for terminating twisted-pair cables with RJ-45 connectors:</p>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Pin</th><th>T568A Color</th><th>T568B Color</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>White/Green</td><td>White/Orange</td></tr>
+              <tr><td>2</td><td>Green</td><td>Orange</td></tr>
+              <tr><td>3</td><td>White/Orange</td><td>White/Green</td></tr>
+              <tr><td>4</td><td>Blue</td><td>Blue</td></tr>
+              <tr><td>5</td><td>White/Blue</td><td>White/Blue</td></tr>
+              <tr><td>6</td><td>Orange</td><td>Green</td></tr>
+              <tr><td>7</td><td>White/Brown</td><td>White/Brown</td></tr>
+              <tr><td>8</td><td>Brown</td><td>Brown</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Straight-Through vs. Crossover Cables</h3>
+        <ul>
+          <li><strong>Straight-through</strong> &mdash; Same pinout on both ends (e.g., T568B to T568B). Connects unlike devices: PC to switch, switch to router.</li>
+          <li><strong>Crossover</strong> &mdash; Different pinout on each end (T568A on one, T568B on the other). Connects like devices: switch to switch, PC to PC.</li>
+          <li><strong>Rollover (console)</strong> &mdash; Pins reversed end-to-end. Used to connect a PC serial port to a router/switch console port (RJ-45 to DB-9).</li>
+        </ul>
+
+        <div class="info-box note">
+          <strong>Exam Note</strong>
+          Modern switches and NICs support <strong>Auto-MDI-X</strong>, which automatically detects and adjusts for straight-through or crossover connections. However, the exam still tests on when each cable type is traditionally required.
+        </div>
+
+        <h3>Plenum vs. PVC Jacket</h3>
+        <ul>
+          <li><strong>Plenum-rated cable</strong> &mdash; Uses fire-retardant, low-smoke jacket materials. Required in plenum spaces (air-handling areas above drop ceilings or below raised floors). More expensive.</li>
+          <li><strong>PVC (non-plenum)</strong> &mdash; Standard jacket. Used in regular wall runs, conduits, and areas that are not used for air circulation. Releases toxic fumes when burned.</li>
+          <li><strong>Riser-rated cable</strong> &mdash; Designed for vertical runs between floors. More fire-resistant than PVC but less than plenum.</li>
+        </ul>
+
+        <h3>Cable Management Best Practices</h3>
+        <ul>
+          <li>Use <strong>patch panels</strong> to organize and terminate horizontal cable runs</li>
+          <li>Label all cables and ports with a consistent naming scheme</li>
+          <li>Use cable trays, ladder racks, and <strong>velcro straps</strong> (not zip ties, which can damage cables)</li>
+          <li>Maintain proper <strong>bend radius</strong> &mdash; do not kink or sharply bend cables</li>
+          <li>Separate data cables from power cables to reduce EMI (maintain at least 12 inches)</li>
+          <li>Document all cable runs in a structured cabling diagram</li>
+        </ul>
+
+        <div class="flashcard-deck">
+          <div class="flashcard">
+            <div class="flashcard-front">What is the maximum distance for Cat 6a at 10 Gbps?</div>
+            <div class="flashcard-back">100 meters (328 feet). Cat 6a supports 10GBASE-T at the full 100-meter distance, unlike Cat 6 which is limited to 55 meters for 10G.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">Which fiber connector is most common in modern data centers?</div>
+            <div class="flashcard-back">The LC (Lucent Connector). It is a small form-factor connector that fits into SFP and SFP+ transceivers, making it the standard for modern data center and enterprise deployments.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">What color jacket identifies single-mode fiber?</div>
+            <div class="flashcard-back">Yellow. Multimode fiber jackets are orange (OM1/OM2), aqua (OM3/OM4), or lime green (OM5).</div>
+          </div>
+        </div>
+
+        <label class="mark-read" data-domain="2" data-section="cabling">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </section>
+
+      <!-- ============================================================ -->
+      <!--  SECTION 6: NETWORK DEVICES                                  -->
+      <!-- ============================================================ -->
+      <section class="content-section" id="devices">
+        <h2>2.6 Network Devices</h2>
+
+        <p>Network infrastructure is built from a variety of specialized devices, each serving a specific function. Understanding what each device does, where it operates in the OSI model, and when to deploy it is critical for the Network+ exam.</p>
+
+        <h3>Device Overview &amp; OSI Layer Mapping</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Device</th><th>OSI Layer</th><th>Primary Function</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Hub / Repeater</strong></td><td>Layer 1 (Physical)</td><td>Regenerates and repeats electrical signals to all ports; extends cable distance</td></tr>
+              <tr><td><strong>Bridge</strong></td><td>Layer 2 (Data Link)</td><td>Segments networks by filtering traffic based on MAC addresses</td></tr>
+              <tr><td><strong>Switch (Layer 2)</strong></td><td>Layer 2 (Data Link)</td><td>Forwards frames based on MAC addresses; creates separate collision domains per port</td></tr>
+              <tr><td><strong>Switch (Layer 3)</strong></td><td>Layers 2 &amp; 3</td><td>Performs switching and inter-VLAN routing; combines switch and router functionality</td></tr>
+              <tr><td><strong>Router</strong></td><td>Layer 3 (Network)</td><td>Routes packets between different networks based on IP addresses</td></tr>
+              <tr><td><strong>Firewall</strong></td><td>Layers 3&ndash;7</td><td>Filters traffic based on rules; stateful inspection, application-layer filtering</td></tr>
+              <tr><td><strong>Access Point (AP)</strong></td><td>Layers 1 &amp; 2</td><td>Provides wireless connectivity; bridges wireless clients to the wired network</td></tr>
+              <tr><td><strong>Modem</strong></td><td>Layer 1 (Physical)</td><td>Modulates/demodulates signals between digital and analog (DSL, cable, etc.)</td></tr>
+              <tr><td><strong>Media Converter</strong></td><td>Layer 1 (Physical)</td><td>Converts between media types (e.g., copper to fiber)</td></tr>
+              <tr><td><strong>Load Balancer</strong></td><td>Layers 4&ndash;7</td><td>Distributes traffic across multiple servers for performance and availability</td></tr>
+              <tr><td><strong>Proxy Server</strong></td><td>Layer 7 (Application)</td><td>Acts as intermediary for client requests; caching, filtering, anonymity</td></tr>
+              <tr><td><strong>IDS / IPS</strong></td><td>Layers 3&ndash;7</td><td>Detects (IDS) or detects and prevents (IPS) malicious network activity</td></tr>
+              <tr><td><strong>VPN Concentrator</strong></td><td>Layer 3 (Network)</td><td>Terminates multiple VPN tunnels; handles encryption/decryption at scale</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Routers</h3>
+        <p>Routers operate at <strong>Layer 3</strong> and forward packets between different IP networks. They examine the destination IP address, consult their routing table, and forward the packet toward the next hop. Key functions include:</p>
+        <ul>
+          <li>Connecting LANs to WANs (e.g., your office to the Internet)</li>
+          <li>Segmenting broadcast domains (each router interface is a separate broadcast domain)</li>
+          <li>Implementing NAT (Network Address Translation) to share a public IP</li>
+          <li>Running routing protocols (OSPF, EIGRP, BGP) for dynamic path selection</li>
+          <li>Applying ACLs (Access Control Lists) for basic traffic filtering</li>
+        </ul>
+
+        <h3>Switches: Managed vs. Unmanaged</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Feature</th><th>Unmanaged Switch</th><th>Managed Switch</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Configuration</td><td>None (plug and play)</td><td>Full CLI/GUI configuration</td></tr>
+              <tr><td>VLANs</td><td>Not supported</td><td>Supported</td></tr>
+              <tr><td>STP/RSTP</td><td>Basic or none</td><td>Full control</td></tr>
+              <tr><td>Monitoring (SNMP)</td><td>Not available</td><td>Supported</td></tr>
+              <tr><td>Port mirroring</td><td>Not available</td><td>Supported</td></tr>
+              <tr><td>QoS</td><td>Not available</td><td>Supported</td></tr>
+              <tr><td>Security features</td><td>None</td><td>Port security, 802.1X, ACLs</td></tr>
+              <tr><td>Cost</td><td>Low</td><td>Higher</td></tr>
+              <tr><td>Best for</td><td>Home, small office</td><td>Enterprise, data center</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Layer 2 vs. Layer 3 Switches</h3>
+        <ul>
+          <li><strong>Layer 2 switch</strong> &mdash; Forwards frames based on MAC addresses only. All ports in the same VLAN are in the same broadcast domain. Requires an external router for inter-VLAN routing.</li>
+          <li><strong>Layer 3 switch</strong> &mdash; Can route packets between VLANs using SVIs (Switch Virtual Interfaces) or routed ports. Combines switching speed with routing capability. Standard in enterprise campus networks.</li>
+        </ul>
+
+        <h3>Firewalls</h3>
+        <p>Firewalls control traffic flow based on security rules. They can operate at multiple OSI layers:</p>
+        <ul>
+          <li><strong>Packet filtering</strong> (Layer 3/4) &mdash; Filters by IP address, port, protocol</li>
+          <li><strong>Stateful inspection</strong> (Layer 3/4) &mdash; Tracks connection state; allows return traffic for established sessions</li>
+          <li><strong>Application-layer / NGFW</strong> (Layer 7) &mdash; Inspects application data (HTTP, DNS, etc.), deep packet inspection, malware detection</li>
+        </ul>
+
+        <div class="info-box warning">
+          <strong>Exam Warning</strong>
+          Do not confuse a firewall with an IDS/IPS. A firewall enforces rules you define (allow/deny). An IDS detects suspicious activity and alerts. An IPS detects and actively blocks threats. They serve complementary but different purposes.
+        </div>
+
+        <h3>Wireless Access Points (APs)</h3>
+        <p>Access points bridge wireless clients to the wired network. They operate at Layer 1 (radio signals) and Layer 2 (MAC-based frame forwarding). In enterprise environments, APs are often "lightweight" and managed by a wireless controller (WLC).</p>
+
+        <h3>Load Balancers</h3>
+        <p>Load balancers distribute incoming traffic across a pool of backend servers to ensure no single server is overwhelmed. They improve availability, reliability, and response time.</p>
+        <ul>
+          <li><strong>Layer 4 load balancing</strong> &mdash; Distributes based on IP address and TCP/UDP port</li>
+          <li><strong>Layer 7 load balancing</strong> &mdash; Distributes based on application content (URL, HTTP headers, cookies)</li>
+          <li>Common algorithms: Round Robin, Least Connections, IP Hash, Weighted</li>
+        </ul>
+
+        <h3>Proxy Servers</h3>
+        <p>A proxy server acts as an intermediary between clients and the Internet:</p>
+        <ul>
+          <li><strong>Forward proxy</strong> &mdash; Sits between internal clients and the Internet. Provides caching, content filtering, and anonymity.</li>
+          <li><strong>Reverse proxy</strong> &mdash; Sits in front of servers. Provides load balancing, SSL offloading, and protection from direct access.</li>
+          <li><strong>Transparent proxy</strong> &mdash; Intercepts traffic without client configuration. Used for content filtering in schools and enterprises.</li>
+        </ul>
+
+        <h3>IDS and IPS</h3>
+        <ul>
+          <li><strong>IDS (Intrusion Detection System)</strong> &mdash; Monitors traffic passively and generates alerts when suspicious activity is detected. Does not block traffic. Typically connected via a SPAN/mirror port.</li>
+          <li><strong>IPS (Intrusion Prevention System)</strong> &mdash; Sits inline (in the traffic path) and can actively block or drop malicious traffic in real time.</li>
+          <li>Detection methods: <strong>Signature-based</strong> (matches known patterns), <strong>Anomaly-based</strong> (detects deviations from baseline), <strong>Heuristic</strong> (uses rules and AI)</li>
+        </ul>
+
+        <h3>VPN Concentrators</h3>
+        <p>A VPN concentrator is a dedicated device that handles a large number of simultaneous VPN tunnels. It manages encryption, decryption, authentication, and tunnel establishment for remote-access or site-to-site VPN connections. Common protocols: <strong>IPsec</strong>, <strong>SSL/TLS VPN</strong>.</p>
+
+        <h3>Other Devices</h3>
+        <ul>
+          <li><strong>Modem</strong> &mdash; Converts digital data to analog signals (and vice versa) for transmission over telephone lines (DSL), coaxial cable, or other analog media. Operates at Layer 1.</li>
+          <li><strong>Media Converter</strong> &mdash; Converts signals between different physical media (e.g., copper to single-mode fiber, multimode to single-mode). Operates at Layer 1. Does not change the data.</li>
+          <li><strong>Hub</strong> &mdash; A Layer 1 multiport repeater. Receives a signal on one port and retransmits it to all other ports. Creates a single collision domain. Obsolete in modern networks.</li>
+          <li><strong>Repeater</strong> &mdash; Regenerates and amplifies a weakened signal to extend cable distance. Layer 1 device.</li>
+        </ul>
+
+        <div class="info-box tip">
+          <strong>Exam Tip</strong>
+          When a question asks "which device" to solve a problem, match the requirement to the OSI layer. Need MAC-based forwarding? Layer 2 switch. Need to route between subnets? Router or Layer 3 switch. Need to filter application traffic? Firewall or proxy. Need to detect intrusions? IDS/IPS.
+        </div>
+
+        <div class="flashcard-deck">
+          <div class="flashcard">
+            <div class="flashcard-front">What is the key difference between an IDS and an IPS?</div>
+            <div class="flashcard-back">An IDS (Intrusion Detection System) passively monitors and alerts on suspicious activity but does not block traffic. An IPS (Intrusion Prevention System) sits inline and can actively block or drop malicious traffic in real time.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">At what OSI layer does a hub operate?</div>
+            <div class="flashcard-back">Layer 1 (Physical). A hub is a multiport repeater that simply regenerates electrical signals to all ports. It does not examine MAC addresses or make forwarding decisions.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">What distinguishes a Layer 3 switch from a Layer 2 switch?</div>
+            <div class="flashcard-back">A Layer 3 switch can route packets between VLANs (and different subnets) using Switch Virtual Interfaces (SVIs) or routed ports, combining switching and routing in one device. A Layer 2 switch only forwards frames based on MAC addresses within a single broadcast domain.</div>
+          </div>
+        </div>
+
+        <label class="mark-read" data-domain="2" data-section="devices">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </section>
+
+      <!-- ============================================================ -->
+      <!--  QUIZ                                                        -->
+      <!-- ============================================================ -->
+      <div class="quiz-container" id="quiz" data-domain="2">
+        <h2>Domain 2 Quiz &mdash; Network Implementation</h2>
+        <p>Test your knowledge with 10 questions covering routing, switching, wireless, WAN, cabling, and network devices.</p>
+
+        <!-- Q1 -->
+        <div class="quiz-question" data-answer="C">
+          <p>1. Which routing protocol uses the Dijkstra SPF algorithm and has an administrative distance of 110?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q1" value="A"> A. RIPv2
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q1" value="B"> B. EIGRP
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q1" value="C"> C. OSPF
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q1" value="D"> D. BGP
+            </li>
+          </ul>
+          <div class="quiz-explanation">OSPF (Open Shortest Path First) is a link-state routing protocol that uses Dijkstra's Shortest Path First algorithm. Its default administrative distance is 110. RIP uses Bellman-Ford (AD 120), EIGRP uses DUAL (AD 90), and BGP uses best-path selection (AD 20 for eBGP).</div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="quiz-question" data-answer="B">
+          <p>2. A network administrator needs to carry traffic for VLANs 10, 20, and 30 between two switches. What type of port should be configured on the link between them?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q2" value="A"> A. Access port
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q2" value="B"> B. Trunk port
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q2" value="C"> C. SPAN port
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q2" value="D"> D. PoE port
+            </li>
+          </ul>
+          <div class="quiz-explanation">A trunk port carries traffic for multiple VLANs between switches using 802.1Q tagging. An access port belongs to only one VLAN and is used for end devices. A SPAN port mirrors traffic for monitoring, and PoE delivers power over Ethernet.</div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="quiz-question" data-answer="D">
+          <p>3. Which 802.11 standard introduced OFDMA, BSS coloring, and Target Wake Time (TWT), and operates on 2.4 GHz, 5 GHz, and 6 GHz bands?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q3" value="A"> A. 802.11n (Wi-Fi 4)
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q3" value="B"> B. 802.11ac (Wi-Fi 5)
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q3" value="C"> C. 802.11be (Wi-Fi 7)
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q3" value="D"> D. 802.11ax (Wi-Fi 6)
+            </li>
+          </ul>
+          <div class="quiz-explanation">802.11ax (Wi-Fi 6 / Wi-Fi 6E) introduced OFDMA for efficient multi-user access, BSS coloring to reduce co-channel interference, and Target Wake Time (TWT) for power savings. Wi-Fi 6E extends operation into the 6 GHz band.</div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="quiz-question" data-answer="A">
+          <p>4. What is the speed of a T1 leased line?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q4" value="A"> A. 1.544 Mbps
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q4" value="B"> B. 2.048 Mbps
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q4" value="C"> C. 44.736 Mbps
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q4" value="D"> D. 10 Mbps
+            </li>
+          </ul>
+          <div class="quiz-explanation">A T1 line runs at 1.544 Mbps and consists of 24 DS0 channels at 64 Kbps each. 2.048 Mbps is the speed of an E1 (European standard). 44.736 Mbps is a T3 line.</div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="quiz-question" data-answer="C">
+          <p>5. Which copper cable category supports 10 Gbps Ethernet at the full 100-meter distance?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q5" value="A"> A. Cat 5e
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q5" value="B"> B. Cat 6
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q5" value="C"> C. Cat 6a
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q5" value="D"> D. Cat 8
+            </li>
+          </ul>
+          <div class="quiz-explanation">Cat 6a supports 10GBASE-T at the full 100-meter distance at 500 MHz. Cat 6 supports 10 Gbps only up to 55 meters. Cat 5e maxes out at 1 Gbps. Cat 8 supports 25/40 Gbps but only to 30 meters.</div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="quiz-question" data-answer="B">
+          <p>6. A network device sits inline with traffic and actively blocks malicious packets in real time. What type of device is this?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q6" value="A"> A. IDS (Intrusion Detection System)
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q6" value="B"> B. IPS (Intrusion Prevention System)
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q6" value="C"> C. Proxy server
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q6" value="D"> D. Load balancer
+            </li>
+          </ul>
+          <div class="quiz-explanation">An IPS (Intrusion Prevention System) sits inline and actively blocks or drops malicious traffic. An IDS only passively monitors and alerts; it does not sit inline or block traffic. A proxy acts as an intermediary, and a load balancer distributes traffic.</div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="quiz-question" data-answer="D">
+          <p>7. Which protocol prevents Layer 2 switching loops by logically blocking redundant paths?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q7" value="A"> A. 802.1Q
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q7" value="B"> B. 802.11ac
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q7" value="C"> C. ARP
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q7" value="D"> D. STP (802.1D)
+            </li>
+          </ul>
+          <div class="quiz-explanation">STP (Spanning Tree Protocol, IEEE 802.1D) prevents Layer 2 loops by electing a root bridge and blocking redundant paths. 802.1Q is the VLAN tagging standard. 802.11ac is a wireless standard. ARP resolves IP addresses to MAC addresses.</div>
+        </div>
+
+        <!-- Q8 -->
+        <div class="quiz-question" data-answer="A">
+          <p>8. An organization wants to use multiple WAN transports (MPLS, broadband, LTE) with centralized management and application-aware routing. Which technology should they deploy?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q8" value="A"> A. SD-WAN
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q8" value="B"> B. MPLS alone
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q8" value="C"> C. SONET
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q8" value="D"> D. DSL bonding
+            </li>
+          </ul>
+          <div class="quiz-explanation">SD-WAN (Software-Defined WAN) is transport-agnostic and can use MPLS, broadband, and cellular simultaneously. It provides centralized management and makes application-aware routing decisions to optimize traffic across all available links.</div>
+        </div>
+
+        <!-- Q9 -->
+        <div class="quiz-question" data-answer="C">
+          <p>9. Which fiber connector is a small form-factor design commonly used with SFP/SFP+ transceivers in modern data centers?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q9" value="A"> A. ST
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q9" value="B"> B. SC
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q9" value="C"> C. LC
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q9" value="D"> D. MTRJ
+            </li>
+          </ul>
+          <div class="quiz-explanation">The LC (Lucent Connector) is a small form-factor fiber connector that is the standard for SFP and SFP+ transceivers used in modern data centers. ST uses a bayonet twist-lock (legacy). SC is a larger push-pull connector. MTRJ is a compact duplex connector.</div>
+        </div>
+
+        <!-- Q10 -->
+        <div class="quiz-question" data-answer="B">
+          <p>10. Which three non-overlapping channels should be used when deploying 2.4 GHz wireless access points to minimize interference?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q10" value="A"> A. 1, 5, 10
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q10" value="B"> B. 1, 6, 11
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q10" value="C"> C. 2, 7, 12
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q10" value="D"> D. 3, 8, 13
+            </li>
+          </ul>
+          <div class="quiz-explanation">Channels 1, 6, and 11 are the three non-overlapping channels in the 2.4 GHz band (in North America with channels 1-11). Using these channels prevents co-channel interference between adjacent access points.</div>
+        </div>
+
+        <button class="btn btn-primary btn-quiz-submit">Submit Answers</button>
+
+        <div class="quiz-score">
+          <div class="score-number"></div>
+          <div class="score-label"></div>
+        </div>
+      </div>
+
+      <!-- ===== PREV / NEXT NAV ===== -->
+      <div class="domain-nav">
+        <a href="domain1.html" class="prev">
+          <span class="direction">&larr; Previous</span>
+          <span class="title">Domain 1: Networking Concepts</span>
+        </a>
+        <a href="domain3.html" class="next">
+          <span class="direction">Next &rarr;</span>
+          <span class="title">Domain 3: Network Operations</span>
+        </a>
+      </div>
+
+    </div><!-- /.domain-content -->
+  </div><!-- /.domain-page -->
+
+  <footer class="site-footer">
+    <p>Network+ N10-009 Study Guide &mdash; Not affiliated with CompTIA. For educational use only.</p>
+    <p style="margin-top: 0.5rem;"><a href="/">Back to Anime Syncer</a></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

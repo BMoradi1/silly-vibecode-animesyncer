@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Domain 1: Networking Concepts - CompTIA Network+ N10-009</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-domain="1">
+
+  <nav class="topnav">
+    <a href="index.html" class="topnav-brand">Network+ N10-009 <span>Study Guide</span></a>
+    <button class="hamburger" aria-label="Menu">&#9776;</button>
+    <ul class="topnav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="domain1.html" class="active">1. Concepts</a></li>
+      <li><a href="domain2.html">2. Implementation</a></li>
+      <li><a href="domain3.html">3. Operations</a></li>
+      <li><a href="domain4.html">4. Security</a></li>
+      <li><a href="domain5.html">5. Troubleshooting</a></li>
+    </ul>
+  </nav>
+
+  <div class="domain-page">
+
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="domain-sidebar">
+      <div class="sidebar-title">Domain 1 &mdash; 23%</div>
+      <ul class="sidebar-nav">
+        <li><a href="#osi" class="active">The OSI Model</a></li>
+        <li><a href="#tcp-ip">TCP/IP Model</a></li>
+        <li><a href="#ports">Common Ports &amp; Protocols</a></li>
+        <li><a href="#ip-addressing">IP Addressing &amp; Subnetting</a></li>
+        <li><a href="#network-types">Network Types &amp; Topologies</a></li>
+        <li><a href="#services">Network Services</a></li>
+        <li><a href="#quiz">Domain 1 Quiz</a></li>
+      </ul>
+    </aside>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <div class="domain-content">
+
+      <div class="progress-section">
+        <h3>Domain 1 Progress</h3>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" style="width: 0%"></div>
+        </div>
+        <p class="progress-text">0 of 6 sections completed (0%)</p>
+      </div>
+
+      <!-- ==================== SECTION 1: OSI MODEL ==================== -->
+      <div class="content-section" id="osi">
+        <h2>1.1 The OSI Model</h2>
+
+        <p>The <strong>Open Systems Interconnection (OSI)</strong> model is a conceptual framework created by the International Organization for Standardization (ISO) in 1984. It standardizes how different networking systems communicate by dividing the communication process into <strong>seven distinct layers</strong>. Each layer has a specific function and communicates with the layers directly above and below it.</p>
+
+        <p>Understanding the OSI model is absolutely essential for the Network+ exam. You need to know every layer, the protocols that operate at each layer, the data unit names, and how data flows through the model during encapsulation and de-encapsulation.</p>
+
+        <h3>The Seven Layers</h3>
+
+        <div class="info-box tip">
+          <strong>Mnemonic (Top to Bottom): All People Seem To Need Data Processing</strong>
+          Application, Presentation, Session, Transport, Network, Data Link, Physical. This mnemonic reads from Layer 7 down to Layer 1.
+        </div>
+
+        <div class="info-box note">
+          <strong>Mnemonic (Bottom to Top): Please Do Not Throw Sausage Pizza Away</strong>
+          Physical, Data Link, Network, Transport, Session, Presentation, Application. This mnemonic reads from Layer 1 up to Layer 7. Many students find this version easier to remember.
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Layer #</th>
+                <th>Layer Name</th>
+                <th>PDU</th>
+                <th>Function</th>
+                <th>Key Protocols / Tech</th>
+                <th>Devices</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>7</strong></td>
+                <td><strong>Application</strong></td>
+                <td>Data</td>
+                <td>Provides network services directly to end-user applications. Handles high-level APIs, resource sharing, and remote file access.</td>
+                <td>HTTP, HTTPS, FTP, SMTP, DNS, DHCP, SNMP, Telnet, SSH, POP3, IMAP, LDAP</td>
+                <td>Firewalls (L7), Load Balancers</td>
+              </tr>
+              <tr>
+                <td><strong>6</strong></td>
+                <td><strong>Presentation</strong></td>
+                <td>Data</td>
+                <td>Translates data formats between the application and network. Handles encryption/decryption, compression, and character encoding.</td>
+                <td>SSL/TLS, JPEG, GIF, PNG, MPEG, ASCII, EBCDIC</td>
+                <td>&mdash;</td>
+              </tr>
+              <tr>
+                <td><strong>5</strong></td>
+                <td><strong>Session</strong></td>
+                <td>Data</td>
+                <td>Establishes, manages, and terminates sessions (dialogues) between applications. Controls simplex, half-duplex, and full-duplex communication.</td>
+                <td>NetBIOS, PPTP, RPC, SCP</td>
+                <td>&mdash;</td>
+              </tr>
+              <tr>
+                <td><strong>4</strong></td>
+                <td><strong>Transport</strong></td>
+                <td>Segment (TCP) / Datagram (UDP)</td>
+                <td>Provides reliable or unreliable end-to-end data delivery. Handles segmentation, flow control, error recovery, and port addressing.</td>
+                <td>TCP, UDP</td>
+                <td>Firewalls (L4)</td>
+              </tr>
+              <tr>
+                <td><strong>3</strong></td>
+                <td><strong>Network</strong></td>
+                <td>Packet</td>
+                <td>Handles logical addressing (IP) and routing. Determines the best path for data to travel across networks.</td>
+                <td>IP (IPv4, IPv6), ICMP, IGMP, IPsec, OSPF, EIGRP, BGP, RIP</td>
+                <td>Router, Layer 3 Switch</td>
+              </tr>
+              <tr>
+                <td><strong>2</strong></td>
+                <td><strong>Data Link</strong></td>
+                <td>Frame</td>
+                <td>Provides node-to-node data transfer and handles MAC addressing, error detection (CRC), and media access control. Divided into LLC (upper) and MAC (lower) sublayers.</td>
+                <td>Ethernet (802.3), Wi-Fi (802.11), ARP, PPP, STP, VLANs</td>
+                <td>Switch, Bridge, NIC</td>
+              </tr>
+              <tr>
+                <td><strong>1</strong></td>
+                <td><strong>Physical</strong></td>
+                <td>Bits</td>
+                <td>Transmits raw bitstream over the physical medium. Defines electrical signals, light pulses, radio frequencies, cable specifications, and physical connectors.</td>
+                <td>Ethernet physical (cables), DSL, ISDN, RS-232, 802.11 radio</td>
+                <td>Hub, Repeater, Cable, Modem</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Encapsulation and De-encapsulation</h3>
+
+        <p><strong>Encapsulation</strong> is the process of wrapping data with protocol headers (and sometimes trailers) as it moves down through the OSI layers from the application to the physical layer. Each layer adds its own header information. <strong>De-encapsulation</strong> is the reverse process: as data moves up the layers at the receiving end, each layer strips off the corresponding header.</p>
+
+        <div class="diagram">
+Sending Host                                          Receiving Host
+=============                                         ==============
+
+Layer 7  Application    [      DATA       ]           Application   Layer 7
+              |                                            ^
+              v                                            |
+Layer 6  Presentation   [      DATA       ]           Presentation  Layer 6
+              |                                            ^
+              v                                            |
+Layer 5  Session        [      DATA       ]           Session       Layer 5
+              |                                            ^
+              v                                            |
+Layer 4  Transport      [ L4H |   DATA    ]           Transport     Layer 4
+              |           (Segment)                        ^
+              v                                            |
+Layer 3  Network        [ L3H | L4H | DATA ]          Network       Layer 3
+              |           (Packet)                         ^
+              v                                            |
+Layer 2  Data Link      [ L2H | L3H | L4H | DATA | FCS ] Data Link  Layer 2
+              |           (Frame)                          ^
+              v                                            |
+Layer 1  Physical       [  0110110101011... ]          Physical      Layer 1
+              |           (Bits)                           ^
+              v                                            |
+         ============= Physical Medium ==================&gt;
+        </div>
+
+        <p>In the diagram above: <strong>L2H</strong> = Layer 2 Header (MAC addresses), <strong>L3H</strong> = Layer 3 Header (IP addresses), <strong>L4H</strong> = Layer 4 Header (port numbers), and <strong>FCS</strong> = Frame Check Sequence (error detection trailer added at Layer 2).</p>
+
+        <h3>Key Concepts to Remember</h3>
+        <ul>
+          <li><strong>Layers 7-5</strong> (Application, Presentation, Session) are often called the <strong>upper layers</strong> or "host layers" and deal with application-level concerns.</li>
+          <li><strong>Layers 4-1</strong> (Transport, Network, Data Link, Physical) are the <strong>lower layers</strong> or "media layers" and handle actual data transport.</li>
+          <li><strong>Layer 2 sublayers</strong>: The Data Link layer is divided into <strong>LLC</strong> (Logical Link Control &mdash; interfaces with Layer 3) and <strong>MAC</strong> (Media Access Control &mdash; interfaces with Layer 1).</li>
+          <li><strong>Same-layer interaction</strong>: Each layer on the sending host communicates logically with the same layer on the receiving host.</li>
+          <li><strong>Adjacent-layer interaction</strong>: Each layer communicates with the layers directly above and below it on the same host.</li>
+        </ul>
+
+        <div class="info-box warning">
+          <strong>Exam Alert</strong>
+          The exam will ask you to identify which OSI layer a specific protocol operates at, or which PDU name corresponds to which layer. Make sure you can identify: Bits (L1), Frames (L2), Packets (L3), Segments/Datagrams (L4), and Data (L5-L7).
+        </div>
+
+        <label class="mark-read" data-domain="1" data-section="osi">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </div>
+
+      <!-- ==================== SECTION 2: TCP/IP MODEL ==================== -->
+      <div class="content-section" id="tcp-ip">
+        <h2>1.2 The TCP/IP Model</h2>
+
+        <p>The <strong>TCP/IP model</strong> (also called the Internet Protocol Suite or DoD model) is the practical networking model that the Internet and most modern networks are built upon. Unlike the theoretical OSI model with seven layers, the TCP/IP model uses <strong>four layers</strong>. It was developed by the U.S. Department of Defense (DoD) in the 1970s, predating the OSI model.</p>
+
+        <h3>The Four Layers</h3>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>TCP/IP Layer</th>
+                <th>OSI Equivalent</th>
+                <th>Function</th>
+                <th>Key Protocols</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>4. Application</strong></td>
+                <td>Layers 7, 6, 5</td>
+                <td>Combines the functions of OSI Application, Presentation, and Session layers. Provides process-to-process communication and user interfaces.</td>
+                <td>HTTP, HTTPS, FTP, SSH, Telnet, SMTP, DNS, DHCP, SNMP, TFTP</td>
+              </tr>
+              <tr>
+                <td><strong>3. Transport</strong></td>
+                <td>Layer 4</td>
+                <td>Provides end-to-end communication, reliability (TCP) or speed (UDP), flow control, and port-based addressing.</td>
+                <td>TCP, UDP</td>
+              </tr>
+              <tr>
+                <td><strong>2. Internet</strong></td>
+                <td>Layer 3</td>
+                <td>Handles logical addressing and routing. Moves packets across network boundaries from source to destination.</td>
+                <td>IP (v4/v6), ICMP, ARP, IGMP</td>
+              </tr>
+              <tr>
+                <td><strong>1. Network Access</strong></td>
+                <td>Layers 2, 1</td>
+                <td>Combines the functions of OSI Data Link and Physical layers. Handles the physical transmission of data on the local network segment.</td>
+                <td>Ethernet, Wi-Fi (802.11), PPP, Frame Relay, ARP*</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p><em>*Note: ARP operates between Layers 2 and 3 and is sometimes placed at the Internet layer or the Network Access layer depending on the reference.</em></p>
+
+        <h3>OSI vs. TCP/IP Comparison</h3>
+
+        <div class="diagram">
+     OSI Model              TCP/IP Model
+ +-----------------+    +-----------------+
+ | 7. Application  |    |                 |
+ +-----------------+    |   Application   |
+ | 6. Presentation |    |                 |
+ +-----------------+    +-----------------+
+ | 5. Session      |    |                 |
+ +-----------------+    +-----------------+
+ | 4. Transport    |    |   Transport     |
+ +-----------------+    +-----------------+
+ | 3. Network      |    |   Internet      |
+ +-----------------+    +-----------------+
+ | 2. Data Link    |    |                 |
+ +-----------------+    | Network Access  |
+ | 1. Physical     |    |                 |
+ +-----------------+    +-----------------+
+        </div>
+
+        <h3>TCP vs. UDP</h3>
+
+        <p><strong>TCP (Transmission Control Protocol)</strong> and <strong>UDP (User Datagram Protocol)</strong> are the two primary transport-layer protocols. Understanding their differences is critical for the exam.</p>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>TCP</th>
+                <th>UDP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Connection Type</td>
+                <td><strong>Connection-oriented</strong></td>
+                <td><strong>Connectionless</strong></td>
+              </tr>
+              <tr>
+                <td>Reliability</td>
+                <td>Reliable &mdash; guarantees delivery via acknowledgments</td>
+                <td>Unreliable &mdash; no delivery guarantee (best-effort)</td>
+              </tr>
+              <tr>
+                <td>Ordering</td>
+                <td>Guarantees in-order delivery using sequence numbers</td>
+                <td>No ordering guarantee</td>
+              </tr>
+              <tr>
+                <td>Speed</td>
+                <td>Slower (overhead from handshake, ACKs, flow control)</td>
+                <td>Faster (minimal overhead)</td>
+              </tr>
+              <tr>
+                <td>Header Size</td>
+                <td>20 bytes minimum</td>
+                <td>8 bytes</td>
+              </tr>
+              <tr>
+                <td>Flow Control</td>
+                <td>Yes (windowing)</td>
+                <td>No</td>
+              </tr>
+              <tr>
+                <td>Error Recovery</td>
+                <td>Yes (retransmission of lost segments)</td>
+                <td>No (application must handle)</td>
+              </tr>
+              <tr>
+                <td>PDU Name</td>
+                <td>Segment</td>
+                <td>Datagram</td>
+              </tr>
+              <tr>
+                <td>Use Cases</td>
+                <td>HTTP/S, FTP, SSH, SMTP, Telnet, POP3, IMAP</td>
+                <td>DNS queries, DHCP, TFTP, SNMP, VoIP (SIP/RTP), streaming, NTP</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>The TCP Three-Way Handshake</h3>
+
+        <p>Before TCP can transmit data, it must establish a connection using the <strong>three-way handshake</strong>. This ensures both sides are ready to communicate and agree on initial sequence numbers.</p>
+
+        <div class="diagram">
+  Client                              Server
+    |                                    |
+    |  1. SYN (seq=100)                  |
+    |-----------------------------------&gt;|
+    |                                    |
+    |  2. SYN-ACK (seq=300, ack=101)     |
+    |&lt;-----------------------------------|
+    |                                    |
+    |  3. ACK (seq=101, ack=301)         |
+    |-----------------------------------&gt;|
+    |                                    |
+    |   Connection ESTABLISHED           |
+    |   Data transfer can begin          |
+    |                                    |
+        </div>
+
+        <ol>
+          <li><strong>SYN</strong> &mdash; The client sends a SYN (synchronize) segment to the server, indicating it wants to establish a connection and providing its initial sequence number.</li>
+          <li><strong>SYN-ACK</strong> &mdash; The server responds with a SYN-ACK segment, acknowledging the client's SYN and providing its own initial sequence number.</li>
+          <li><strong>ACK</strong> &mdash; The client sends an ACK (acknowledge) segment, confirming receipt of the server's SYN-ACK. The connection is now established.</li>
+        </ol>
+
+        <h3>TCP Connection Termination (Four-Way Teardown)</h3>
+
+        <p>When either side wants to close the connection, it uses a <strong>four-way teardown</strong>:</p>
+
+        <div class="diagram">
+  Client                              Server
+    |                                    |
+    |  1. FIN                            |
+    |-----------------------------------&gt;|
+    |                                    |
+    |  2. ACK                            |
+    |&lt;-----------------------------------|
+    |                                    |
+    |  3. FIN                            |
+    |&lt;-----------------------------------|
+    |                                    |
+    |  4. ACK                            |
+    |-----------------------------------&gt;|
+    |                                    |
+    |   Connection CLOSED                |
+    |                                    |
+        </div>
+
+        <h3>Connection-Oriented vs. Connectionless</h3>
+
+        <ul>
+          <li><strong>Connection-oriented (TCP)</strong>: A session is established before data is sent. Think of it like a phone call &mdash; you dial, wait for an answer, then talk. Guarantees delivery and order.</li>
+          <li><strong>Connectionless (UDP)</strong>: No session is established. Think of it like sending a letter &mdash; you drop it in the mailbox and hope it arrives. Faster but no guarantees.</li>
+        </ul>
+
+        <div class="info-box tip">
+          <strong>Exam Tip</strong>
+          Remember: TCP = "Trustworthy Communication Protocol" (reliable), UDP = "Unreliable Datagram Protocol" (fast but best-effort). The exam loves to ask which protocol a given service uses and why.
+        </div>
+
+        <label class="mark-read" data-domain="1" data-section="tcp-ip">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </div>
+
+      <!-- ==================== SECTION 3: PORTS & PROTOCOLS ==================== -->
+      <div class="content-section" id="ports">
+        <h2>1.3 Common Ports &amp; Protocols</h2>
+
+        <p>Port numbers are used by the Transport layer (Layer 4) to direct traffic to the correct application or service on a host. Ports range from <strong>0 to 65,535</strong> and are divided into three ranges:</p>
+
+        <ul>
+          <li><strong>Well-Known Ports (0-1023)</strong> &mdash; Reserved for common protocols and services assigned by IANA.</li>
+          <li><strong>Registered Ports (1024-49151)</strong> &mdash; Assigned by IANA for specific applications upon request.</li>
+          <li><strong>Dynamic/Ephemeral Ports (49152-65535)</strong> &mdash; Used temporarily by client applications for outbound connections.</li>
+        </ul>
+
+        <div class="info-box tip">
+          <strong>Memorization Strategy</strong>
+          You must memorize these ports for the exam. Group them by function: file transfer (FTP, TFTP, SMB), email (SMTP, POP3, IMAP), web (HTTP, HTTPS), remote access (SSH, Telnet, RDP), directory (LDAP, LDAPS), and management (SNMP, syslog, NTP). Create flashcards and quiz yourself daily.
+        </div>
+
+        <h3>Essential Port Reference Table</h3>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Port(s)</th>
+                <th>Protocol</th>
+                <th>TCP/UDP</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>20</code></td>
+                <td><strong>FTP Data</strong></td>
+                <td>TCP</td>
+                <td>File Transfer Protocol &mdash; data channel. Used for actual file transfer.</td>
+              </tr>
+              <tr>
+                <td><code>21</code></td>
+                <td><strong>FTP Control</strong></td>
+                <td>TCP</td>
+                <td>File Transfer Protocol &mdash; command/control channel. Used for sending commands (login, list, get, put).</td>
+              </tr>
+              <tr>
+                <td><code>22</code></td>
+                <td><strong>SSH</strong></td>
+                <td>TCP</td>
+                <td>Secure Shell. Encrypted remote access, file transfer (SCP/SFTP), and tunneling. Replaced Telnet.</td>
+              </tr>
+              <tr>
+                <td><code>23</code></td>
+                <td><strong>Telnet</strong></td>
+                <td>TCP</td>
+                <td>Unencrypted remote terminal access. Insecure &mdash; sends data in cleartext. Use SSH instead.</td>
+              </tr>
+              <tr>
+                <td><code>25</code></td>
+                <td><strong>SMTP</strong></td>
+                <td>TCP</td>
+                <td>Simple Mail Transfer Protocol. Used to send outgoing email between mail servers and from clients to servers.</td>
+              </tr>
+              <tr>
+                <td><code>53</code></td>
+                <td><strong>DNS</strong></td>
+                <td>TCP &amp; UDP</td>
+                <td>Domain Name System. Resolves hostnames to IP addresses. Uses UDP for queries (fast) and TCP for zone transfers (reliable).</td>
+              </tr>
+              <tr>
+                <td><code>67</code></td>
+                <td><strong>DHCP Server</strong></td>
+                <td>UDP</td>
+                <td>Dynamic Host Configuration Protocol &mdash; server port. Listens for client requests.</td>
+              </tr>
+              <tr>
+                <td><code>68</code></td>
+                <td><strong>DHCP Client</strong></td>
+                <td>UDP</td>
+                <td>Dynamic Host Configuration Protocol &mdash; client port. Receives configuration from server.</td>
+              </tr>
+              <tr>
+                <td><code>69</code></td>
+                <td><strong>TFTP</strong></td>
+                <td>UDP</td>
+                <td>Trivial File Transfer Protocol. Simple, no authentication. Used for PXE boot, firmware updates, and config file transfers.</td>
+              </tr>
+              <tr>
+                <td><code>80</code></td>
+                <td><strong>HTTP</strong></td>
+                <td>TCP</td>
+                <td>Hypertext Transfer Protocol. Unencrypted web traffic. Foundation of the World Wide Web.</td>
+              </tr>
+              <tr>
+                <td><code>110</code></td>
+                <td><strong>POP3</strong></td>
+                <td>TCP</td>
+                <td>Post Office Protocol v3. Downloads email from server to client and typically deletes from server.</td>
+              </tr>
+              <tr>
+                <td><code>123</code></td>
+                <td><strong>NTP</strong></td>
+                <td>UDP</td>
+                <td>Network Time Protocol. Synchronizes clocks across network devices. Critical for logging and authentication.</td>
+              </tr>
+              <tr>
+                <td><code>143</code></td>
+                <td><strong>IMAP</strong></td>
+                <td>TCP</td>
+                <td>Internet Message Access Protocol. Accesses email on server. Keeps mail on server, supports folders and sync across devices.</td>
+              </tr>
+              <tr>
+                <td><code>161</code></td>
+                <td><strong>SNMP</strong></td>
+                <td>UDP</td>
+                <td>Simple Network Management Protocol &mdash; agent port. Manager queries devices (GET) and sets values (SET).</td>
+              </tr>
+              <tr>
+                <td><code>162</code></td>
+                <td><strong>SNMP Trap</strong></td>
+                <td>UDP</td>
+                <td>SNMP Trap &mdash; manager port. Devices send unsolicited alerts (traps) to the management station.</td>
+              </tr>
+              <tr>
+                <td><code>389</code></td>
+                <td><strong>LDAP</strong></td>
+                <td>TCP</td>
+                <td>Lightweight Directory Access Protocol. Queries and modifies directory services (e.g., Active Directory). Unencrypted.</td>
+              </tr>
+              <tr>
+                <td><code>443</code></td>
+                <td><strong>HTTPS</strong></td>
+                <td>TCP</td>
+                <td>HTTP Secure. Encrypted web traffic using TLS. The standard for secure web communication.</td>
+              </tr>
+              <tr>
+                <td><code>445</code></td>
+                <td><strong>SMB</strong></td>
+                <td>TCP</td>
+                <td>Server Message Block. Windows file and printer sharing. Operates over TCP directly (previously used NetBIOS on 137-139).</td>
+              </tr>
+              <tr>
+                <td><code>514</code></td>
+                <td><strong>Syslog</strong></td>
+                <td>UDP</td>
+                <td>System Logging Protocol. Centralized log collection from network devices, servers, and applications.</td>
+              </tr>
+              <tr>
+                <td><code>636</code></td>
+                <td><strong>LDAPS</strong></td>
+                <td>TCP</td>
+                <td>LDAP over SSL/TLS. Secure version of LDAP for encrypted directory service queries.</td>
+              </tr>
+              <tr>
+                <td><code>1433</code></td>
+                <td><strong>SQL Server</strong></td>
+                <td>TCP</td>
+                <td>Microsoft SQL Server default database port.</td>
+              </tr>
+              <tr>
+                <td><code>3306</code></td>
+                <td><strong>MySQL</strong></td>
+                <td>TCP</td>
+                <td>MySQL database default port.</td>
+              </tr>
+              <tr>
+                <td><code>3389</code></td>
+                <td><strong>RDP</strong></td>
+                <td>TCP &amp; UDP</td>
+                <td>Remote Desktop Protocol. Provides graphical remote access to Windows systems.</td>
+              </tr>
+              <tr>
+                <td><code>5060</code></td>
+                <td><strong>SIP (unencrypted)</strong></td>
+                <td>TCP &amp; UDP</td>
+                <td>Session Initiation Protocol. Sets up, manages, and tears down voice/video (VoIP) sessions.</td>
+              </tr>
+              <tr>
+                <td><code>5061</code></td>
+                <td><strong>SIP (encrypted)</strong></td>
+                <td>TCP</td>
+                <td>SIP over TLS. Secure version of SIP for encrypted VoIP signaling.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box tip">
+          <strong>Secure vs. Insecure Pairs</strong>
+          Know these pairs for the exam: Telnet (23) &rarr; SSH (22), HTTP (80) &rarr; HTTPS (443), FTP (21) &rarr; SFTP (22) or FTPS (990), LDAP (389) &rarr; LDAPS (636), SNMP v1/v2c &rarr; SNMP v3 (encrypted), SIP (5060) &rarr; SIP TLS (5061), IMAP (143) &rarr; IMAPS (993), POP3 (110) &rarr; POP3S (995).
+        </div>
+
+        <div class="info-box warning">
+          <strong>Exam Alert</strong>
+          DNS uses <strong>both</strong> TCP and UDP. Standard queries use UDP port 53 (fast, small packets). Zone transfers between DNS servers and responses larger than 512 bytes use TCP port 53 (reliable). The exam will test this distinction.
+        </div>
+
+        <label class="mark-read" data-domain="1" data-section="ports">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </div>
+
+      <!-- ==================== SECTION 4: IP ADDRESSING ==================== -->
+      <div class="content-section" id="ip-addressing">
+        <h2>1.4 IP Addressing &amp; Subnetting</h2>
+
+        <p>IP addressing is one of the most heavily tested topics on the Network+ exam. You need to understand IPv4 address classes, private vs. public ranges, CIDR notation, subnet masks, subnetting calculations, and the fundamentals of IPv6.</p>
+
+        <h3>IPv4 Address Classes</h3>
+
+        <p>IPv4 addresses are 32 bits long, written as four octets in dotted decimal notation (e.g., <code>192.168.1.1</code>). Classful addressing divides the address space into five classes:</p>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>First Octet Range</th>
+                <th>Default Subnet Mask</th>
+                <th>CIDR</th>
+                <th>Networks</th>
+                <th>Hosts per Network</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>A</strong></td>
+                <td>1 &ndash; 126</td>
+                <td>255.0.0.0</td>
+                <td>/8</td>
+                <td>126</td>
+                <td>16,777,214</td>
+                <td>Large networks</td>
+              </tr>
+              <tr>
+                <td><strong>B</strong></td>
+                <td>128 &ndash; 191</td>
+                <td>255.255.0.0</td>
+                <td>/16</td>
+                <td>16,384</td>
+                <td>65,534</td>
+                <td>Medium networks</td>
+              </tr>
+              <tr>
+                <td><strong>C</strong></td>
+                <td>192 &ndash; 223</td>
+                <td>255.255.255.0</td>
+                <td>/24</td>
+                <td>2,097,152</td>
+                <td>254</td>
+                <td>Small networks</td>
+              </tr>
+              <tr>
+                <td><strong>D</strong></td>
+                <td>224 &ndash; 239</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>Multicast</td>
+              </tr>
+              <tr>
+                <td><strong>E</strong></td>
+                <td>240 &ndash; 255</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>Experimental / Reserved</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box note">
+          <strong>Special Addresses</strong>
+          <code>127.0.0.0/8</code> is reserved for <strong>loopback</strong> (localhost). <code>127.0.0.1</code> is the standard loopback address. The range 127.x.x.x is not assignable to hosts, which is why Class A starts at 1 and ends at 126.
+        </div>
+
+        <h3>Private IP Address Ranges (RFC 1918)</h3>
+
+        <p>These addresses are not routable on the public Internet and are used within private networks. NAT is used to translate them to public addresses for Internet access.</p>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Private Range</th>
+                <th>CIDR Notation</th>
+                <th>Number of Addresses</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>A</td>
+                <td><code>10.0.0.0</code> &ndash; <code>10.255.255.255</code></td>
+                <td><code>10.0.0.0/8</code></td>
+                <td>16,777,216</td>
+              </tr>
+              <tr>
+                <td>B</td>
+                <td><code>172.16.0.0</code> &ndash; <code>172.31.255.255</code></td>
+                <td><code>172.16.0.0/12</code></td>
+                <td>1,048,576</td>
+              </tr>
+              <tr>
+                <td>C</td>
+                <td><code>192.168.0.0</code> &ndash; <code>192.168.255.255</code></td>
+                <td><code>192.168.0.0/16</code></td>
+                <td>65,536</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>APIPA (Automatic Private IP Addressing)</h3>
+
+        <p>When a device is configured to obtain an IP address via DHCP but cannot reach a DHCP server, it will automatically assign itself an address in the <strong>169.254.0.0/16</strong> range (<code>169.254.0.1</code> &ndash; <code>169.254.255.254</code>). This is called <strong>APIPA</strong> or a <strong>link-local address</strong> in IPv4. APIPA addresses allow communication only on the local network segment &mdash; they are not routable.</p>
+
+        <div class="info-box warning">
+          <strong>Exam Alert</strong>
+          If you see an address in the 169.254.x.x range on the exam, it almost always indicates a DHCP failure. The device could not obtain an address from a DHCP server.
+        </div>
+
+        <h3>CIDR Notation and Subnet Masks</h3>
+
+        <p><strong>CIDR</strong> (Classless Inter-Domain Routing) notation uses a slash followed by the number of network bits (e.g., <code>/24</code>). This replaced classful addressing to allow more flexible subnetting.</p>
+
+        <h4>Subnet Mask to CIDR Conversion Reference</h4>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>CIDR</th>
+                <th>Subnet Mask</th>
+                <th>Wildcard Mask</th>
+                <th>Total Hosts</th>
+                <th>Usable Hosts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>/8</td><td>255.0.0.0</td><td>0.255.255.255</td><td>16,777,216</td><td>16,777,214</td></tr>
+              <tr><td>/16</td><td>255.255.0.0</td><td>0.0.255.255</td><td>65,536</td><td>65,534</td></tr>
+              <tr><td>/17</td><td>255.255.128.0</td><td>0.0.127.255</td><td>32,768</td><td>32,766</td></tr>
+              <tr><td>/18</td><td>255.255.192.0</td><td>0.0.63.255</td><td>16,384</td><td>16,382</td></tr>
+              <tr><td>/19</td><td>255.255.224.0</td><td>0.0.31.255</td><td>8,192</td><td>8,190</td></tr>
+              <tr><td>/20</td><td>255.255.240.0</td><td>0.0.15.255</td><td>4,096</td><td>4,094</td></tr>
+              <tr><td>/21</td><td>255.255.248.0</td><td>0.0.7.255</td><td>2,048</td><td>2,046</td></tr>
+              <tr><td>/22</td><td>255.255.252.0</td><td>0.0.3.255</td><td>1,024</td><td>1,022</td></tr>
+              <tr><td>/23</td><td>255.255.254.0</td><td>0.0.1.255</td><td>512</td><td>510</td></tr>
+              <tr><td>/24</td><td>255.255.255.0</td><td>0.0.0.255</td><td>256</td><td>254</td></tr>
+              <tr><td>/25</td><td>255.255.255.128</td><td>0.0.0.127</td><td>128</td><td>126</td></tr>
+              <tr><td>/26</td><td>255.255.255.192</td><td>0.0.0.63</td><td>64</td><td>62</td></tr>
+              <tr><td>/27</td><td>255.255.255.224</td><td>0.0.0.31</td><td>32</td><td>30</td></tr>
+              <tr><td>/28</td><td>255.255.255.240</td><td>0.0.0.15</td><td>16</td><td>14</td></tr>
+              <tr><td>/29</td><td>255.255.255.248</td><td>0.0.0.7</td><td>8</td><td>6</td></tr>
+              <tr><td>/30</td><td>255.255.255.252</td><td>0.0.0.3</td><td>4</td><td>2</td></tr>
+              <tr><td>/31</td><td>255.255.255.254</td><td>0.0.0.1</td><td>2</td><td>2*</td></tr>
+              <tr><td>/32</td><td>255.255.255.255</td><td>0.0.0.0</td><td>1</td><td>1</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p><em>*/31 is a special case used for point-to-point links (RFC 3021) where no broadcast address is needed.</em></p>
+
+        <h3>Subnetting Step-by-Step</h3>
+
+        <p>Subnetting is the process of dividing a large network into smaller, more manageable subnetworks. Here is the method:</p>
+
+        <h4>Example: Subnet 192.168.10.0/26</h4>
+
+        <ol>
+          <li><strong>Determine the subnet mask</strong>: /26 = 255.255.255.192. The "interesting octet" is the 4th octet (192 in binary = 11000000).</li>
+          <li><strong>Calculate the block size</strong>: 256 - 192 = <strong>64</strong>. Subnets increment by 64 in the 4th octet.</li>
+          <li><strong>List the subnets</strong>: 192.168.10.0, 192.168.10.64, 192.168.10.128, 192.168.10.192 (4 subnets).</li>
+          <li><strong>Calculate hosts per subnet</strong>: 2^6 - 2 = <strong>62 usable hosts</strong> (6 host bits, minus network and broadcast).</li>
+          <li><strong>Determine ranges</strong>:
+            <ul>
+              <li>Subnet 1: Network <code>192.168.10.0</code>, Hosts <code>.1 - .62</code>, Broadcast <code>.63</code></li>
+              <li>Subnet 2: Network <code>192.168.10.64</code>, Hosts <code>.65 - .126</code>, Broadcast <code>.127</code></li>
+              <li>Subnet 3: Network <code>192.168.10.128</code>, Hosts <code>.129 - .190</code>, Broadcast <code>.191</code></li>
+              <li>Subnet 4: Network <code>192.168.10.192</code>, Hosts <code>.193 - .254</code>, Broadcast <code>.255</code></li>
+            </ul>
+          </li>
+        </ol>
+
+        <div class="info-box tip">
+          <strong>Quick Subnetting Formula</strong>
+          Number of subnets = 2^(borrowed bits). Number of hosts per subnet = 2^(host bits) - 2. The block size (also called the "magic number") = 256 - subnet mask value in the interesting octet.
+        </div>
+
+        <h3>IPv4 vs. IPv6 Comparison</h3>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>IPv4</th>
+                <th>IPv6</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Address Length</td>
+                <td>32 bits</td>
+                <td>128 bits</td>
+              </tr>
+              <tr>
+                <td>Address Format</td>
+                <td>Dotted decimal (192.168.1.1)</td>
+                <td>Hexadecimal with colons (2001:0db8::1)</td>
+              </tr>
+              <tr>
+                <td>Address Space</td>
+                <td>~4.3 billion addresses</td>
+                <td>~340 undecillion (3.4 x 10^38) addresses</td>
+              </tr>
+              <tr>
+                <td>Header Size</td>
+                <td>Variable (20-60 bytes)</td>
+                <td>Fixed (40 bytes)</td>
+              </tr>
+              <tr>
+                <td>IPsec</td>
+                <td>Optional</td>
+                <td>Built-in (mandatory support)</td>
+              </tr>
+              <tr>
+                <td>Broadcast</td>
+                <td>Yes</td>
+                <td>No (uses multicast instead)</td>
+              </tr>
+              <tr>
+                <td>Configuration</td>
+                <td>DHCP or manual</td>
+                <td>SLAAC, DHCPv6, or manual</td>
+              </tr>
+              <tr>
+                <td>NAT</td>
+                <td>Commonly required</td>
+                <td>Not needed (enough addresses for all devices)</td>
+              </tr>
+              <tr>
+                <td>Fragmentation</td>
+                <td>Routers and hosts</td>
+                <td>Source host only</td>
+              </tr>
+              <tr>
+                <td>ARP</td>
+                <td>Yes (broadcast-based)</td>
+                <td>No (replaced by NDP &mdash; Neighbor Discovery Protocol)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>IPv6 Address Types</h3>
+
+        <ul>
+          <li><strong>Global Unicast (2000::/3)</strong> &mdash; Equivalent to IPv4 public addresses. Globally routable on the Internet. Begin with <code>2000::</code> through <code>3FFF::</code>.</li>
+          <li><strong>Link-Local (FE80::/10)</strong> &mdash; Automatically assigned to every IPv6-enabled interface. Used for communication on the local link only (not routable). Always starts with <code>FE80::</code>. Required for IPv6 operation.</li>
+          <li><strong>Unique Local (FC00::/7)</strong> &mdash; Equivalent to IPv4 private addresses (RFC 1918). Routable within an organization but not on the Internet. Typically uses <code>FD00::/8</code>.</li>
+          <li><strong>Multicast (FF00::/8)</strong> &mdash; Sends packets to multiple destinations simultaneously. Replaces IPv4 broadcast. Examples: <code>FF02::1</code> (all nodes), <code>FF02::2</code> (all routers).</li>
+          <li><strong>Anycast</strong> &mdash; Assigned to multiple interfaces; packets are routed to the nearest one. Uses the same address format as unicast. Used for load balancing and redundancy (e.g., DNS root servers).</li>
+          <li><strong>Loopback</strong> &mdash; <code>::1</code> (equivalent to IPv4's 127.0.0.1).</li>
+          <li><strong>Unspecified</strong> &mdash; <code>::</code> (equivalent to IPv4's 0.0.0.0). Used when a device does not yet have an address.</li>
+        </ul>
+
+        <div class="info-box note">
+          <strong>IPv6 Shortening Rules</strong>
+          1. Leading zeros in each group can be removed: <code>2001:0db8:0000:0001</code> becomes <code>2001:db8:0:1</code>. 2. One consecutive group of all-zero sections can be replaced with <code>::</code> (only once per address): <code>2001:db8:0:0:0:0:0:1</code> becomes <code>2001:db8::1</code>.
+        </div>
+
+        <label class="mark-read" data-domain="1" data-section="ip-addressing">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </div>
+
+      <!-- ==================== SECTION 5: NETWORK TYPES ==================== -->
+      <div class="content-section" id="network-types">
+        <h2>1.5 Network Types &amp; Topologies</h2>
+
+        <h3>Network Types by Geographic Scope</h3>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Acronym</th>
+                <th>Full Name</th>
+                <th>Scope</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>PAN</strong></td>
+                <td>Personal Area Network</td>
+                <td>Within reach of a person (~10m)</td>
+                <td>Bluetooth, USB connections between personal devices. Example: phone to wireless earbuds.</td>
+              </tr>
+              <tr>
+                <td><strong>LAN</strong></td>
+                <td>Local Area Network</td>
+                <td>Single building or campus</td>
+                <td>High-speed network in a limited area. Uses Ethernet and/or Wi-Fi. Most common network type.</td>
+              </tr>
+              <tr>
+                <td><strong>WLAN</strong></td>
+                <td>Wireless Local Area Network</td>
+                <td>Same as LAN (wireless)</td>
+                <td>LAN using Wi-Fi (802.11 standards) instead of cables. Connected to wired LAN via access points.</td>
+              </tr>
+              <tr>
+                <td><strong>CAN</strong></td>
+                <td>Campus Area Network</td>
+                <td>Multiple buildings in proximity</td>
+                <td>Connects multiple LANs across a campus (university, corporate campus, military base).</td>
+              </tr>
+              <tr>
+                <td><strong>MAN</strong></td>
+                <td>Metropolitan Area Network</td>
+                <td>City or metro area</td>
+                <td>Spans a city. Often used by ISPs or city governments. Larger than CAN, smaller than WAN.</td>
+              </tr>
+              <tr>
+                <td><strong>WAN</strong></td>
+                <td>Wide Area Network</td>
+                <td>Country, continent, global</td>
+                <td>Connects LANs over large geographic distances. The Internet is the largest WAN. Uses leased lines, MPLS, VPNs.</td>
+              </tr>
+              <tr>
+                <td><strong>SAN</strong></td>
+                <td>Storage Area Network</td>
+                <td>Data center</td>
+                <td>Dedicated high-speed network for storage devices. Uses Fibre Channel or iSCSI. Provides block-level storage access.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Physical Topologies</h3>
+
+        <p>A <strong>physical topology</strong> describes the actual physical layout of cables, devices, and connections in a network.</p>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Topology</th>
+                <th>Description</th>
+                <th>Advantages</th>
+                <th>Disadvantages</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Star</strong></td>
+                <td>All devices connect to a central device (switch or hub). Most common modern LAN topology.</td>
+                <td>Easy to add/remove devices; single cable failure affects only one device; easy to troubleshoot.</td>
+                <td>Central device is a single point of failure; requires more cable than bus.</td>
+              </tr>
+              <tr>
+                <td><strong>Mesh</strong></td>
+                <td>Every device connects to every other device. <strong>Full mesh</strong>: all devices interconnected. <strong>Partial mesh</strong>: some devices interconnected.</td>
+                <td>Highest redundancy and fault tolerance; multiple paths for data.</td>
+                <td>Expensive; complex cabling; formula: n(n-1)/2 links for full mesh.</td>
+              </tr>
+              <tr>
+                <td><strong>Bus</strong></td>
+                <td>All devices share a single backbone cable with terminators at both ends. Legacy topology.</td>
+                <td>Simple and inexpensive; easy to implement for small networks.</td>
+                <td>Single cable failure brings down entire network; difficult to troubleshoot; collisions.</td>
+              </tr>
+              <tr>
+                <td><strong>Ring</strong></td>
+                <td>Devices connected in a circular loop. Data travels in one direction (or both in dual ring). Used in Token Ring and FDDI.</td>
+                <td>Predictable performance; no collisions (token-passing).</td>
+                <td>Single break disrupts entire network (unless dual ring); difficult to reconfigure.</td>
+              </tr>
+              <tr>
+                <td><strong>Hybrid</strong></td>
+                <td>Combination of two or more topologies. Example: star-bus (star topology segments connected via a bus backbone).</td>
+                <td>Flexible; scalable; can be tailored to specific needs.</td>
+                <td>Complex design; can be expensive.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Logical Topologies</h3>
+
+        <p>A <strong>logical topology</strong> describes how data flows through the network, regardless of physical layout. For example, a network may be physically wired as a star (all devices connected to a switch) but logically function as a bus (Ethernet uses CSMA/CD, where all devices share the same broadcast domain). Similarly, a Token Ring network physically wired as a star uses a logical ring topology where a token is passed sequentially.</p>
+
+        <h3>Cloud Computing Concepts</h3>
+
+        <p>Cloud computing delivers IT resources over the Internet on a pay-as-you-go basis. The three main service models are:</p>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Full Name</th>
+                <th>What You Manage</th>
+                <th>What Provider Manages</th>
+                <th>Examples</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>IaaS</strong></td>
+                <td>Infrastructure as a Service</td>
+                <td>OS, middleware, runtime, applications, data</td>
+                <td>Virtualization, servers, storage, networking</td>
+                <td>AWS EC2, Azure VMs, Google Compute Engine</td>
+              </tr>
+              <tr>
+                <td><strong>PaaS</strong></td>
+                <td>Platform as a Service</td>
+                <td>Applications, data</td>
+                <td>OS, middleware, runtime, virtualization, servers, storage, networking</td>
+                <td>AWS Elastic Beanstalk, Azure App Service, Heroku</td>
+              </tr>
+              <tr>
+                <td><strong>SaaS</strong></td>
+                <td>Software as a Service</td>
+                <td>Nothing (just use the application)</td>
+                <td>Everything</td>
+                <td>Microsoft 365, Google Workspace, Salesforce, Dropbox</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Cloud Deployment Models</h4>
+
+        <ul>
+          <li><strong>Public Cloud</strong> &mdash; Resources owned and operated by a third-party provider, shared among multiple tenants. Accessible over the Internet. Cost-effective and scalable. Examples: AWS, Azure, Google Cloud.</li>
+          <li><strong>Private Cloud</strong> &mdash; Cloud infrastructure dedicated to a single organization. Can be on-premises or hosted by a third party. Greater control and security but higher cost.</li>
+          <li><strong>Hybrid Cloud</strong> &mdash; Combines public and private cloud environments. Data and applications can move between them. Provides flexibility: keep sensitive data private while leveraging public cloud scalability.</li>
+          <li><strong>Community Cloud</strong> &mdash; Shared infrastructure for organizations with common concerns (compliance, security, mission). Example: government agencies sharing a cloud platform.</li>
+        </ul>
+
+        <h3>Virtualization Concepts</h3>
+
+        <p>Virtualization allows multiple virtual machines (VMs) to run on a single physical host, each with its own operating system and applications.</p>
+
+        <h4>Hypervisor Types</h4>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Examples</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Type 1</strong></td>
+                <td>Bare-Metal</td>
+                <td>Runs directly on the physical hardware (no host OS). Better performance and security. Used in enterprise data centers.</td>
+                <td>VMware ESXi, Microsoft Hyper-V, Citrix XenServer, KVM</td>
+              </tr>
+              <tr>
+                <td><strong>Type 2</strong></td>
+                <td>Hosted</td>
+                <td>Runs on top of a host operating system as an application. Easier to set up. Used for development and testing.</td>
+                <td>VMware Workstation, Oracle VirtualBox, Parallels Desktop</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Virtual Networking Components</h4>
+
+        <ul>
+          <li><strong>Virtual Switch (vSwitch)</strong> &mdash; A software-based switch that connects VMs to each other and to the physical network. Operates at Layer 2, supports VLANs, and can enforce security policies.</li>
+          <li><strong>Virtual NIC (vNIC)</strong> &mdash; A software-based network adapter assigned to each VM. Each vNIC has its own MAC address and can be configured with its own IP address, just like a physical NIC.</li>
+          <li><strong>Virtual Router</strong> &mdash; Software-based router that routes traffic between virtual network segments.</li>
+          <li><strong>Virtual Firewall</strong> &mdash; Software firewall that filters traffic between VMs and virtual network segments. Can be part of the hypervisor or a dedicated virtual appliance.</li>
+        </ul>
+
+        <div class="info-box tip">
+          <strong>Exam Tip</strong>
+          Know that Type 1 hypervisors are more performant and secure than Type 2 because they run directly on hardware without a host OS layer. The exam may ask you to identify which hypervisor type is appropriate for a given scenario.
+        </div>
+
+        <label class="mark-read" data-domain="1" data-section="network-types">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </div>
+
+      <!-- ==================== SECTION 6: NETWORK SERVICES ==================== -->
+      <div class="content-section" id="services">
+        <h2>1.6 Network Services</h2>
+
+        <h3>DNS (Domain Name System)</h3>
+
+        <p>DNS is the "phone book" of the Internet. It translates human-readable domain names (like <code>www.example.com</code>) into IP addresses (like <code>93.184.216.34</code>) that computers use to communicate. DNS operates on <strong>port 53</strong> using UDP for standard queries and TCP for zone transfers.</p>
+
+        <h4>How DNS Resolution Works</h4>
+        <ol>
+          <li>Client checks its <strong>local DNS cache</strong> for the record.</li>
+          <li>If not found, client queries its configured <strong>recursive DNS resolver</strong> (usually provided by ISP or set to 8.8.8.8, 1.1.1.1, etc.).</li>
+          <li>Recursive resolver checks its cache. If not found, it queries the <strong>root name servers</strong> (.).</li>
+          <li>Root servers direct the resolver to the appropriate <strong>TLD name server</strong> (.com, .org, .net, etc.).</li>
+          <li>TLD server directs the resolver to the <strong>authoritative name server</strong> for the domain.</li>
+          <li>The authoritative server returns the IP address to the resolver, which caches it and returns it to the client.</li>
+        </ol>
+
+        <h4>DNS Record Types</h4>
+
+        <p>Click each card to reveal the description:</p>
+
+        <div class="flashcard-deck">
+          <div class="flashcard">
+            <div class="flashcard-front">A Record (Address)</div>
+            <div class="flashcard-back">Maps a hostname to an <strong>IPv4 address</strong>. The most common DNS record type. Example: <code>www.example.com &rarr; 93.184.216.34</code></div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">AAAA Record (Quad-A)</div>
+            <div class="flashcard-back">Maps a hostname to an <strong>IPv6 address</strong>. Same purpose as an A record but for IPv6. Example: <code>www.example.com &rarr; 2606:2800:220:1:248:1893:25c8:1946</code></div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">MX Record (Mail Exchange)</div>
+            <div class="flashcard-back">Specifies the <strong>mail server(s)</strong> responsible for receiving email for the domain. Includes a priority value (lower = higher priority). Example: <code>example.com MX 10 mail.example.com</code></div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">CNAME Record (Canonical Name)</div>
+            <div class="flashcard-back">Creates an <strong>alias</strong> that points one hostname to another hostname (not to an IP). Used for subdomains. Example: <code>www.example.com CNAME example.com</code>. Cannot coexist with other record types for the same name.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">PTR Record (Pointer)</div>
+            <div class="flashcard-back">Used for <strong>reverse DNS lookups</strong> &mdash; maps an IP address back to a hostname. Stored in the <code>in-addr.arpa</code> (IPv4) or <code>ip6.arpa</code> (IPv6) zone. Used for email verification and logging.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">NS Record (Name Server)</div>
+            <div class="flashcard-back">Identifies the <strong>authoritative DNS servers</strong> for a domain. Every domain must have at least one NS record. Example: <code>example.com NS ns1.example.com</code></div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">SOA Record (Start of Authority)</div>
+            <div class="flashcard-back">Contains <strong>administrative information</strong> about the DNS zone: primary name server, responsible person's email, serial number, refresh/retry/expire timers, and minimum TTL. Every zone has exactly one SOA record.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">SRV Record (Service Locator)</div>
+            <div class="flashcard-back">Specifies the <strong>host and port for specific services</strong>. Used by applications to discover services. Format includes priority, weight, port, and target. Example: <code>_sip._tcp.example.com SRV 10 60 5060 sipserver.example.com</code></div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">TXT Record (Text)</div>
+            <div class="flashcard-back">Stores <strong>arbitrary text data</strong> associated with a domain. Commonly used for <strong>SPF</strong> (email sender verification), <strong>DKIM</strong> (email signing), <strong>DMARC</strong> (email authentication policy), and domain ownership verification.</div>
+          </div>
+        </div>
+
+        <h3>DHCP (Dynamic Host Configuration Protocol)</h3>
+
+        <p>DHCP automatically assigns IP addresses and other network configuration parameters (subnet mask, default gateway, DNS servers) to devices on a network. It uses <strong>UDP ports 67</strong> (server) and <strong>68</strong> (client). This eliminates the need for manual IP configuration on every device.</p>
+
+        <h4>The DORA Process</h4>
+
+        <p>DHCP uses a four-step process known as <strong>DORA</strong>:</p>
+
+        <div class="diagram">
+    Client                                Server
+      |                                      |
+      |  1. DISCOVER (broadcast)             |
+      |  "Any DHCP servers out there?"       |
+      |-------------------------------------&gt;|
+      |                                      |
+      |  2. OFFER (unicast or broadcast)     |
+      |  "Here's an IP you can use."         |
+      |&lt;-------------------------------------|
+      |                                      |
+      |  3. REQUEST (broadcast)              |
+      |  "I'd like that IP, please."         |
+      |-------------------------------------&gt;|
+      |                                      |
+      |  4. ACKNOWLEDGE (unicast or bcast)   |
+      |  "It's yours. Here's the config."    |
+      |&lt;-------------------------------------|
+      |                                      |
+      |  Client is now configured!           |
+      |                                      |
+        </div>
+
+        <ol>
+          <li><strong>Discover</strong> &mdash; Client broadcasts a DHCPDISCOVER message to find available DHCP servers on the network (source: 0.0.0.0, destination: 255.255.255.255).</li>
+          <li><strong>Offer</strong> &mdash; DHCP server(s) respond with a DHCPOFFER containing an available IP address and configuration parameters.</li>
+          <li><strong>Request</strong> &mdash; Client broadcasts a DHCPREQUEST indicating which offer it accepts (in case multiple servers responded).</li>
+          <li><strong>Acknowledge</strong> &mdash; The server confirms the lease with a DHCPACK, and the client configures its network interface with the assigned settings.</li>
+        </ol>
+
+        <div class="info-box note">
+          <strong>DHCP Lease Renewal</strong>
+          IP addresses are leased for a specific duration. At 50% of the lease time (T1), the client attempts to renew directly with the original server. At 87.5% (T2), if renewal failed, the client broadcasts to any available DHCP server. If the lease expires, the client must restart the DORA process.
+        </div>
+
+        <div class="info-box tip">
+          <strong>DHCP Relay Agent</strong>
+          Since DHCP uses broadcasts, it normally only works within a single subnet. A <strong>DHCP relay agent</strong> (also called an <strong>IP helper</strong>) on a router forwards DHCP broadcasts across subnet boundaries to a centralized DHCP server. This is configured with the <code>ip helper-address</code> command on Cisco routers.
+        </div>
+
+        <h3>NAT (Network Address Translation)</h3>
+
+        <p>NAT translates private (RFC 1918) IP addresses to public IP addresses, allowing multiple internal devices to share one or more public IP addresses for Internet access. NAT operates at <strong>Layer 3</strong> (Network) on routers or firewalls.</p>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>NAT Type</th>
+                <th>Description</th>
+                <th>Use Case</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Static NAT</strong></td>
+                <td>One-to-one mapping between a single private IP and a single public IP. Permanent mapping.</td>
+                <td>Servers that need to be accessible from the Internet (web server, mail server). Also called "port forwarding" in home routers.</td>
+              </tr>
+              <tr>
+                <td><strong>Dynamic NAT</strong></td>
+                <td>Maps private IPs to public IPs from a pool of available addresses. First-come, first-served. Mapping is temporary.</td>
+                <td>When you have a pool of public addresses and want internal hosts to access the Internet without a permanent mapping.</td>
+              </tr>
+              <tr>
+                <td><strong>PAT (Port Address Translation)</strong></td>
+                <td>Many-to-one NAT. Maps multiple private IPs to a <strong>single</strong> public IP using different port numbers to distinguish sessions. Also called <strong>NAT overload</strong>.</td>
+                <td>Most common NAT type. Used in home routers and small businesses. Allows hundreds of devices to share one public IP.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box warning">
+          <strong>Exam Alert</strong>
+          PAT (NAT overload) is the most commonly tested NAT type. Understand that PAT uses unique source port numbers to track which internal device each outbound connection belongs to, allowing many devices to share a single public IP address.
+        </div>
+
+        <h3>NTP (Network Time Protocol)</h3>
+
+        <p>NTP synchronizes clocks across network devices using <strong>UDP port 123</strong>. Accurate time is critical for:</p>
+
+        <ul>
+          <li><strong>Log correlation</strong> &mdash; Matching timestamps across devices when troubleshooting or investigating security incidents.</li>
+          <li><strong>Authentication protocols</strong> &mdash; Kerberos requires clocks to be synchronized within 5 minutes.</li>
+          <li><strong>Certificate validation</strong> &mdash; SSL/TLS certificates have validity periods tied to time.</li>
+          <li><strong>Scheduled tasks</strong> &mdash; Backups, updates, and jobs that need to run at specific times.</li>
+        </ul>
+
+        <p>NTP uses a hierarchy of <strong>strata</strong>: Stratum 0 is the reference clock (atomic clock, GPS), Stratum 1 servers connect directly to Stratum 0, Stratum 2 servers sync from Stratum 1, and so on. Lower stratum = more accurate. Maximum is Stratum 15; Stratum 16 means unsynchronized.</p>
+
+        <label class="mark-read" data-domain="1" data-section="services">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </div>
+
+      <!-- ==================== QUIZ ==================== -->
+      <div class="quiz-container" id="quiz" data-domain="1">
+        <h2>Domain 1 Quiz: Networking Concepts</h2>
+        <p>Test your knowledge of networking concepts. Select the best answer for each question, then click Submit to check your results.</p>
+
+        <!-- Question 1 -->
+        <div class="quiz-question" data-answer="B">
+          <p>1. Which OSI layer is responsible for logical addressing and routing?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q1" value="A"> A. Data Link (Layer 2)
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q1" value="B"> B. Network (Layer 3)
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q1" value="C"> C. Transport (Layer 4)
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q1" value="D"> D. Session (Layer 5)
+            </li>
+          </ul>
+          <div class="quiz-explanation">The Network layer (Layer 3) handles logical addressing (IP addresses) and determines the best path (routing) for data to travel from source to destination across networks. Routers operate at this layer.</div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="quiz-question" data-answer="C">
+          <p>2. What is the correct order of the TCP three-way handshake?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q2" value="A"> A. ACK, SYN, SYN-ACK
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q2" value="B"> B. SYN, ACK, SYN-ACK
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q2" value="C"> C. SYN, SYN-ACK, ACK
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q2" value="D"> D. SYN-ACK, SYN, ACK
+            </li>
+          </ul>
+          <div class="quiz-explanation">The TCP three-way handshake follows the order: SYN (client initiates), SYN-ACK (server acknowledges and synchronizes), ACK (client confirms). This establishes a reliable connection before data transfer begins.</div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="quiz-question" data-answer="D">
+          <p>3. Which port is used by HTTPS?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q3" value="A"> A. 80
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q3" value="B"> B. 8080
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q3" value="C"> C. 8443
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q3" value="D"> D. 443
+            </li>
+          </ul>
+          <div class="quiz-explanation">HTTPS (HTTP Secure) uses TCP port 443. HTTP uses port 80. Port 8080 is a common alternative HTTP port, and 8443 is an alternative HTTPS port, but the standard well-known ports are 80 and 443 respectively.</div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="quiz-question" data-answer="A">
+          <p>4. A client receives an IP address of 169.254.10.5. What does this most likely indicate?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q4" value="A"> A. The DHCP server is unreachable, so the client assigned itself an APIPA address
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q4" value="B"> B. The client was assigned a valid private IP address
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q4" value="C"> C. The client has a valid public IP address
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q4" value="D"> D. The DNS server is down
+            </li>
+          </ul>
+          <div class="quiz-explanation">Addresses in the 169.254.0.0/16 range are APIPA (Automatic Private IP Addressing) addresses. A device assigns itself an APIPA address when it is configured to use DHCP but cannot contact a DHCP server. APIPA addresses are link-local only and do not provide Internet connectivity.</div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="quiz-question" data-answer="B">
+          <p>5. How many usable host addresses are available in a /28 subnet?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q5" value="A"> A. 16
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q5" value="B"> B. 14
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q5" value="C"> C. 30
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q5" value="D"> D. 12
+            </li>
+          </ul>
+          <div class="quiz-explanation">A /28 subnet has 4 host bits (32 - 28 = 4). Total addresses = 2^4 = 16. Usable host addresses = 16 - 2 = 14 (subtract the network address and broadcast address). The subnet mask is 255.255.255.240.</div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="quiz-question" data-answer="C">
+          <p>6. Which DNS record type is used to map a hostname to an IPv6 address?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q6" value="A"> A. A
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q6" value="B"> B. MX
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q6" value="C"> C. AAAA
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q6" value="D"> D. CNAME
+            </li>
+          </ul>
+          <div class="quiz-explanation">The AAAA (Quad-A) record maps a hostname to an IPv6 address. The A record maps a hostname to an IPv4 address. MX records specify mail servers, and CNAME records create hostname aliases.</div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="quiz-question" data-answer="D">
+          <p>7. Which type of NAT allows multiple internal hosts to share a single public IP address by using different port numbers?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q7" value="A"> A. Static NAT
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q7" value="B"> B. Dynamic NAT
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q7" value="C"> C. Bidirectional NAT
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q7" value="D"> D. PAT (Port Address Translation)
+            </li>
+          </ul>
+          <div class="quiz-explanation">PAT (Port Address Translation), also known as NAT overload, allows many internal hosts to share a single public IP address. PAT uses unique source port numbers to keep track of which internal device initiated each connection. This is the most common form of NAT used in home and small office routers.</div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="quiz-question" data-answer="A">
+          <p>8. Which of the following correctly describes the DHCP DORA process in order?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q8" value="A"> A. Discover, Offer, Request, Acknowledge
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q8" value="B"> B. Discover, Offer, Acknowledge, Request
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q8" value="C"> C. Demand, Offer, Reply, Acknowledge
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q8" value="D"> D. Discover, Open, Request, Accept
+            </li>
+          </ul>
+          <div class="quiz-explanation">DORA stands for Discover, Offer, Request, Acknowledge. The client Discovers servers via broadcast, the server Offers an IP, the client Requests that specific IP, and the server Acknowledges the lease. This is a fundamental concept for the Network+ exam.</div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="quiz-question" data-answer="B">
+          <p>9. A Type 1 hypervisor differs from a Type 2 hypervisor in that a Type 1 hypervisor:</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q9" value="A"> A. Runs as an application on top of a host operating system
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q9" value="B"> B. Runs directly on the physical hardware without a host OS
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q9" value="C"> C. Can only run a single virtual machine at a time
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q9" value="D"> D. Is used exclusively for desktop virtualization
+            </li>
+          </ul>
+          <div class="quiz-explanation">A Type 1 (bare-metal) hypervisor runs directly on the physical hardware without a host operating system, providing better performance and security. Examples include VMware ESXi and Microsoft Hyper-V. A Type 2 (hosted) hypervisor runs as an application on top of an existing OS, such as VMware Workstation or VirtualBox.</div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="quiz-question" data-answer="C">
+          <p>10. Which of the following is a valid IPv6 link-local address?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A">
+              <input type="radio" name="q10" value="A"> A. 2001:db8::1
+            </li>
+            <li class="quiz-option" data-value="B">
+              <input type="radio" name="q10" value="B"> B. FF02::1
+            </li>
+            <li class="quiz-option" data-value="C">
+              <input type="radio" name="q10" value="C"> C. FE80::1
+            </li>
+            <li class="quiz-option" data-value="D">
+              <input type="radio" name="q10" value="D"> D. FC00::1
+            </li>
+          </ul>
+          <div class="quiz-explanation">IPv6 link-local addresses always begin with FE80::/10 (in practice, FE80::). They are automatically assigned to every IPv6-enabled interface and are used for communication on the local network segment only. 2001:db8::/32 is documentation, FF02::1 is multicast (all nodes), and FC00::/7 is unique local (private).</div>
+        </div>
+
+        <button class="btn btn-primary btn-quiz-submit" style="width: 100%; margin-top: 1rem; padding: 0.85rem;">Submit Answers</button>
+
+        <div class="quiz-score">
+          <div class="score-number"></div>
+          <div class="score-label"></div>
+        </div>
+      </div>
+
+      <!-- ==================== PREV/NEXT NAV ==================== -->
+      <div class="domain-nav">
+        <a href="index.html" class="prev">
+          <span class="direction">&larr; Previous</span>
+          <span class="title">Home</span>
+        </a>
+        <a href="domain2.html" class="next">
+          <span class="direction">Next &rarr;</span>
+          <span class="title">Domain 2: Implementation</span>
+        </a>
+      </div>
+
+    </div><!-- /.domain-content -->
+  </div><!-- /.domain-page -->
+
+  <footer class="site-footer">
+    <p>Network+ N10-009 Study Guide &mdash; Not affiliated with CompTIA. For educational use only.</p>
+    <p style="margin-top: 0.5rem;"><a href="/">Back to Anime Syncer</a></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

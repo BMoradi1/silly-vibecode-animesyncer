@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Domain 5: Network Troubleshooting &mdash; CompTIA Network+ N10-009</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-domain="5">
+
+  <nav class="topnav">
+    <a href="index.html" class="topnav-brand">Network+ N10-009 <span>Study Guide</span></a>
+    <button class="hamburger" aria-label="Menu">&#9776;</button>
+    <ul class="topnav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="domain1.html">1. Concepts</a></li>
+      <li><a href="domain2.html">2. Implementation</a></li>
+      <li><a href="domain3.html">3. Operations</a></li>
+      <li><a href="domain4.html">4. Security</a></li>
+      <li><a href="domain5.html" class="active">5. Troubleshooting</a></li>
+    </ul>
+  </nav>
+
+  <div class="domain-page">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="domain-sidebar">
+      <div class="sidebar-title">Domain 5 &mdash; 23%</div>
+      <ul class="sidebar-nav">
+        <li><a href="#methodology">Troubleshooting Methodology</a></li>
+        <li><a href="#tools">Troubleshooting Tools</a></li>
+        <li><a href="#cable-issues">Cable &amp; Physical Issues</a></li>
+        <li><a href="#network-issues">Network &amp; IP Issues</a></li>
+        <li><a href="#wireless-issues">Wireless Troubleshooting</a></li>
+        <li><a href="#performance-issues">Performance &amp; Service Issues</a></li>
+        <li><a href="#quiz">Domain 5 Quiz</a></li>
+      </ul>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="domain-content">
+
+      <div class="progress-section">
+        <h3>Domain 5 Progress</h3>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" style="width: 0%"></div>
+        </div>
+        <p class="progress-text">0 of 6 sections completed (0%)</p>
+      </div>
+
+      <!-- ============================================================
+           SECTION 1: TROUBLESHOOTING METHODOLOGY
+           ============================================================ -->
+      <div class="content-section" id="methodology">
+        <h2>5.1 Troubleshooting Methodology</h2>
+
+        <p>CompTIA's structured troubleshooting methodology is one of the most heavily tested topics on the Network+ exam. Memorize the seven steps in order and understand when and how to apply each one. A disciplined approach prevents wasted effort, avoids introducing new problems, and ensures accountability through documentation.</p>
+
+        <div class="info-box note">
+          <strong>Exam Alert</strong>
+          You will almost certainly see questions asking you to identify the correct step or determine which step comes next. Know the exact order and the purpose of every step.
+        </div>
+
+        <h3>The 7-Step Troubleshooting Model</h3>
+
+        <div class="diagram">
+  Step 1          Step 2           Step 3          Step 4
+ Identify    Establish a       Test the      Establish a
+   the       Theory of         Theory to      Plan of
+ Problem     Probable Cause    Determine      Action
+    |              |            Cause            |
+    v              v              |              v
+  +----+        +----+           v           +----+
+  | 1  | -----> | 2  | ------> | 3 | -----> | 4  |
+  +----+        +----+         +----+        +----+
+                                                |
+  +----+        +----+         +----+           |
+  | 7  | <----- | 6  | <----- | 5  | <---------+
+  +----+        +----+         +----+
+    ^              ^              ^
+    |              |              |
+  Step 7         Step 6        Step 5
+ Document       Verify        Implement
+ Findings,      Full System   the Solution
+ Actions,       Functionality (or Escalate)
+ Outcomes
+        </div>
+
+        <h3>Step 1: Identify the Problem</h3>
+        <p>This is the information-gathering phase. Before jumping to conclusions, you must fully understand the symptoms and scope of the issue.</p>
+        <ul>
+          <li><strong>Gather information</strong> &mdash; Question users using open-ended questions: "What were you doing when the problem started?" "Has anything changed recently?" "Can you reproduce the problem?"</li>
+          <li><strong>Identify symptoms</strong> &mdash; Distinguish between what the user reports (e.g., "the internet is down") and the actual technical symptoms (e.g., DNS resolution failure).</li>
+          <li><strong>Determine scope</strong> &mdash; Is a single user affected, a department, or the entire network? This dramatically narrows the cause.</li>
+          <li><strong>Duplicate the problem</strong> &mdash; If possible, reproduce the issue yourself. This confirms the report and gives you firsthand diagnostic data.</li>
+          <li><strong>Question users</strong> &mdash; Establish what changed. New hardware? Software updates? Office moves? Configuration changes?</li>
+          <li><strong>Check logs and alerts</strong> &mdash; Review system logs, SNMP alerts, syslogs, and monitoring dashboards for correlated events.</li>
+        </ul>
+
+        <div class="info-box tip">
+          <strong>Tip</strong>
+          A common exam scenario: a user says "the network is down." You should always start by determining scope&mdash;is it one user, one VLAN, one building, or the entire enterprise? This distinction points you toward very different root causes.
+        </div>
+
+        <h3>Step 2: Establish a Theory of Probable Cause</h3>
+        <p>Based on the information gathered, form one or more hypotheses about what might be causing the problem. Always consider the simplest explanation first.</p>
+        <ul>
+          <li><strong>Question the obvious</strong> &mdash; Is the cable plugged in? Is the device powered on? Is the port enabled? Simple things cause the majority of outages.</li>
+          <li><strong>Consider multiple approaches:</strong>
+            <ul>
+              <li><strong>Top-down approach</strong> &mdash; Start at Layer 7 (Application) and work down. Best when application-specific issues are suspected (e.g., "I can ping the server but can't reach the website").</li>
+              <li><strong>Bottom-up approach</strong> &mdash; Start at Layer 1 (Physical) and work up. Best for "nothing works" scenarios.</li>
+              <li><strong>Divide and conquer</strong> &mdash; Start at the layer you suspect is the problem (e.g., Layer 3 if you suspect a routing issue). Most efficient when you have a good initial theory.</li>
+            </ul>
+          </li>
+          <li><strong>Consult resources</strong> &mdash; Check vendor knowledge bases, internal documentation, and colleagues when the cause is not immediately apparent.</li>
+        </ul>
+
+        <div class="flashcard-deck">
+          <div class="flashcard">
+            <div class="flashcard-front">Top-Down Approach</div>
+            <div class="flashcard-back">Start troubleshooting at the Application layer (L7) and work down toward Physical (L1). Use when users can connect to some services but not others, or when application-specific problems are suspected.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">Bottom-Up Approach</div>
+            <div class="flashcard-back">Start at the Physical layer (L1) and work up. Check cables, link lights, NIC status first. Use when there is no connectivity at all&mdash;total outage scenarios.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">Divide and Conquer</div>
+            <div class="flashcard-back">Jump to the suspected problem layer and work outward from there. Most efficient when you have experience or strong evidence pointing to a specific layer. For example, start at Layer 3 if pings fail but link lights are active.</div>
+          </div>
+        </div>
+
+        <h3>Step 3: Test the Theory to Determine the Cause</h3>
+        <p>Validate your hypothesis by performing targeted tests. If the theory is confirmed, proceed. If the theory is not confirmed, go back to Step 2 and establish a new theory.</p>
+        <ul>
+          <li>Run specific diagnostic commands (ping, traceroute, nslookup) to confirm or deny your theory.</li>
+          <li>If the initial theory fails, form a new one&mdash;do not force the evidence to fit your assumption.</li>
+          <li>If multiple theories fail, <strong>escalate</strong> to a higher-level technician, vendor support, or a subject matter expert.</li>
+        </ul>
+
+        <h3>Step 4: Establish a Plan of Action to Resolve the Problem</h3>
+        <p>Once the cause is identified, create a structured plan before making changes. Consider:</p>
+        <ul>
+          <li>What changes need to be made?</li>
+          <li>What is the potential impact on other systems and users?</li>
+          <li>Is a maintenance window or change management approval required?</li>
+          <li>Do you need a rollback plan in case the fix introduces new problems?</li>
+          <li>Are there any prerequisites (firmware downloads, spare parts, backups)?</li>
+        </ul>
+
+        <h3>Step 5: Implement the Solution or Escalate</h3>
+        <p>Execute the plan. If you lack the access, expertise, or authority to implement the fix, escalate to the appropriate team or individual.</p>
+        <ul>
+          <li>Make changes one at a time so you can isolate the effect of each change.</li>
+          <li>If the solution does not work, revert your change before trying something else.</li>
+          <li>Escalation is not failure&mdash;it is the correct action when the problem exceeds your scope.</li>
+        </ul>
+
+        <h3>Step 6: Verify Full System Functionality</h3>
+        <p>Confirm that the original problem is resolved <em>and</em> that no new problems have been introduced. This is not optional.</p>
+        <ul>
+          <li>Have the affected user(s) confirm the issue is resolved from their perspective.</li>
+          <li>Test related systems and services to check for side effects.</li>
+          <li>Implement preventive measures if applicable (e.g., updating firmware on all similar devices, not just the failed one).</li>
+        </ul>
+
+        <h3>Step 7: Document Findings, Actions, and Outcomes</h3>
+        <p>Complete and thorough documentation is the final step. This creates institutional knowledge that benefits the entire team.</p>
+        <ul>
+          <li>Record the symptoms, root cause, steps taken, and resolution.</li>
+          <li>Update the knowledge base or ticketing system.</li>
+          <li>Note any lessons learned or recommendations for preventing recurrence.</li>
+          <li>Include timestamps, affected systems, and personnel involved.</li>
+        </ul>
+
+        <div class="info-box warning">
+          <strong>Common Exam Trap</strong>
+          Documentation is always the <em>last</em> step. If an exam question lists "document findings" alongside other steps and asks what to do next, documentation only comes after verifying full system functionality.
+        </div>
+
+        <label class="mark-read" data-domain="5" data-section="methodology">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </div>
+
+      <!-- ============================================================
+           SECTION 2: NETWORK TROUBLESHOOTING TOOLS
+           ============================================================ -->
+      <div class="content-section" id="tools">
+        <h2>5.2 Network Troubleshooting Tools</h2>
+
+        <p>Network technicians rely on a combination of software-based command-line utilities and physical hardware tools. The exam expects you to know which tool to use for a given situation, and to recognize command syntax and output.</p>
+
+        <h3>Command-Line Tools</h3>
+
+        <h4>ping</h4>
+        <p>Tests basic IP connectivity using ICMP Echo Request/Reply. The most fundamental network diagnostic tool.</p>
+<pre>
+# Ping a host with 4 packets
+ping -c 4 192.168.1.1          # Linux/macOS
+ping -n 4 192.168.1.1          # Windows
+
+# Continuous ping (useful for monitoring)
+ping -t 192.168.1.1            # Windows (Ctrl+C to stop)
+ping 192.168.1.1               # Linux (runs until stopped)
+</pre>
+        <p>Key information from ping: round-trip time (RTT), packet loss percentage, and TTL (which indicates hops or OS type).</p>
+
+        <h4>tracert / traceroute</h4>
+        <p>Shows the path (each router hop) packets take to reach a destination. Identifies where in the path a failure or bottleneck occurs.</p>
+<pre>
+tracert 8.8.8.8                # Windows (uses ICMP)
+traceroute 8.8.8.8             # Linux (uses UDP by default)
+traceroute -I 8.8.8.8          # Linux with ICMP
+</pre>
+        <p>Each line in the output represents a hop. Asterisks (<code>* * *</code>) indicate a non-responsive hop (may be filtering ICMP, not necessarily down).</p>
+
+        <h4>pathping (Windows)</h4>
+        <p>Combines the functionality of <code>ping</code> and <code>tracert</code>. It first traces the route, then sends multiple pings to each hop over a period of time. Provides packet loss statistics per hop&mdash;excellent for identifying intermittent problems.</p>
+<pre>
+pathping 10.0.0.1
+</pre>
+
+        <h4>nslookup / dig</h4>
+        <p>Query DNS servers to resolve names and troubleshoot DNS issues.</p>
+<pre>
+# nslookup (cross-platform)
+nslookup example.com
+nslookup -type=MX example.com
+nslookup example.com 8.8.8.8  # Query a specific DNS server
+
+# dig (Linux/macOS - more detailed)
+dig example.com
+dig example.com MX
+dig @8.8.8.8 example.com
+dig example.com +short          # Concise output
+</pre>
+
+        <h4>ipconfig / ifconfig / ip</h4>
+        <p>Display and manage IP address configuration on a host.</p>
+<pre>
+# Windows
+ipconfig                        # Basic IP info
+ipconfig /all                   # Detailed info (DHCP, DNS, MAC)
+ipconfig /release               # Release DHCP lease
+ipconfig /renew                 # Request new DHCP lease
+ipconfig /flushdns              # Clear DNS resolver cache
+ipconfig /displaydns            # Show cached DNS entries
+
+# Linux
+ip addr show                    # Show IP addresses
+ip route show                   # Show routing table
+ip link show                    # Show link/interface status
+ifconfig                        # Legacy - show IP config
+</pre>
+
+        <h4>netstat / ss</h4>
+        <p>Display active network connections, listening ports, and routing tables.</p>
+<pre>
+# netstat (cross-platform)
+netstat -an                     # All connections, numeric format
+netstat -tulnp                  # Linux: TCP/UDP listening ports + PID
+netstat -rn                     # Display routing table
+
+# ss (modern Linux replacement for netstat)
+ss -tulnp                       # TCP/UDP listening ports + process
+ss -s                           # Summary statistics
+</pre>
+
+        <h4>arp</h4>
+        <p>View and manage the ARP cache (IP-to-MAC address mappings) on the local host.</p>
+<pre>
+arp -a                          # Display ARP table
+arp -d 192.168.1.1              # Delete an entry
+</pre>
+        <p>Useful for detecting duplicate IP addresses or ARP spoofing. If an IP maps to an unexpected MAC, investigate.</p>
+
+        <h4>route</h4>
+        <p>Display and modify the local routing table.</p>
+<pre>
+# Windows
+route print                     # Display routing table
+route add 10.0.0.0 mask 255.0.0.0 192.168.1.1
+
+# Linux
+ip route show                   # Preferred
+route -n                        # Legacy
+</pre>
+
+        <h4>nmap</h4>
+        <p>Network scanner for host discovery and port scanning. Identifies open ports, running services, and OS detection.</p>
+<pre>
+nmap 192.168.1.0/24             # Scan entire subnet
+nmap -sV 192.168.1.10           # Detect service versions
+nmap -O 192.168.1.10            # OS fingerprinting
+nmap -p 80,443 192.168.1.10     # Scan specific ports
+</pre>
+
+        <div class="info-box warning">
+          <strong>Warning</strong>
+          Only use nmap on networks you are authorized to scan. Unauthorized port scanning can violate security policies and laws.
+        </div>
+
+        <h4>tcpdump</h4>
+        <p>Command-line packet capture tool (Linux/macOS). Captures and displays packets in real time for deep analysis.</p>
+<pre>
+tcpdump -i eth0                 # Capture on interface eth0
+tcpdump -i eth0 port 80         # Only HTTP traffic
+tcpdump -i eth0 host 10.0.0.5   # Only traffic to/from host
+tcpdump -w capture.pcap         # Save to file for Wireshark
+tcpdump -r capture.pcap         # Read a saved capture
+</pre>
+
+        <h3>Hardware Tools</h3>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Tool</th>
+                <th>Purpose</th>
+                <th>When to Use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Cable Tester</strong></td>
+                <td>Verifies cable continuity, correct pinout, and wire mapping</td>
+                <td>New cable runs, suspected physical layer failures, verifying patch cables</td>
+              </tr>
+              <tr>
+                <td><strong>Cable Certifier</strong></td>
+                <td>Tests cables against industry standards (Cat5e/6/6a); measures crosstalk, attenuation, length</td>
+                <td>Certifying new installations, diagnosing intermittent connectivity on copper cables</td>
+              </tr>
+              <tr>
+                <td><strong>Tone Generator &amp; Probe</strong></td>
+                <td>Traces cables through walls, ceilings, and bundles; identifies which cable is which</td>
+                <td>Finding unlabeled cables, tracing cable paths in messy wiring closets</td>
+              </tr>
+              <tr>
+                <td><strong>OTDR (Optical Time-Domain Reflectometer)</strong></td>
+                <td>Sends light pulses down fiber and analyzes reflections to find breaks, splices, and connectors</td>
+                <td>Locating fiber breaks, measuring fiber link loss, certifying fiber runs</td>
+              </tr>
+              <tr>
+                <td><strong>Multimeter</strong></td>
+                <td>Measures voltage, current, and resistance on electrical circuits</td>
+                <td>Verifying PoE voltage, checking power at outlets, testing grounding</td>
+              </tr>
+              <tr>
+                <td><strong>Spectrum Analyzer</strong></td>
+                <td>Visualizes radio frequency energy across a frequency range</td>
+                <td>Identifying RF interference sources, analyzing wireless spectrum congestion</td>
+              </tr>
+              <tr>
+                <td><strong>Wi-Fi Analyzer</strong></td>
+                <td>Scans for SSIDs, signal strength, channel usage, and interference</td>
+                <td>Wireless site surveys, optimizing AP placement and channel selection</td>
+              </tr>
+              <tr>
+                <td><strong>Tap / Port Mirror (SPAN)</strong></td>
+                <td>Copies network traffic to a monitoring port without disrupting the original flow</td>
+                <td>Capturing production traffic for analysis, IDS/IPS monitoring, troubleshooting</td>
+              </tr>
+              <tr>
+                <td><strong>Protocol Analyzer (Wireshark)</strong></td>
+                <td>Captures and decodes packets at every layer; deep packet inspection</td>
+                <td>Analyzing application behavior, diagnosing slow connections, investigating security events</td>
+              </tr>
+              <tr>
+                <td><strong>Visual Fault Locator (VFL)</strong></td>
+                <td>Injects visible red laser light into fiber to locate breaks, bends, or bad connectors</td>
+                <td>Quick check of short fiber runs, locating breaks in patch panels</td>
+              </tr>
+              <tr>
+                <td><strong>Light Meter / Optical Power Meter</strong></td>
+                <td>Measures the optical power level (dBm) at the end of a fiber link</td>
+                <td>Verifying fiber signal levels, measuring insertion loss of connectors and splices</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Mapping Tools to Scenarios</h3>
+
+        <div class="flashcard-deck">
+          <div class="flashcard">
+            <div class="flashcard-front">"Users on one floor have no network." &mdash; Which tools?</div>
+            <div class="flashcard-back">Start with a <strong>cable tester</strong> to check patch cables and uplinks. Check link lights on the switch. Use <strong>ping</strong> from an affected workstation to test connectivity. If the uplink is fiber, use a <strong>visual fault locator</strong> or <strong>OTDR</strong>.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">"A user can reach some websites but not others." &mdash; Which tools?</div>
+            <div class="flashcard-back">Use <strong>nslookup</strong> or <strong>dig</strong> to test DNS resolution for the failing sites. Use <strong>traceroute</strong> to see where traffic is being dropped. Use <strong>Wireshark</strong> to examine the actual packets and look for TCP resets or DNS failures.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">"Wi-Fi is slow in the conference room." &mdash; Which tools?</div>
+            <div class="flashcard-back">Use a <strong>Wi-Fi analyzer</strong> to check signal strength and channel overlap. Use a <strong>spectrum analyzer</strong> to detect non-Wi-Fi RF interference (microwaves, Bluetooth, cordless phones). Check AP association counts for overcapacity.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">"I need to find which cable goes to port 14 in the patch panel." &mdash; Which tool?</div>
+            <div class="flashcard-back">Use a <strong>tone generator and probe</strong> (toner and wand). Connect the tone generator to the cable at one end and use the inductive probe to trace it through the cable bundle to find the other end.</div>
+          </div>
+        </div>
+
+        <div class="info-box tip">
+          <strong>Exam Tip</strong>
+          When an exam question describes a symptom and asks which tool to use, eliminate hardware tools if the problem is clearly software-related and vice versa. Match the tool to the OSI layer of the problem: physical issues need physical tools (cable testers, OTDR); logical issues need software tools (ping, traceroute, Wireshark).
+        </div>
+
+        <label class="mark-read" data-domain="5" data-section="tools">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </div>
+
+      <!-- ============================================================
+           SECTION 3: CABLE & PHYSICAL CONNECTIVITY ISSUES
+           ============================================================ -->
+      <div class="content-section" id="cable-issues">
+        <h2>5.3 Cable &amp; Physical Connectivity Issues</h2>
+
+        <p>Physical layer (Layer 1) problems are among the most common causes of network outages and intermittent connectivity. These issues affect copper cabling, fiber optic cabling, connectors, and the physical environment around the cables.</p>
+
+        <h3>Copper Cable Faults</h3>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Fault</th>
+                <th>Description</th>
+                <th>Symptoms</th>
+                <th>Detection</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Open</strong></td>
+                <td>A broken conductor; the wire is physically disconnected somewhere along its length</td>
+                <td>No link light, complete connectivity loss on that pair</td>
+                <td>Cable tester shows open circuit on one or more pairs</td>
+              </tr>
+              <tr>
+                <td><strong>Short</strong></td>
+                <td>Two conductors making contact (touching each other), often from damaged insulation</td>
+                <td>No link light, errors, or complete failure</td>
+                <td>Cable tester shows short circuit between conductors</td>
+              </tr>
+              <tr>
+                <td><strong>Crosstalk (NEXT)</strong></td>
+                <td>Near-End Crosstalk: signal from one pair bleeds into an adjacent pair at the transmitting end</td>
+                <td>Intermittent errors, slow speeds, CRC errors, retransmissions</td>
+                <td>Cable certifier measures NEXT values in dB; higher dB = less crosstalk = better</td>
+              </tr>
+              <tr>
+                <td><strong>Crosstalk (FEXT)</strong></td>
+                <td>Far-End Crosstalk: same bleed-over but measured at the far end of the cable</td>
+                <td>Same as NEXT but often less severe due to attenuation over the cable length</td>
+                <td>Cable certifier measures FEXT/ELFEXT values</td>
+              </tr>
+              <tr>
+                <td><strong>Attenuation</strong></td>
+                <td>Signal loss over distance; the signal weakens as it travels through the cable</td>
+                <td>Intermittent connectivity, auto-negotiation to lower speeds, dropped packets at distance</td>
+                <td>Cable certifier measures insertion loss in dB; exceeding the standard limit = fail</td>
+              </tr>
+              <tr>
+                <td><strong>EMI/RFI</strong></td>
+                <td>Electromagnetic or radio frequency interference from external sources (motors, fluorescent lights, power cables)</td>
+                <td>Intermittent errors, CRC errors, speed fluctuations</td>
+                <td>Spectrum analyzer; relocating cable away from the source resolves the issue</td>
+              </tr>
+              <tr>
+                <td><strong>Incorrect Pinout</strong></td>
+                <td>Wires terminated in the wrong order (e.g., T568A on one end, T568B on the other when a straight-through is needed)</td>
+                <td>No connectivity or only partial connectivity (some pairs work)</td>
+                <td>Cable tester shows wire mapping errors</td>
+              </tr>
+              <tr>
+                <td><strong>TX/RX Reversed</strong></td>
+                <td>Transmit and receive pairs are swapped; the device transmits on the pair the other device also transmits on</td>
+                <td>No link established (unless Auto-MDI/MDIX corrects it)</td>
+                <td>Cable tester shows reversed pairs; modern devices with Auto-MDI/MDIX handle this automatically</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Cable Distance Limitations</h3>
+        <p>Every cable type has a maximum supported distance. Exceeding it causes attenuation, errors, or complete signal loss.</p>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Cable Type</th>
+                <th>Max Distance</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Cat5e / Cat6 / Cat6a (UTP)</td>
+                <td>100 meters (328 feet)</td>
+                <td>This is the total channel length including patch cables (90m permanent link + 10m patch)</td>
+              </tr>
+              <tr>
+                <td>Multimode Fiber (OM3, 10GbE)</td>
+                <td>300 meters</td>
+                <td>OM4 extends to 400m for 10GbE; OM5 supports short wavelength division multiplexing</td>
+              </tr>
+              <tr>
+                <td>Single-mode Fiber (OS1/OS2)</td>
+                <td>Up to 80+ km</td>
+                <td>Used for long-haul connections, WAN links, campus backbones</td>
+              </tr>
+              <tr>
+                <td>Coaxial (RG-6)</td>
+                <td>~185m (Thinnet) / 500m (Thicknet)</td>
+                <td>Modern use is primarily for cable TV/internet, not Ethernet LANs</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Fiber Optic Issues</h3>
+        <ul>
+          <li><strong>Bent fiber</strong> &mdash; Fiber optic cables must not be bent below their minimum bend radius. Excessive bending causes light to escape the core (macro-bending loss), resulting in signal loss or intermittent connectivity.</li>
+          <li><strong>Dirty connectors</strong> &mdash; Microscopic dust particles on a fiber connector end face can block or scatter light. Always clean fiber connectors with lint-free wipes and IPA before connecting. Use a fiber inspection scope to verify cleanliness.</li>
+          <li><strong>Connector mismatch</strong> &mdash; Connecting a single-mode fiber (SMF) to a multimode fiber (MMF) transceiver or vice versa causes signal failure. Ensure transceivers match the fiber type (core size: 9 micron for SMF, 50/62.5 micron for MMF).</li>
+          <li><strong>dB loss</strong> &mdash; Each connector, splice, and meter of fiber introduces loss measured in decibels. A link's total loss must stay within the transceiver's optical budget. Use an optical power meter to measure end-to-end loss.</li>
+          <li><strong>OTDR results interpretation</strong> &mdash; An OTDR trace shows events along the fiber: connectors appear as spikes (reflective events), splices as small dips (non-reflective events), and breaks as a sudden drop to zero. The distance to each event is shown on the x-axis.</li>
+        </ul>
+
+        <h3>Interface &amp; Configuration Mismatches</h3>
+        <ul>
+          <li><strong>Duplex mismatch</strong> &mdash; One side set to full-duplex while the other is half-duplex. Causes late collisions, FCS errors, poor throughput, and intermittent connectivity. Both sides should use the same duplex setting (or both set to auto-negotiate).</li>
+          <li><strong>Speed mismatch</strong> &mdash; One side negotiates at a different speed than the other (e.g., 100 Mbps vs 1 Gbps). Can result in no link or very poor performance. Check interface status on switches to verify negotiated speed.</li>
+          <li><strong>Incorrect cable type</strong> &mdash; Using a Cat5 cable for a 10GbE connection (requires Cat6a), or using a straight-through cable where a crossover is needed on older equipment without Auto-MDI/MDIX.</li>
+        </ul>
+
+        <div class="info-box danger">
+          <strong>Exam Scenario</strong>
+          "A newly installed cable run of 120 meters is experiencing intermittent connectivity." The cause is exceeding the 100-meter maximum for copper Ethernet. The solution is to install a switch or repeater to break the run, or use fiber for the distance.
+        </div>
+
+        <div class="info-box tip">
+          <strong>Troubleshooting Approach</strong>
+          When facing physical layer issues, always check the simple things first: Is the cable plugged in at both ends? Are link lights on? Is the correct port being used? Then move to cable testing and certification.
+        </div>
+
+        <label class="mark-read" data-domain="5" data-section="cable-issues">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </div>
+
+      <!-- ============================================================
+           SECTION 4: NETWORK & IP CONNECTIVITY ISSUES
+           ============================================================ -->
+      <div class="content-section" id="network-issues">
+        <h2>5.4 Network &amp; IP Connectivity Issues</h2>
+
+        <p>Once you have ruled out physical layer problems, the next step is to investigate Layers 2 through 4: switching, IP addressing, routing, and transport. These logical issues are frequently tested and can be subtle.</p>
+
+        <h3>IP Addressing Problems</h3>
+        <ul>
+          <li><strong>Incorrect IP address or subnet mask</strong> &mdash; A device with the wrong IP or mask may be on the wrong subnet. It can communicate with some hosts but not others. Use <code>ipconfig</code>/<code>ip addr</code> to verify. A subnet mask of <code>255.255.255.0</code> instead of <code>255.255.0.0</code> drastically changes which hosts are considered "local."</li>
+          <li><strong>Duplicate IP address</strong> &mdash; Two devices assigned the same IP cause intermittent connectivity for both. Modern OSes display a "duplicate IP address" warning. Use <code>arp -a</code> to check if an IP maps to two different MAC addresses. DHCP reservations and static assignment policies help prevent this.</li>
+          <li><strong>Incorrect default gateway</strong> &mdash; The host can reach local hosts but nothing outside the subnet. Verify the gateway is correct and reachable with <code>ping</code>. Common when using static IP assignments or when DHCP scope options are misconfigured.</li>
+          <li><strong>Incorrect DNS server</strong> &mdash; The host can ping IP addresses but cannot resolve hostnames. Verify DNS settings with <code>ipconfig /all</code> or <code>cat /etc/resolv.conf</code>. Test with <code>nslookup</code> against the configured DNS server and a known-good one like 8.8.8.8.</li>
+        </ul>
+
+        <div class="diagram">
+ Common IP Troubleshooting Flow:
+
+ Can you ping 127.0.0.1 (loopback)?
+    |                            |
+   YES                          NO
+    |                      TCP/IP stack broken
+    v                      (reinstall/repair)
+ Can you ping your own IP?
+    |                |
+   YES              NO
+    |          NIC or driver issue
+    v
+ Can you ping default gateway?
+    |                |
+   YES              NO
+    |          Wrong IP/mask/gateway
+    v          or physical issue
+ Can you ping remote IP (e.g., 8.8.8.8)?
+    |                |
+   YES              NO
+    |          Routing issue, firewall,
+    v          or ISP problem
+ Can you ping by hostname?
+    |                |
+   YES              NO
+    |          DNS issue
+    v
+ Problem is application-specific
+ (check ports, services, firewall rules)
+        </div>
+
+        <h3>DHCP Issues</h3>
+        <ul>
+          <li><strong>DHCP scope exhaustion</strong> &mdash; All addresses in the scope have been leased out. New clients receive an APIPA address (169.254.x.x) and cannot communicate on the network. Solution: expand the scope, shorten lease duration, or identify devices holding leases they no longer need.</li>
+          <li><strong>Rogue DHCP server</strong> &mdash; An unauthorized DHCP server hands out incorrect IP configuration (wrong gateway, wrong DNS, wrong subnet). Clients that lease from the rogue server lose connectivity. Use <strong>DHCP snooping</strong> on managed switches to allow DHCP responses only from trusted ports.</li>
+          <li><strong>DHCP relay/helper issues</strong> &mdash; If the DHCP server is on a different subnet, routers must be configured with an <code>ip helper-address</code> to forward DHCP broadcasts. A missing or incorrect helper-address means clients on that subnet cannot get an IP.</li>
+        </ul>
+
+        <div class="info-box note">
+          <strong>Key Point</strong>
+          An APIPA address (169.254.x.x) always indicates the host could not reach a DHCP server. This could mean the DHCP server is down, the scope is exhausted, there is a network path issue between the client and server, or the DHCP relay is misconfigured.
+        </div>
+
+        <h3>DNS Issues</h3>
+        <ul>
+          <li><strong>DNS resolution failure</strong> &mdash; The DNS server is unreachable, misconfigured, or does not have a record for the queried name. Symptoms: "server not found" errors in browsers while ping-by-IP still works.</li>
+          <li><strong>Stale DNS cache</strong> &mdash; A host caches a DNS record that has since changed. Flushing the cache resolves the issue: <code>ipconfig /flushdns</code> (Windows) or <code>systemd-resolve --flush-caches</code> (Linux).</li>
+          <li><strong>Incorrect DNS zone records</strong> &mdash; An A record pointing to the wrong IP, a missing PTR record, or an incorrect MX record. Use <code>nslookup</code> or <code>dig</code> to query specific record types and verify correctness.</li>
+        </ul>
+
+        <h3>Switching Issues</h3>
+        <ul>
+          <li><strong>Incorrect VLAN assignment</strong> &mdash; A port assigned to the wrong VLAN isolates the device from its intended network. The device gets an IP from the wrong DHCP scope (or no IP at all). Verify with <code>show vlan brief</code> on the switch.</li>
+          <li><strong>Switching/broadcast loops</strong> &mdash; Occur when redundant paths exist without Spanning Tree Protocol (STP). Frames loop infinitely, broadcast storms consume all bandwidth, MAC address tables become unstable, and the network grinds to a halt. Symptoms: 100% link utilization, all switch ports flashing rapidly, network-wide slowdown or outage.</li>
+          <li><strong>STP reconvergence</strong> &mdash; When a topology change occurs (link up/down), STP recalculates paths. During reconvergence (30-50 seconds with legacy STP), ports are in blocking/learning states and do not forward traffic. Rapid STP (RSTP/802.1w) converges in 1-2 seconds.</li>
+        </ul>
+
+        <h3>Routing Issues</h3>
+        <ul>
+          <li><strong>Missing routes</strong> &mdash; A router does not have a route to the destination network. Traffic is dropped and the router may send an ICMP "Destination Unreachable" message. Verify with <code>show ip route</code> or <code>ip route show</code>.</li>
+          <li><strong>Routing loops</strong> &mdash; Two or more routers keep forwarding packets in a circle. TTL eventually expires and the packet is dropped, but in the meantime bandwidth is wasted. Route poisoning, split horizon, and hold-down timers prevent this in distance-vector protocols.</li>
+          <li><strong>Asymmetric routing</strong> &mdash; Traffic takes a different path in each direction. Can cause problems with stateful firewalls (which see only one direction of the conversation) and can complicate troubleshooting with traceroute.</li>
+        </ul>
+
+        <h3>Firewall &amp; ACL Issues</h3>
+        <ul>
+          <li><strong>Firewall blocking legitimate traffic</strong> &mdash; Overly restrictive rules drop valid traffic. A new application may require ports that are not yet permitted. Check firewall logs for deny/drop entries matching the affected traffic flow.</li>
+          <li><strong>Incorrect ACL order</strong> &mdash; ACLs are processed top-down; the first match wins. A broad deny placed before a specific permit blocks desired traffic. Always place more specific rules before general ones.</li>
+          <li><strong>Implicit deny</strong> &mdash; Most firewalls and ACLs have an implicit "deny all" at the end. If no rule explicitly permits the traffic, it is dropped silently.</li>
+        </ul>
+
+        <h3>Other Connectivity Issues</h3>
+        <ul>
+          <li><strong>MTU/MSS issues</strong> &mdash; If a packet exceeds the Maximum Transmission Unit along the path and the Don't Fragment (DF) bit is set, the packet is dropped. Symptoms include some sites loading but others failing (especially HTTPS), or VPN tunnels that connect but cannot pass data. Reduce MTU or enable Path MTU Discovery.</li>
+          <li><strong>Unresponsive service</strong> &mdash; The host is reachable (ping works) but the service on a specific port is not responding. Could be the service crashed, the port is blocked by a host-based firewall, or the service is listening on a different port. Use <code>netstat -tulnp</code> to verify the service is listening.</li>
+        </ul>
+
+        <div class="info-box warning">
+          <strong>Exam Trap</strong>
+          "A user can ping 8.8.8.8 but cannot open google.com in a browser." This is almost always a DNS issue, not a routing issue. The ability to ping an IP confirms IP connectivity; the inability to resolve a name points squarely at DNS.
+        </div>
+
+        <label class="mark-read" data-domain="5" data-section="network-issues">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </div>
+
+      <!-- ============================================================
+           SECTION 5: WIRELESS TROUBLESHOOTING
+           ============================================================ -->
+      <div class="content-section" id="wireless-issues">
+        <h2>5.5 Wireless Troubleshooting</h2>
+
+        <p>Wireless networks introduce an additional layer of complexity because the physical medium (radio waves) is shared, invisible, and susceptible to a wide range of environmental factors. The exam tests your ability to diagnose and resolve common wireless problems.</p>
+
+        <h3>Interference Issues</h3>
+        <ul>
+          <li><strong>Co-channel interference (CCI)</strong> &mdash; Occurs when multiple access points operate on the <em>same</em> channel. Their signals overlap, and devices must contend for airtime with APs they are not associated to. This degrades throughput for all clients. Solution: stagger channels (use 1, 6, 11 on 2.4 GHz) and increase physical separation between same-channel APs.</li>
+          <li><strong>Adjacent channel interference (ACI)</strong> &mdash; Occurs when APs use <em>overlapping</em> channels (e.g., channels 1 and 3 on 2.4 GHz overlap). This is worse than co-channel interference because devices cannot properly coordinate. Solution: on 2.4 GHz, only use non-overlapping channels 1, 6, and 11.</li>
+          <li><strong>Non-Wi-Fi interference</strong> &mdash; Microwave ovens, Bluetooth devices, cordless phones, baby monitors, and other devices operate on 2.4 GHz and create noise. Use a <strong>spectrum analyzer</strong> to identify the source. Solution: move to 5 GHz or 6 GHz bands, or eliminate the interference source.</li>
+        </ul>
+
+        <div class="diagram">
+ 2.4 GHz Channel Overlap (North America):
+
+ Ch 1       Ch 6       Ch 11
+ |----|      |----|      |----|
+ 2412 MHz   2437 MHz   2462 MHz
+
+ Non-overlapping: 1, 6, 11 (recommended)
+ Overlapping example: 1, 4, 8 (DO NOT USE)
+
+ 5 GHz: Many more non-overlapping channels
+        (36, 40, 44, 48, 52, 56, 60, 64,
+         100, 104, 108, 112, 116, 120,
+         124, 128, 132, 136, 140, 144,
+         149, 153, 157, 161, 165)
+        </div>
+
+        <h3>Signal Strength &amp; Coverage Problems</h3>
+        <ul>
+          <li><strong>Insufficient signal strength</strong> &mdash; Client is too far from the AP, or obstructions (concrete walls, metal objects, water) attenuate the signal. Signal below about -70 dBm typically causes poor performance; below -80 dBm, connectivity becomes unreliable. Use a Wi-Fi analyzer to measure signal strength (RSSI) and create a heat map.</li>
+          <li><strong>Incorrect antenna type or placement</strong> &mdash; An omnidirectional antenna radiates in all directions (good for central placement); a directional antenna (Yagi, parabolic) focuses the signal in one direction (good for point-to-point links or long hallways). Using the wrong type wastes signal coverage. Antenna placement too high or too low changes the coverage pattern.</li>
+          <li><strong>Distance limitations</strong> &mdash; Wi-Fi range depends on frequency (2.4 GHz travels farther than 5 GHz), transmit power, antenna gain, and environmental obstacles. Indoor range is typically 30-50m for 5 GHz and 50-70m for 2.4 GHz, though this varies greatly by environment.</li>
+          <li><strong>Overcapacity</strong> &mdash; Too many devices associated to a single AP. Each AP has a practical client limit (often 25-50 for acceptable performance). Solution: add more APs with lower power to create smaller cells, or use band steering to balance clients across bands.</li>
+        </ul>
+
+        <h3>Security &amp; Authentication Issues</h3>
+        <ul>
+          <li><strong>Wrong passphrase</strong> &mdash; The most common user complaint. The client enters an incorrect PSK and cannot associate. Verify the passphrase is correct, paying attention to case sensitivity and special characters.</li>
+          <li><strong>Security type mismatch</strong> &mdash; The client is configured for WPA2-Personal but the AP is set to WPA3-Personal (or vice versa). The client may fail to associate or see the network but be unable to connect. Ensure both sides agree on the security protocol.</li>
+          <li><strong>SSID not broadcasting</strong> &mdash; If the AP is configured to hide the SSID, clients must manually enter the SSID name to connect. This is not a security feature (SSIDs are easily discovered by packet sniffing) but it can confuse users who expect to see the network in their list.</li>
+          <li><strong>Captive portal issues</strong> &mdash; Guest networks often use a captive portal for authentication. If the portal page does not load, check DNS resolution (the portal often requires DNS to redirect), check certificate validity, and verify the captive portal service is running.</li>
+        </ul>
+
+        <h3>Client &amp; Roaming Issues</h3>
+        <ul>
+          <li><strong>Client disassociation</strong> &mdash; A client is unexpectedly disconnected from the AP. Causes include interference, driver bugs, deauthentication attacks, AP overload, or signal loss. Check AP logs for disassociation reason codes.</li>
+          <li><strong>Roaming issues</strong> &mdash; When a client moves between APs, it should seamlessly hand off. Problems occur when APs have different SSIDs, different security settings, or when the client "sticks" to a distant AP instead of roaming to a closer one (known as "sticky client"). Enterprise solutions like 802.11r (Fast BSS Transition) and 802.11k (Radio Resource Management) improve roaming.</li>
+          <li><strong>Band steering issues</strong> &mdash; Band steering encourages dual-band clients to use 5 GHz instead of 2.4 GHz. If misconfigured, it may prevent 2.4 GHz-only devices from connecting or aggressively push clients to 5 GHz when their signal is weak on that band.</li>
+          <li><strong>Firmware compatibility</strong> &mdash; Outdated AP firmware may not support newer client devices or security protocols. Conversely, updated firmware may introduce bugs. Always test firmware updates before wide deployment.</li>
+        </ul>
+
+        <h3>AP Placement Best Practices</h3>
+        <div class="info-box tip">
+          <strong>Wireless Design Tips</strong>
+          <ul>
+            <li>Mount APs at ceiling height, centrally located in the coverage area</li>
+            <li>Avoid placing APs near metal objects, thick concrete walls, or elevator shafts</li>
+            <li>In multi-floor buildings, stagger channels vertically (floors above/below should use different channels)</li>
+            <li>Reduce transmit power to create smaller cells in high-density areas rather than blasting signal at maximum power</li>
+            <li>Perform a wireless site survey before installation and validate coverage after deployment</li>
+          </ul>
+        </div>
+
+        <label class="mark-read" data-domain="5" data-section="wireless-issues">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </div>
+
+      <!-- ============================================================
+           SECTION 6: PERFORMANCE & SERVICE ISSUES
+           ============================================================ -->
+      <div class="content-section" id="performance-issues">
+        <h2>5.6 Performance &amp; Service Issues</h2>
+
+        <p>Performance problems are often the trickiest to diagnose because the network "works" &mdash; just poorly. Users complain of slowness, dropped calls, buffering video, or timeouts. The key is identifying the bottleneck and determining whether the issue is network-side or server/application-side.</p>
+
+        <h3>Latency, Jitter, and Packet Loss</h3>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Definition</th>
+                <th>Acceptable Threshold</th>
+                <th>Impact if Exceeded</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Latency</strong></td>
+                <td>The time (in milliseconds) for a packet to travel from source to destination</td>
+                <td>&lt; 150 ms for VoIP; &lt; 100 ms for interactive applications</td>
+                <td>Delayed voice, sluggish applications, timeout errors</td>
+              </tr>
+              <tr>
+                <td><strong>Jitter</strong></td>
+                <td>The variation in latency between consecutive packets</td>
+                <td>&lt; 30 ms for VoIP</td>
+                <td>Choppy audio/video, garbled voice, out-of-order frames</td>
+              </tr>
+              <tr>
+                <td><strong>Packet Loss</strong></td>
+                <td>Percentage of packets that never arrive at the destination</td>
+                <td>&lt; 1% for most applications; &lt; 0.1% for VoIP</td>
+                <td>Retransmissions (TCP), audio gaps (VoIP), video artifacts, slow transfers</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Measure these with <code>ping</code> (latency, packet loss), <code>pathping</code> (per-hop loss), and dedicated VoIP monitoring tools. Jitter buffers on VoIP phones can compensate for some jitter, but excessive jitter degrades call quality regardless.</p>
+
+        <h3>Bandwidth &amp; Throughput Issues</h3>
+        <ul>
+          <li><strong>Bandwidth saturation</strong> &mdash; The link is running at or near capacity. File transfers, video streaming, or backups consume all available bandwidth, starving other traffic. Monitor interface utilization via SNMP. Solution: implement QoS to prioritize critical traffic, upgrade the link, or schedule bandwidth-intensive tasks for off-hours.</li>
+          <li><strong>Bottleneck</strong> &mdash; A single slow link in the path constrains overall throughput. A 100 Mbps uplink serving a 1 Gbps access layer is a common example. Identify bottlenecks by comparing speeds at each link in the path. The lowest-speed link determines maximum throughput.</li>
+          <li><strong>Network device CPU/memory usage</strong> &mdash; Routers, switches, and firewalls under heavy load (high CPU or memory) may drop packets, delay forwarding, or become unresponsive to management. Monitor with SNMP, <code>show processes cpu</code>, or NMS dashboards. Causes include broadcast storms, routing flaps, ACL processing, or DDoS attacks.</li>
+        </ul>
+
+        <h3>Interface Errors</h3>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Error Type</th>
+                <th>Description</th>
+                <th>Common Causes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>CRC Errors</strong></td>
+                <td>Cyclic Redundancy Check failure: the received frame's checksum does not match, indicating data corruption in transit</td>
+                <td>Bad cables, EMI, duplex mismatch, failing NIC or switch port</td>
+              </tr>
+              <tr>
+                <td><strong>Giants</strong></td>
+                <td>Frames larger than the maximum allowed size (typically 1518 bytes for standard Ethernet)</td>
+                <td>Misconfigured jumbo frame settings (one side enabled, the other not), software bugs</td>
+              </tr>
+              <tr>
+                <td><strong>Runts</strong></td>
+                <td>Frames smaller than the minimum size (64 bytes), usually fragments from collisions</td>
+                <td>Duplex mismatch (causing collisions), failing NIC, bad cable</td>
+              </tr>
+              <tr>
+                <td><strong>Encapsulation Errors</strong></td>
+                <td>Frames with incorrect framing format or protocol mismatch</td>
+                <td>Mismatched encapsulation settings (e.g., 802.1Q vs ISL on trunk links), misconfigured WAN protocol</td>
+              </tr>
+              <tr>
+                <td><strong>Input/Output Errors</strong></td>
+                <td>General hardware-level errors on the interface</td>
+                <td>Failing transceiver (SFP), bad cable, overloaded buffer</td>
+              </tr>
+              <tr>
+                <td><strong>Late Collisions</strong></td>
+                <td>Collisions occurring after the 64-byte collision window</td>
+                <td>Duplex mismatch (almost always), cable exceeding maximum length</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Check interface error counters with <code>show interfaces</code> on Cisco devices or the equivalent on your platform. If error counters are incrementing, you have an active problem.</p>
+
+        <h3>Speed &amp; Duplex Mismatches</h3>
+        <p>This is a classic exam topic and a very common real-world issue:</p>
+        <ul>
+          <li>If one side is set to <strong>auto-negotiate</strong> and the other to a <strong>fixed speed/duplex</strong>, the auto-negotiating side may detect the speed correctly but default to <strong>half-duplex</strong> (since duplex cannot be auto-detected when the other side is fixed).</li>
+          <li>Symptoms: late collisions, CRC errors, poor throughput (often 30-40% of expected), and intermittent connectivity.</li>
+          <li>Best practice: set both sides to the same fixed speed and duplex, or both to auto-negotiate.</li>
+        </ul>
+
+        <div class="info-box danger">
+          <strong>Critical Concept</strong>
+          A duplex mismatch is one of the most common causes of poor LAN performance. The link appears "up" but performance is terrible. Look for late collisions and CRC errors as the telltale signs.
+        </div>
+
+        <h3>Spanning Tree Reconvergence</h3>
+        <p>When a network topology change occurs (a link goes up or down), STP recalculates the optimal path. During this reconvergence period:</p>
+        <ul>
+          <li><strong>Legacy STP (802.1D)</strong> &mdash; Can take 30-50 seconds; ports go through Blocking, Listening, Learning, and Forwarding states.</li>
+          <li><strong>Rapid STP (802.1w)</strong> &mdash; Converges in 1-2 seconds using proposal/agreement mechanism.</li>
+          <li>Frequent reconvergence (flapping links) causes repeated outages. Identify and fix the unstable link. Use portfast/edge port on access ports to skip STP transitions for end devices.</li>
+        </ul>
+
+        <h3>Service &amp; Application Issues</h3>
+        <ul>
+          <li><strong>Server-side vs. network issues</strong> &mdash; If only one service is affected and the server is reachable by ping, the problem is likely server-side (application crash, resource exhaustion, misconfiguration). If all services to/from a location are affected, it is likely a network issue.</li>
+          <li><strong>NTP synchronization problems</strong> &mdash; Incorrect time on network devices causes certificate validation failures, log correlation issues, authentication failures (Kerberos is time-sensitive), and DNSSEC validation problems. Ensure all devices sync to a reliable NTP source.</li>
+          <li><strong>BYOD issues</strong> &mdash; Bring Your Own Device policies introduce unmanaged devices with varied configurations, outdated drivers, personal VPNs that conflict with corporate networks, and potential security risks. Ensure BYOD devices are directed to appropriate VLANs/SSIDs with proper access controls.</li>
+          <li><strong>Licensed feature issues</strong> &mdash; Some network device features (advanced routing protocols, VPN capacity, throughput limits) require a license. An expired or missing license can disable features or throttle performance. Check license status when a previously working feature suddenly stops.</li>
+        </ul>
+
+        <div class="flashcard-deck">
+          <div class="flashcard">
+            <div class="flashcard-front">How do you differentiate a network issue from a server issue?</div>
+            <div class="flashcard-back">Test from multiple clients. If all clients experience the same issue with one server, it is likely server-side. If one client has issues reaching multiple servers, it is likely network-side. Also: ping the server (reachable = likely server issue), traceroute to check the path, test from different network segments.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">What symptoms indicate a duplex mismatch?</div>
+            <div class="flashcard-back">Late collisions, FCS/CRC errors, poor throughput (much less than link speed), incrementing error counters on the interface. The link shows as "up" and speed may show correctly, but duplex differs between the two sides. Check with <code>show interfaces</code>.</div>
+          </div>
+          <div class="flashcard">
+            <div class="flashcard-front">What is the impact of high jitter on VoIP?</div>
+            <div class="flashcard-back">High jitter (variation in packet arrival times) causes choppy, garbled, or robotic-sounding audio. Jitter buffers can compensate up to a point (usually ~30ms), but beyond that, audio quality degrades significantly. Implement QoS to prioritize voice traffic.</div>
+          </div>
+        </div>
+
+        <div class="info-box tip">
+          <strong>Study Strategy</strong>
+          For performance questions, always check the interface error counters first. They tell you exactly what type of problem is occurring. CRC errors + late collisions = duplex mismatch. Giants = MTU/jumbo frame issue. Runts + collisions = physical layer problem.
+        </div>
+
+        <label class="mark-read" data-domain="5" data-section="performance-issues">
+          <input type="checkbox"> Mark section as complete
+        </label>
+      </div>
+
+      <!-- ============================================================
+           QUIZ
+           ============================================================ -->
+      <div class="quiz-container" id="quiz" data-domain="5">
+        <h2>Domain 5 Quiz &mdash; Network Troubleshooting</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Test your knowledge with these 10 questions. Select the best answer for each, then click Submit.</p>
+
+        <!-- Question 1 -->
+        <div class="quiz-question" data-answer="C">
+          <p>1. A user reports they cannot access any websites. You can ping 8.8.8.8 successfully from their workstation but <code>nslookup google.com</code> fails. What is the most likely cause?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q5_1" value="A"> Incorrect default gateway</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q5_1" value="B"> Firewall blocking HTTP traffic</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q5_1" value="C"> DNS server is unreachable or misconfigured</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q5_1" value="D"> Duplex mismatch on the switch port</li>
+          </ul>
+          <div class="quiz-explanation">The ability to ping an external IP (8.8.8.8) proves IP connectivity and routing are working. The failure of nslookup points directly to a DNS issue &mdash; either the configured DNS server is down, unreachable, or the wrong server is configured.</div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="quiz-question" data-answer="B">
+          <p>2. What is the correct order for CompTIA's troubleshooting methodology after "Identify the problem"?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q5_2" value="A"> Test the theory, Establish a theory, Implement, Verify, Plan, Document</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q5_2" value="B"> Establish a theory, Test the theory, Establish a plan, Implement, Verify, Document</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q5_2" value="C"> Establish a plan, Establish a theory, Test the theory, Implement, Document, Verify</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q5_2" value="D"> Establish a theory, Establish a plan, Test the theory, Implement, Verify, Document</li>
+          </ul>
+          <div class="quiz-explanation">After identifying the problem, the steps are: (2) Establish a theory of probable cause, (3) Test the theory to determine cause, (4) Establish a plan of action, (5) Implement the solution or escalate, (6) Verify full system functionality, (7) Document findings.</div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="quiz-question" data-answer="A">
+          <p>3. A network technician needs to find an unlabeled cable in a bundle of 50 cables running through a ceiling. Which tool is most appropriate?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q5_3" value="A"> Tone generator and probe</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q5_3" value="B"> OTDR</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q5_3" value="C"> Cable certifier</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q5_3" value="D"> Protocol analyzer</li>
+          </ul>
+          <div class="quiz-explanation">A tone generator and probe (also called a "toner and wand") is specifically designed to trace and identify individual cables in a bundle. The tone generator is connected at one end, and the inductive probe detects the tone signal on the correct cable at the other end.</div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="quiz-question" data-answer="D">
+          <p>4. Users on the 3rd floor are receiving IP addresses in the 169.254.x.x range. Users on all other floors are working fine. The DHCP server is on the 1st floor. What is the most likely cause?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q5_4" value="A"> The DHCP server is down</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q5_4" value="B"> The DHCP scope is exhausted</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q5_4" value="C"> A rogue DHCP server on the 3rd floor</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q5_4" value="D"> The IP helper-address is missing on the 3rd floor router/VLAN interface</li>
+          </ul>
+          <div class="quiz-explanation">Since other floors work fine, the DHCP server is operational and has available addresses. The 3rd floor clients are on a different subnet and need a DHCP relay (ip helper-address) configured on their gateway to forward DHCP broadcasts to the server. The 169.254.x.x APIPA addresses confirm no DHCP response was received.</div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="quiz-question" data-answer="C">
+          <p>5. A newly installed Cat6 cable run of 130 meters is experiencing frequent packet loss and CRC errors. What is the most likely cause?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q5_5" value="A"> Crosstalk (NEXT)</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q5_5" value="B"> EMI from nearby power cables</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q5_5" value="C"> Cable exceeds maximum distance limitation</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q5_5" value="D"> Incorrect cable pinout</li>
+          </ul>
+          <div class="quiz-explanation">The maximum distance for Cat6 copper Ethernet cable is 100 meters (328 feet). At 130 meters, the signal has attenuated beyond acceptable levels, causing errors and packet loss. The solution is to add a switch/repeater or use fiber for this distance.</div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="quiz-question" data-answer="B">
+          <p>6. A switch port shows a large number of late collisions and CRC errors, but the link is up at 1 Gbps. What is the most likely cause?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q5_6" value="A"> Bad cable causing signal attenuation</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q5_6" value="B"> Duplex mismatch between the switch and the connected device</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q5_6" value="C"> The switch port is in the wrong VLAN</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q5_6" value="D"> STP is blocking the port</li>
+          </ul>
+          <div class="quiz-explanation">Late collisions combined with CRC errors are the classic signature of a duplex mismatch. One side is operating in full-duplex while the other is in half-duplex. The half-duplex side detects "collisions" because the full-duplex side transmits while the half-duplex side is also transmitting.</div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="quiz-question" data-answer="A">
+          <p>7. Multiple users in a conference room report slow Wi-Fi speeds. A Wi-Fi analyzer shows that three nearby APs are all using channel 6 on the 2.4 GHz band. What type of interference is this?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q5_7" value="A"> Co-channel interference</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q5_7" value="B"> Adjacent channel interference</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q5_7" value="C"> EMI from external sources</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q5_7" value="D"> Near-end crosstalk</li>
+          </ul>
+          <div class="quiz-explanation">Co-channel interference occurs when multiple APs operate on the exact same channel. Their signals overlap and all devices must contend for airtime on that channel, reducing throughput. The solution is to assign different non-overlapping channels (1, 6, 11 on 2.4 GHz) to neighboring APs.</div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="quiz-question" data-answer="D">
+          <p>8. A technician has identified the root cause of a network outage and implemented a fix. What should be done NEXT according to the troubleshooting methodology?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q5_8" value="A"> Document the findings and close the ticket</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q5_8" value="B"> Establish a theory of probable cause</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q5_8" value="C"> Escalate to management</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q5_8" value="D"> Verify full system functionality and implement preventive measures</li>
+          </ul>
+          <div class="quiz-explanation">After implementing the solution (Step 5), the next step is to verify full system functionality (Step 6). This means confirming the problem is resolved, checking for side effects, and implementing preventive measures. Documentation (Step 7) comes last.</div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="quiz-question" data-answer="B">
+          <p>9. VoIP users report choppy and garbled audio during calls. Ping tests to the VoIP server show consistent 25 ms latency with minimal packet loss but high variation between individual pings (ranging from 5 ms to 85 ms). What is the primary issue?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q5_9" value="A"> High latency</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q5_9" value="B"> High jitter</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q5_9" value="C"> Packet loss</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q5_9" value="D"> Bandwidth saturation</li>
+          </ul>
+          <div class="quiz-explanation">Jitter is the variation in latency between packets. The average latency (25 ms) is acceptable, and packet loss is minimal. However, the high variation (5 ms to 85 ms) indicates significant jitter, which causes choppy and garbled VoIP audio. QoS should be implemented to prioritize voice traffic.</div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="quiz-question" data-answer="C">
+          <p>10. A technician is troubleshooting a fiber optic link that has intermittent connectivity. Inspection of the fiber connectors under a fiber scope reveals visible contamination on the connector end faces. What should the technician do first?</p>
+          <ul class="quiz-options">
+            <li class="quiz-option" data-value="A"><input type="radio" name="q5_10" value="A"> Replace the entire fiber run</li>
+            <li class="quiz-option" data-value="B"><input type="radio" name="q5_10" value="B"> Use an OTDR to test the fiber</li>
+            <li class="quiz-option" data-value="C"><input type="radio" name="q5_10" value="C"> Clean the connectors with lint-free wipes and IPA, then re-inspect</li>
+            <li class="quiz-option" data-value="D"><input type="radio" name="q5_10" value="D"> Replace the SFP transceivers</li>
+          </ul>
+          <div class="quiz-explanation">Dirty fiber connectors are an extremely common cause of intermittent fiber issues. The simplest and most cost-effective first step is to clean the connector end faces with lint-free wipes and isopropyl alcohol (IPA), then re-inspect under the fiber scope. Only escalate to OTDR testing or component replacement if cleaning does not resolve the problem.</div>
+        </div>
+
+        <button class="btn btn-primary btn-quiz-submit">Submit Answers</button>
+
+        <div class="quiz-score">
+          <div class="score-number">0/10</div>
+          <div class="score-label">Calculating...</div>
+        </div>
+      </div>
+
+      <!-- ===== PREV / NEXT NAVIGATION ===== -->
+      <div class="domain-nav">
+        <a href="domain4.html" class="prev">
+          <span class="direction">&larr; Previous</span>
+          <span class="title">Domain 4: Network Security</span>
+        </a>
+        <a href="index.html" class="next">
+          <span class="direction">Next &rarr;</span>
+          <span class="title">Back to Home</span>
+        </a>
+      </div>
+
+    </div><!-- .domain-content -->
+  </div><!-- .domain-page -->
+
+  <footer class="site-footer">
+    <p>Network+ N10-009 Study Guide &mdash; Not affiliated with CompTIA. For educational use only.</p>
+    <p style="margin-top: 0.5rem;"><a href="/">Back to Anime Syncer</a></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
