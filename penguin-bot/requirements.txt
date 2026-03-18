@@ -1,0 +1,2 @@
+# No third-party deps needed – stdlib only (socket, hashlib, threading, etc.)
+# Requires Python 3.8+
